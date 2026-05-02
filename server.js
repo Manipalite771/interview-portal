@@ -26,7 +26,8 @@ Q10: A capability, system, or practice the candidate built that outlived the spe
 Q11: A moment when the plan broke, pivoted, or the candidate had to navigate ambiguity
 
 Rules:
-- ONLY respond with one of: Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 NONE
+- Respond with EXACTLY one token: Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 or NONE
+- No explanation, no preamble, no punctuation — just the label
 - Respond NONE if the transcript is the candidate answering (not asking), is small talk, or doesn't match any category
 - Respond NONE if it's unclear or too ambiguous
 - Classify by MEANING and INTENT, not by surface keywords
@@ -41,17 +42,21 @@ function hmac(key, data, encoding) {
 function sha256(data) {
   return crypto.createHash('sha256').update(data).digest('hex');
 }
-function signV4(method, host, pathStr, headers, body, region, service) {
+function signV4(method, host, pathStr, hdrs, body, region, service) {
   const datetime = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
   const date = datetime.slice(0, 8);
-  headers['x-amz-date'] = datetime;
-  headers['host'] = host;
 
-  const signedHeaderKeys = Object.keys(headers).sort().map(k => k.toLowerCase());
+  const h = {};
+  h['content-type'] = hdrs['Content-Type'];
+  h['host'] = host;
+  h['x-amz-date'] = datetime;
+
+  const signedHeaderKeys = Object.keys(h).sort();
   const signedHeaders = signedHeaderKeys.join(';');
-  const canonicalHeaders = signedHeaderKeys.map(k => k.toLowerCase() + ':' + headers[k].trim()).join('\n') + '\n';
+  const canonicalHeaders = signedHeaderKeys.map(k => k + ':' + h[k].trim()).join('\n') + '\n';
 
-  const canonicalRequest = [method, pathStr, '', canonicalHeaders, signedHeaders, sha256(body)].join('\n');
+  const canonicalPath = '/' + pathStr.split('/').filter(Boolean).map(s => encodeURIComponent(s)).join('/');
+  const canonicalRequest = [method, canonicalPath, '', canonicalHeaders, signedHeaders, sha256(body)].join('\n');
   const scope = `${date}/${region}/${service}/aws4_request`;
   const stringToSign = ['AWS4-HMAC-SHA256', datetime, scope, sha256(canonicalRequest)].join('\n');
 
@@ -61,19 +66,21 @@ function signV4(method, host, pathStr, headers, body, region, service) {
   signingKey = hmac(signingKey, 'aws4_request');
   const signature = hmac(signingKey, stringToSign, 'hex');
 
-  headers['Authorization'] = `AWS4-HMAC-SHA256 Credential=${AWS_KEY}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
-  return headers;
+  hdrs['x-amz-date'] = datetime;
+  hdrs['host'] = host;
+  hdrs['Authorization'] = `AWS4-HMAC-SHA256 Credential=${AWS_KEY}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+  return hdrs;
 }
 
 function callHaiku(transcript) {
   return new Promise((resolve) => {
     const modelId = 'us.anthropic.claude-haiku-4-5-20251001-v1:0';
-    const apiPath = `/model/${encodeURIComponent(modelId)}/invoke`;
+    const apiPath = '/model/' + encodeURIComponent(modelId) + '/invoke';
     const host = `bedrock-runtime.${AWS_REGION}.amazonaws.com`;
 
     const body = JSON.stringify({
       anthropic_version: 'bedrock-2023-05-31',
-      max_tokens: 4,
+      max_tokens: 8,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: transcript }]
     });
@@ -122,7 +129,9 @@ const server = http.createServer(async (req, res) => {
           res.end(JSON.stringify({ panel: -1, label: 'NONE' }));
           return;
         }
-        const label = await callHaiku(transcript);
+        const raw = await callHaiku(transcript);
+        const m = raw.match(/\b(Q1[01]?|Q[1-9]|NONE)\b/);
+        const label = m ? m[1] : 'NONE';
         const panel = PANEL_MAP[label] ?? -1;
         res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
         res.end(JSON.stringify({ panel, label }));
