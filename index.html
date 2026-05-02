@@ -191,26 +191,116 @@ body.voice-on #sidebar{top:calc(var(--topbar-h) + 36px)}
 body.kp-only .dt,body.kp-only .car,body.kp-only .ref-table,body.kp-only .numbered{display:none}
 body.kp-only .cue,body.kp-only .warn-box{display:none}
 
-/* RESPONSIVE */
+/* MOBILE TOOLBAR TRAY — slides up from bottom on hamburger long-press or toolbar-more btn */
+#mobile-tray{display:none}
+.hide-mobile{display:inline}
+#sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:89}
+
+/* RESPONSIVE — TABLET */
 @media(max-width:900px){
   :root{--sidebar-w:220px;--kp:1.3rem;--body:1rem;--title:1.55rem}
   .panel{padding:22px 24px 50px}
 }
+
+/* RESPONSIVE — MOBILE */
 @media(max-width:768px){
-  :root{--kp:1.25rem;--body:0.95rem;--title:1.4rem}
-  #sidebar{transform:translateX(-100%)}
-  #sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,0.5)}
-  #main{left:0!important}
+  :root{--kp:1.25rem;--body:0.95rem;--title:1.4rem;--topbar-h:44px;--bottombar-h:56px}
+
+  /* TOPBAR: only show essential buttons — mic, search, hamburger */
   #hamburger{display:block}
-  .panel{padding:18px 16px 50px}
-  .script-box{padding:16px;font-size:calc(var(--kp) - 0.1rem)}
-  .ref-table{font-size:var(--small)}
-  .ref-table td,.ref-table th{padding:6px 8px}
-  #fab-3things{padding:8px 12px;font-size:0.72rem}
+  .hide-mobile{display:none!important}
+  #topbar{padding:0 10px}
+  #topbar .left{gap:6px}
+  #topbar .right{gap:4px}
+  #clock{display:none}
+  #btn-kp,#btn-font-down,#btn-font-up,#btn-shortcuts{display:none}
+  .tb-btn{padding:6px 8px;min-height:34px;border-radius:8px}
+  .tb-btn svg{width:16px;height:16px}
+  #timer{font-size:0.78rem;min-width:40px}
+  #section-counter{font-size:0.75rem;min-width:38px}
+
+  /* MOBILE TRAY: all hidden buttons go here */
+  #mobile-tray{display:none;position:fixed;bottom:var(--bottombar-h);left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:99;padding:10px 14px;gap:8px;flex-wrap:wrap;justify-content:center}
+  #mobile-tray.open{display:flex}
+  #mobile-tray .tray-btn{background:var(--raised);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;min-height:42px;transition:var(--transition)}
+  #mobile-tray .tray-btn:active{background:var(--amber);color:var(--bg);border-color:var(--amber)}
+  #mobile-tray .tray-btn.active{border-color:var(--amber);color:var(--amber)}
+  #mobile-tray .tray-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+
+  /* SIDEBAR */
+  #sidebar{transform:translateX(-100%);width:75vw;max-width:280px}
+  #sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,0.5)}
+  #sidebar .nav-item{padding:10px 16px 10px 20px;font-size:0.9rem;min-height:40px}
+  #sidebar-backdrop.open{display:block}
+
+  /* MAIN */
+  #main{left:0!important}
+
+  /* PANELS */
+  .panel{padding:16px 14px 40px}
+  .section-title{font-size:1.35rem;margin-bottom:14px}
+  .script-box{padding:14px;font-size:calc(var(--kp) - 0.1rem)}
+  .card{padding:14px;margin:10px 0}
+  .car{padding:12px 14px;margin:12px 0}
+  .kp-block{padding:10px 14px;margin-bottom:10px}
+  .q-header{font-size:var(--kp)}
+  .cue,.warn-box,.hypothesis,.critical{padding:10px 12px;margin:10px 0}
+  .filter{flex-wrap:wrap;gap:4px 8px}
+  .filter-desc{font-size:var(--small)}
+
+  /* TABLES: horizontal scroll wrapper */
+  .ref-table{font-size:var(--small);display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .ref-table thead,
+  .ref-table tbody,
+  .ref-table tr{display:table;width:100%;table-layout:fixed}
+  .ref-table td,.ref-table th{padding:6px 8px;word-break:break-word}
+
+  /* BOTTOM NAV: bigger touch targets */
+  #bottombar{padding:0 8px}
+  .nav-arrow{width:46px;height:40px;border-radius:10px}
+  .nav-arrow svg{width:20px;height:20px}
+  #dots{gap:5px;max-width:calc(100vw - 140px)}
+  .dot{width:10px;height:10px}
+  .dot.active{width:24px}
+
+  /* FAB */
+  #fab-3things{bottom:calc(var(--bottombar-h) + 8px);right:10px;padding:8px 14px;font-size:0.72rem;border-radius:20px}
+
+  /* VOICE STRIP */
+  #voice-strip.open{height:30px}
+  #voice-strip{padding:0 10px;gap:6px}
+  #voice-strip .vs-label{font-size:0.6rem;letter-spacing:0.5px}
+  #voice-strip .vs-text{font-size:0.72rem}
+  #voice-strip .vs-match{font-size:0.72rem}
+  body.voice-on #main{top:calc(var(--topbar-h) + 30px)}
+  body.voice-on #sidebar{top:calc(var(--topbar-h) + 30px)}
+
+  /* MODALS */
+  #three-modal-content{padding:20px;max-height:85vh}
+  #three-modal-content h2{font-size:1.3rem}
+  .thing{padding:12px;margin:10px 0}
+  .thing-num{font-size:1.6rem}
+  #shortcuts-content{padding:20px}
+  #search-overlay{padding-top:10vh}
+  #search-input{padding:14px 16px;font-size:1rem}
+  .search-result{padding:10px 16px}
+
+  /* CHECKLIST: bigger tap targets */
+  .check-item{padding:10px 0}
+  .check-item input[type=checkbox]{width:24px;height:24px}
 }
+
+/* RESPONSIVE — SMALL PHONES */
 @media(max-width:400px){
-  :root{--kp:1.15rem;--body:0.9rem;--title:1.25rem}
-  .panel{padding:14px 12px 50px}
+  :root{--kp:1.15rem;--body:0.88rem;--title:1.2rem;--small:0.75rem}
+  .panel{padding:12px 10px 36px}
+  .section-title{font-size:1.15rem}
+  .script-box{padding:10px;font-size:var(--body)}
+  .card{padding:10px}
+  .car{padding:10px}
+  .thing-title{font-size:var(--body)}
+  .nav-arrow{width:42px;height:38px}
+  #mobile-tray .tray-btn{padding:8px 12px;font-size:0.8rem}
 }
 
 /* ANIMATIONS */
@@ -996,11 +1086,23 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 
 </main><!-- /main -->
 
+<!-- SIDEBAR BACKDROP (mobile) -->
+<div id="sidebar-backdrop"></div>
+
+<!-- MOBILE TRAY -->
+<div id="mobile-tray">
+  <button class="tray-btn" id="m-kp">KP Only</button>
+  <button class="tray-btn" id="m-font-up">A+</button>
+  <button class="tray-btn" id="m-font-down">A-</button>
+  <button class="tray-btn" id="m-3things">3 Things</button>
+</div>
+
 <!-- BOTTOM NAV -->
 <footer id="bottombar">
   <button class="nav-arrow" id="btn-prev" aria-label="Previous section"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
   <div id="dots"></div>
   <button class="nav-arrow" id="btn-next" aria-label="Next section"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+  <button class="nav-arrow" id="btn-more" aria-label="More tools" style="display:none"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg></button>
 </footer>
 
 <!-- FLOATING: 3 THINGS -->
@@ -1293,18 +1395,48 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 
   /* SIDEBAR MOBILE */
   const sidebar = document.getElementById('sidebar');
-  function closeSidebar(){ if(window.innerWidth <= 768) sidebar.classList.remove('open'); }
-  document.getElementById('hamburger').addEventListener('click', () => sidebar.classList.toggle('open'));
+  const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+  function openSidebar(){ sidebar.classList.add('open'); sidebarBackdrop.classList.add('open'); }
+  function closeSidebar(){
+    sidebar.classList.remove('open');
+    sidebarBackdrop.classList.remove('open');
+  }
+  document.getElementById('hamburger').addEventListener('click', () => {
+    if(sidebar.classList.contains('open')) closeSidebar();
+    else openSidebar();
+  });
+  sidebarBackdrop.addEventListener('click', closeSidebar);
   document.getElementById('main').addEventListener('click', closeSidebar);
+
+  /* MOBILE TRAY */
+  const mobileTray = document.getElementById('mobile-tray');
+  const btnMore = document.getElementById('btn-more');
+  function toggleTray(){ mobileTray.classList.toggle('open'); }
+  function closeTray(){ mobileTray.classList.remove('open'); }
+  btnMore.addEventListener('click', toggleTray);
+  document.getElementById('main').addEventListener('click', closeTray);
+
+  document.getElementById('m-kp').addEventListener('click', () => {
+    toggleKP();
+    document.getElementById('m-kp').classList.toggle('active', document.body.classList.contains('kp-only'));
+  });
+  document.getElementById('m-font-up').addEventListener('click', () => adjustFont(1));
+  document.getElementById('m-font-down').addEventListener('click', () => adjustFont(-1));
+  document.getElementById('m-3things').addEventListener('click', () => { closeTray(); openThreeModal(); });
 
   /* RESPONSIVE SIDEBAR */
   function handleResize(){
     const main = document.getElementById('main');
-    if(window.innerWidth <= 768){
+    const isMobile = window.innerWidth <= 768;
+    if(isMobile){
       main.classList.add('no-sidebar');
+      btnMore.style.display = 'flex';
     } else {
       main.classList.remove('no-sidebar');
       sidebar.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
+      btnMore.style.display = 'none';
+      closeTray();
     }
   }
   handleResize();
