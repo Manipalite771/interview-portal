@@ -1322,53 +1322,65 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   const vsMatch = document.getElementById('vs-match');
   const voiceStrip = document.getElementById('voice-strip');
 
+  /* Question gate: only navigate when speech sounds like an interviewer asking a question.
+     Your own answers are declarative ("I built...", "We ran...") and won't match these. */
+  const questionGates = [
+    'tell me','walk me','describe','how would you','how do you','how did you',
+    'what do you','what is your','what was','what makes you','what would you',
+    'can you','could you','give me','share','explain','talk about','elaborate',
+    'why do you','why did you','why are you','why should','why this',
+    'do you have any questions','any questions','your turn','what about',
+    'have you ever','is there a time','think about','approach'
+  ];
+
   const voiceRules = [
+    // Opening / intro — must sound like "tell me about yourself", not you saying "about myself"
+    {panel:2, phrases:['about yourself','introduce yourself','your background','who are you','about you']},
     // Q1 end-to-end / messy middle
-    {panel:3, phrases:['tell me about yourself','walk me through','transformation initiative','end to end','messy middle','led end to end','transformation you led']},
-    // Opening / intro
-    {panel:2, phrases:['introduce yourself','about yourself','tell me about you','who are you','your background','your experience']},
+    {panel:3, phrases:['transformation initiative','end to end','messy middle','led end to end','transformation you led','walk me through a transformation']},
     // Q2 didn't go as planned
-    {panel:4, phrases:['didn\'t go as planned','went wrong','not go as planned','failure','setback','mistake','didn\'t work out','bsv','bharat serum']},
+    {panel:4, phrases:['didn\'t go as planned','went wrong','not as planned','failure','setback','didn\'t work out']},
     // Q3 cross-geography
-    {panel:5, phrases:['geography','geographies','cultures','culture','india poland mexico','cross-cultural','across countries','different markets','elmac','amgen']},
+    {panel:5, phrases:['geography','geographies','cultures','india poland mexico','cross-cultural','across countries','different markets','spanning']},
     // Q4 GCC strategy
-    {panel:6, phrases:['gcc','engagement strategy','three gccs','global capability','bengaluru warsaw mexico','design engagement','capability center']},
+    {panel:6, phrases:['engagement strategy','three gccs','global capability center','design engagement','across the gccs']},
     // Q5 comms shifted behaviour
-    {panel:7, phrases:['communication strategy','shifted behaviour','shifted behavior','change behaviour','change behavior','comms strategy','change makers','culture credo']},
+    {panel:7, phrases:['communication strategy','shifted behaviour','shifted behavior','change behaviour','change behavior','actually shifted']},
     // Q6 SharePoint
-    {panel:8, phrases:['sharepoint','intranet','graveyard','platform','portal','site design','content repository']},
+    {panel:8, phrases:['sharepoint','intranet','graveyard','site work','platform work']},
     // Q7 stakeholder resistance
-    {panel:9, phrases:['senior stakeholder','resisted you','turned them around','resistance','resistant','skeptical','push back','quantive','okr']},
+    {panel:9, phrases:['stakeholder','resisted you','turned them around','resistant','initially resisted','push back']},
     // Q8 CxO-level
-    {panel:10, phrases:['cxo','c-suite','executive','board level','senior leadership','astrazeneca','bowler','executive director']},
+    {panel:10, phrases:['cxo','c-suite','executive level','board level','senior leadership work']},
     // Q9 coaching juniors
-    {panel:11, phrases:['coaching','junior','develop someone','mentored','mentoring','reportee','direct report','vrinda','rajeswari']},
+    {panel:11, phrases:['coaching','junior','develop someone','mentored someone','developed','reportee']},
     // Q10 capability outlived
-    {panel:12, phrases:['capability','outlived','outlast','durable','community of practice','lasted beyond','still running','still happening']},
+    {panel:12, phrases:['capability you built','outlived','outlast','lasted beyond','beyond the initiative']},
     // Q11 plan broke
-    {panel:13, phrases:['plan stopped','plan broke','plan didn\'t work','ambiguity','pivot','charter','diverged','changed direction','icap']},
+    {panel:13, phrases:['plan stopped','plan broke','plan didn\'t work','stopped working','changed direction']},
     // Q12 what do you know about Astellas
-    {panel:14, phrases:['what do you know about astellas','know about us','about astellas','xtandi','padcev','izervay','veozah','smt','csp2026','pharma fluency','pharma knowledge']},
+    {panel:14, phrases:['know about astellas','know about us','about astellas','about our company']},
     // Q13 vendor to in-house
-    {panel:14, phrases:['vendor','delivery vendor','operate inside','why should we hire','why this move','why leave','leaving indegene','in-house']},
-    // Language guide
-    {panel:15, phrases:['language','what words','terminology','how should i say','phrasing','avoid saying','don\'t say']},
-    // Stories map
-    {panel:16, phrases:['stories','which story','story map','backup story','primary story']},
-    // Questions to ask
-    {panel:17, phrases:['questions for me','any questions','questions do you have','ask me','your turn','what would you like to know','want to ask']},
-    // Follow-up traps
-    {panel:18, phrases:['tell me more','what specifically','done differently','measured success','what would you change','prosci','adkar','why are you leaving']},
-    // Checklist
-    {panel:19, phrases:['checklist','before the interview','preparation','ready']},
-    // Three things
-    {panel:20, phrases:['three things','most important','key takeaway','what should i remember','land these']},
+    {panel:14, phrases:['vendor','operate inside','why should we hire','why this move','leaving indegene','why are you leaving','why leave']},
+    // Questions for you (end of interview)
+    {panel:17, phrases:['questions for me','any questions','questions do you have','your turn','what would you like to know','want to ask']},
+    // Follow-up traps — deeper probes mid-story
+    {panel:18, phrases:['tell me more about that','what specifically','done differently','measured success','what would you change','sounds like prosci','use adkar']},
     // Astellas context
-    {panel:1, phrases:['astellas context','ten facts','company background','transformation office','hierarchy','values','behaviors']}
+    {panel:1, phrases:['astellas context','company values','transformation office structure']}
   ];
 
   function scoreMatch(transcript){
     const t = transcript.toLowerCase();
+
+    /* GATE: does this sound like an interviewer asking something?
+       Check if any question pattern appears in the transcript. */
+    let isQuestion = false;
+    for(const gate of questionGates){
+      if(t.includes(gate)){ isQuestion = true; break; }
+    }
+    if(!isQuestion) return {panel: -1, score: 0};
+
     let bestPanel = -1, bestScore = 0;
     for(const rule of voiceRules){
       let score = 0;
@@ -1381,7 +1393,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
           for(const w of words){
             if(w.length >= 3 && t.includes(w)) matched++;
           }
-          if(matched >= Math.ceil(words.length * 0.5)){
+          if(matched >= Math.ceil(words.length * 0.6)){
             score += matched;
           }
         }
@@ -1419,7 +1431,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
       const checkText = final_ || interim;
       if(checkText.length > 5 && !voiceCooldown){
         const {panel, score} = scoreMatch(checkText);
-        if(score >= 2 && panel !== current){
+        if(score >= 3 && panel !== current){
           voiceCooldown = true;
           vsMatch.textContent = '→ ' + navItems[panel].textContent.replace(/\d+$/, '').trim();
           vsMatch.classList.add('show');
@@ -1427,7 +1439,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
           setTimeout(() => {
             voiceCooldown = false;
             vsMatch.classList.remove('show');
-          }, 4000);
+          }, 8000);
         }
       }
     };
