@@ -1454,59 +1454,59 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   const vsMatch = document.getElementById('vs-match');
   const voiceStrip = document.getElementById('voice-strip');
 
-  /* Question gate: only navigate when speech sounds like an interviewer asking a question.
-     Your own answers are declarative ("I built...", "We ran...") and won't match these. */
+  /* Voice matching works in two stages:
+     1. GATE — does it sound like an interviewer? (question patterns)
+     2. TOPIC — what section does it match?
+     We accumulate a rolling buffer of recent speech so fragments on mobile
+     don't break matching. Buffer resets after a successful match or 15s silence. */
+
   const questionGates = [
     'tell me','walk me','describe','how would you','how do you','how did you',
     'what do you','what is your','what was','what makes you','what would you',
     'can you','could you','give me','share','explain','talk about','elaborate',
     'why do you','why did you','why are you','why should','why this',
     'do you have any questions','any questions','your turn','what about',
-    'have you ever','is there a time','think about','approach'
+    'have you ever','is there a time','think about','approach',
+    'let\'s talk','let us talk','i\'d like to','i would like to','next question',
+    'moving on','let\'s move','shall we','i want to ask','i\'d love to hear',
+    'curious about','wondering about','interested in'
   ];
 
   const voiceRules = [
-    // Opening / intro — must sound like "tell me about yourself", not you saying "about myself"
-    {panel:2, phrases:['about yourself','introduce yourself','your background','who are you','about you']},
-    // Q1 end-to-end / messy middle
-    {panel:3, phrases:['transformation initiative','end to end','messy middle','led end to end','transformation you led','walk me through a transformation']},
-    // Q2 didn't go as planned
-    {panel:4, phrases:['didn\'t go as planned','went wrong','not as planned','failure','setback','didn\'t work out']},
-    // Q3 cross-geography
-    {panel:5, phrases:['geography','geographies','cultures','india poland mexico','cross-cultural','across countries','different markets','spanning']},
-    // Q4 GCC strategy
-    {panel:6, phrases:['engagement strategy','three gccs','global capability center','design engagement','across the gccs']},
-    // Q5 comms shifted behaviour
-    {panel:7, phrases:['communication strategy','shifted behaviour','shifted behavior','change behaviour','change behavior','actually shifted']},
-    // Q6 SharePoint
-    {panel:8, phrases:['sharepoint','intranet','graveyard','site work','platform work']},
-    // Q7 stakeholder resistance
-    {panel:9, phrases:['stakeholder','resisted you','turned them around','resistant','initially resisted','push back']},
-    // Q8 CxO-level
-    {panel:10, phrases:['cxo','c-suite','executive level','board level','senior leadership work']},
-    // Q9 coaching juniors
-    {panel:11, phrases:['coaching','junior','develop someone','mentored someone','developed','reportee']},
-    // Q10 capability outlived
-    {panel:12, phrases:['capability you built','outlived','outlast','lasted beyond','beyond the initiative']},
-    // Q11 plan broke
-    {panel:13, phrases:['plan stopped','plan broke','plan didn\'t work','stopped working','changed direction']},
-    // Q12 what do you know about Astellas
-    {panel:14, phrases:['know about astellas','know about us','about astellas','about our company']},
-    // Q13 vendor to in-house
-    {panel:14, phrases:['vendor','operate inside','why should we hire','why this move','leaving indegene','why are you leaving','why leave']},
-    // Questions for you (end of interview)
-    {panel:17, phrases:['questions for me','any questions','questions do you have','your turn','what would you like to know','want to ask']},
-    // Follow-up traps — deeper probes mid-story
-    {panel:18, phrases:['tell me more about that','what specifically','done differently','measured success','what would you change','sounds like prosci','use adkar']},
-    // Astellas context
-    {panel:1, phrases:['astellas context','company values','transformation office structure']}
+    {panel:2, phrases:['about yourself','introduce yourself','your background','who are you','about you','tell us about you']},
+    {panel:3, phrases:['transformation initiative','end to end','messy middle','transformation you led','walk me through','led a transformation','transformation end to end']},
+    {panel:4, phrases:['didn\'t go as planned','went wrong','not as planned','failure','setback','didn\'t work out','failed','mistake','challenge you faced','difficult situation']},
+    {panel:5, phrases:['geography','geographies','cultures','india poland mexico','cross-cultural','across countries','different markets','spanning','cross geography','multiple countries','multiple regions','working across']},
+    {panel:6, phrases:['engagement strategy','three gccs','global capability center','design engagement','across the gccs','gcc','capability center strategy','gcc strategy']},
+    {panel:7, phrases:['communication strategy','shifted behaviour','shifted behavior','change behaviour','change behavior','actually shifted','communication that changed','comms strategy']},
+    {panel:8, phrases:['sharepoint','intranet','graveyard','site work','platform work','portal','internal site','content platform']},
+    {panel:9, phrases:['stakeholder','resisted','turned them around','resistant','initially resisted','push back','pushback','skeptical','won them over','difficult stakeholder','senior leader who']},
+    {panel:10, phrases:['cxo','c-suite','executive level','board level','senior leadership','executive','leadership level','c level','board meeting','executive engagement']},
+    {panel:11, phrases:['coaching','junior','develop someone','mentored','mentoring','reportee','direct report','team member','developed someone','people development','developing talent','growing someone']},
+    {panel:12, phrases:['capability you built','outlived','outlast','lasted beyond','beyond the initiative','sustained','still running','still going','durable','long lasting','outlived the project','built that lasted']},
+    {panel:13, phrases:['plan stopped','plan broke','plan didn\'t work','stopped working','changed direction','pivot','pivoted','ambiguity','things changed','had to adapt','original plan']},
+    {panel:14, phrases:['know about astellas','know about us','about astellas','about our company','what do you know','our organization','our business']},
+    {panel:14, phrases:['vendor','operate inside','why should we hire','leaving indegene','why are you leaving','why leave','why this move','why astellas','in-house','move from','transition from']},
+    {panel:17, phrases:['questions for me','any questions','questions do you have','your turn','what would you like to know','want to ask','questions for us','anything you want to ask']},
+    {panel:18, phrases:['tell me more','what specifically','done differently','measured success','what would you change','sounds like prosci','use adkar','elaborate on that','go deeper','more detail','unpack that']},
+    {panel:1, phrases:['astellas context','company values','transformation office','about the role','role overview']}
   ];
+
+  /* Rolling speech buffer — accumulates fragments for better matching on mobile */
+  let speechBuffer = '';
+  let bufferTimer = null;
+  function resetBuffer(){ speechBuffer = ''; }
+  function feedBuffer(text){
+    speechBuffer = (speechBuffer + ' ' + text).trim();
+    if(speechBuffer.length > 500) speechBuffer = speechBuffer.slice(-500);
+    clearTimeout(bufferTimer);
+    bufferTimer = setTimeout(resetBuffer, 15000);
+  }
 
   function scoreMatch(transcript){
     const t = transcript.toLowerCase();
 
-    /* GATE: does this sound like an interviewer asking something?
-       Check if any question pattern appears in the transcript. */
+    /* GATE: check the rolling buffer (which includes current + recent speech) */
     let isQuestion = false;
     for(const gate of questionGates){
       if(t.includes(gate)){ isQuestion = true; break; }
@@ -1518,15 +1518,14 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
       let score = 0;
       for(const phrase of rule.phrases){
         if(t.includes(phrase)){
-          score += phrase.split(' ').length * 2;
+          /* Exact phrase match — bonus for longer phrases */
+          score += phrase.split(' ').length + 2;
         } else {
+          /* Fuzzy: check individual words */
           const words = phrase.split(' ');
-          let matched = 0;
           for(const w of words){
-            if(w.length >= 3 && t.includes(w)) matched++;
-          }
-          if(matched >= Math.ceil(words.length * 0.6)){
-            score += matched;
+            if(w.length >= 4 && t.includes(w)) score += 1.5;
+            else if(w.length === 3 && t.includes(w)) score += 0.5;
           }
         }
       }
@@ -1558,13 +1557,20 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
         else interim += text;
       }
 
-      vsTranscript.textContent = interim || final_ || 'Listening...';
+      const liveText = interim || final_ || '';
+      vsTranscript.textContent = liveText || 'Listening...';
 
-      const checkText = final_ || interim;
-      if(checkText.length > 5 && !voiceCooldown){
-        const {panel, score} = scoreMatch(checkText);
-        if(score >= 3 && panel !== current){
+      /* Feed every chunk into the rolling buffer */
+      if(final_) feedBuffer(final_);
+
+      /* Match against buffer (accumulated) for robustness on mobile,
+         but also try the current chunk alone for fast response */
+      if(!voiceCooldown && liveText.length > 3){
+        const bufferText = (speechBuffer + ' ' + liveText).toLowerCase().trim();
+        const {panel, score} = scoreMatch(bufferText);
+        if(score >= 2 && panel !== current){
           voiceCooldown = true;
+          resetBuffer();
           vsMatch.textContent = '→ ' + navItems[panel].textContent.replace(/\d+$/, '').trim();
           vsMatch.classList.add('show');
           goTo(panel);
