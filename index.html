@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Astellas — Interview Portal</title>
+<style>
+:root{
+  --bg:#0b0e17;--surface:#141825;--raised:#1c2235;--border:#252d44;
+  --text:#e8ecf4;--text2:#8892a8;--text3:#5c6478;
+  --amber:#f5b731;--blue:#4a9eff;--green:#34d399;--red:#f87171;--teal:#2dd4bf;--purple:#a78bfa;
+  --kp:1.45rem;--body:1.05rem;--small:0.82rem;--title:1.8rem;
+  --sidebar-w:260px;--topbar-h:48px;--bottombar-h:54px;
+  --radius:10px;--transition:0.25s ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow:hidden;height:100vh;width:100vw}
+::selection{background:var(--amber);color:var(--bg)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:100;gap:8px}
+#topbar .left{display:flex;align-items:center;gap:10px}
+#topbar .right{display:flex;align-items:center;gap:6px}
+#progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--green));z-index:101;transition:width 0.4s ease}
+.tb-btn{background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:var(--small);transition:var(--transition);white-space:nowrap;display:flex;align-items:center;gap:4px}
+.tb-btn:hover,.tb-btn.active{background:var(--raised);color:var(--text);border-color:var(--amber)}
+.tb-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+#timer{font-variant-numeric:tabular-nums;font-weight:600;color:var(--amber);font-size:var(--small);min-width:48px;text-align:center}
+#timer.warn{color:var(--red);animation:pulse 1s infinite}
+#clock{color:var(--text3);font-size:var(--small);font-variant-numeric:tabular-nums}
+#section-counter{color:var(--text2);font-size:var(--small);font-weight:600;min-width:46px;text-align:center}
+#hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer;padding:4px}
+#hamburger svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;z-index:90;padding:10px 0;transition:transform 0.3s ease}
+#sidebar .group-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);padding:14px 16px 4px;font-weight:700}
+#sidebar .nav-item{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text2);padding:7px 16px 7px 20px;cursor:pointer;font-size:0.85rem;transition:var(--transition);border-left:3px solid transparent;line-height:1.35}
+#sidebar .nav-item:hover{background:var(--raised);color:var(--text)}
+#sidebar .nav-item.active{color:var(--amber);border-left-color:var(--amber);background:rgba(245,183,49,0.06)}
+#sidebar .nav-item .shortcut{float:right;opacity:0.3;font-size:0.7rem;font-variant-numeric:tabular-nums}
+
+/* MAIN */
+#main{position:fixed;top:var(--topbar-h);left:var(--sidebar-w);right:0;bottom:var(--bottombar-h);overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth}
+#main.no-sidebar{left:0}
+
+/* PANELS */
+.panel{display:none;padding:28px 36px 60px;max-width:900px;margin:0 auto;animation:fadeIn 0.3s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.section-label{font-size:var(--small);color:var(--amber);text-transform:uppercase;letter-spacing:2px;font-weight:700;margin-bottom:4px}
+.section-title{font-size:var(--title);color:#fff;font-weight:800;margin-bottom:20px;line-height:1.2}
+
+/* KEY POINTS */
+.kp{font-size:var(--kp);color:var(--amber);font-weight:700;line-height:1.45;margin-bottom:10px;padding:6px 0}
+.kp-block{background:rgba(245,183,49,0.07);border-left:4px solid var(--amber);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:14px}
+.kp-block .kp{margin-bottom:0;font-size:calc(var(--kp) - 0.05rem)}
+
+/* DETAIL */
+.dt{font-size:var(--body);color:var(--text2);line-height:1.65;margin-bottom:10px}
+.dt strong{color:var(--text)}
+
+/* CALLOUTS */
+.cue{background:rgba(45,212,191,0.08);border-left:4px solid var(--teal);padding:10px 16px;border-radius:0 var(--radius) var(--radius) 0;margin:14px 0;font-size:var(--body);color:var(--teal)}
+.cue::before{content:'WIOLETA CUE — ';font-weight:700;font-size:var(--small);letter-spacing:0.5px;opacity:0.8}
+.warn-box{background:rgba(248,113,113,0.08);border-left:4px solid var(--red);padding:10px 16px;border-radius:0 var(--radius) var(--radius) 0;margin:14px 0;font-size:var(--body);color:var(--red)}
+.warn-box::before{content:'AVOID — ';font-weight:700;font-size:var(--small);letter-spacing:0.5px}
+.critical{background:rgba(245,183,49,0.1);border:2px solid var(--amber);padding:14px 18px;border-radius:var(--radius);margin:14px 0}
+.critical::before{content:'CRITICAL ';font-weight:800;color:var(--amber);font-size:var(--small);letter-spacing:1px}
+.hypothesis{background:rgba(74,158,255,0.08);border-left:4px solid var(--blue);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:14px 0}
+.hypothesis::before{content:'USE THIS — ';font-weight:700;color:var(--blue);font-size:var(--small);letter-spacing:0.5px}
+
+/* CAR */
+.car{margin:16px 0;padding:16px 18px;border-radius:var(--radius);background:var(--raised)}
+.car-label{font-size:var(--small);font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.car-label.context{color:var(--blue)}
+.car-label.context::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue)}
+.car-label.action{color:var(--amber)}
+.car-label.action::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--amber)}
+.car-label.result{color:var(--green)}
+.car-label.result::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green)}
+.car blockquote{font-size:var(--body);color:var(--text);line-height:1.65;margin:0;font-style:italic;opacity:0.95}
+.car blockquote strong{color:var(--amber);font-style:normal}
+
+/* SCRIPT BOX */
+.script-box{background:var(--raised);border:2px solid var(--amber);border-radius:var(--radius);padding:24px;margin:14px 0;font-size:calc(var(--kp) - 0.15rem);color:var(--text);line-height:1.6;font-style:italic}
+.script-box strong{color:var(--amber);font-style:normal}
+
+/* TABLES */
+.ref-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:var(--body)}
+.ref-table th{text-align:left;color:var(--amber);font-weight:700;padding:8px 12px;border-bottom:2px solid var(--amber);font-size:var(--small);text-transform:uppercase;letter-spacing:1px}
+.ref-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.ref-table tr:hover td{background:rgba(245,183,49,0.04)}
+.use-word{color:var(--green);font-weight:600}
+.avoid-word{color:var(--red);font-weight:600;text-decoration:line-through}
+
+/* FILTER TABLE */
+.filter{display:flex;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.filter-num{color:var(--amber);font-weight:800;font-size:var(--kp);min-width:28px}
+.filter-name{color:var(--text);font-weight:700;font-size:calc(var(--body) + 0.05rem)}
+.filter-desc{color:var(--text2);font-size:var(--body)}
+
+/* CHECKLIST */
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0}
+.check-item input[type=checkbox]{width:20px;height:20px;accent-color:var(--amber);margin-top:3px;flex-shrink:0}
+.check-item label{font-size:var(--body);color:var(--text);cursor:pointer}
+.check-group{margin:16px 0}
+.check-group-title{font-size:calc(var(--body) + 0.1rem);color:var(--amber);font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+
+/* QUESTION HEADER */
+.q-header{font-size:calc(var(--kp) + 0.1rem);color:#fff;font-weight:700;line-height:1.35;margin-bottom:6px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+.q-story{font-size:var(--body);color:var(--purple);font-weight:700;margin-bottom:14px}
+
+/* CARDS */
+.card{background:var(--raised);border-radius:var(--radius);padding:18px;margin:12px 0;border:1px solid var(--border)}
+.card-title{font-size:calc(var(--body) + 0.05rem);color:var(--amber);font-weight:700;margin-bottom:6px}
+
+/* NUMBERED ITEMS */
+.numbered{counter-reset:item}
+.numbered .item{counter-increment:item;padding:6px 0 6px 32px;position:relative;font-size:var(--body);color:var(--text2)}
+.numbered .item::before{content:counter(item)'.';position:absolute;left:0;color:var(--amber);font-weight:700}
+
+/* BOTTOM NAV */
+#bottombar{position:fixed;bottom:0;left:0;right:0;height:var(--bottombar-h);background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:100}
+.nav-arrow{background:none;border:1px solid var(--border);color:var(--text);width:40px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.nav-arrow:hover{background:var(--raised);border-color:var(--amber)}
+.nav-arrow:disabled{opacity:0.2;cursor:default}
+.nav-arrow svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5}
+#dots{display:flex;gap:4px;align-items:center;overflow-x:auto;max-width:calc(100vw - 180px);padding:4px 0}
+#dots::-webkit-scrollbar{display:none}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:var(--transition);flex-shrink:0}
+.dot.active{background:var(--amber);width:20px;border-radius:4px}
+.dot:hover{background:var(--text2)}
+
+/* FLOATING */
+#fab-3things{position:fixed;bottom:calc(var(--bottombar-h) + 12px);right:16px;background:linear-gradient(135deg,var(--amber),#e09800);color:var(--bg);border:none;padding:10px 16px;border-radius:24px;cursor:pointer;font-weight:800;font-size:var(--small);z-index:95;box-shadow:0 4px 16px rgba(245,183,49,0.3);transition:var(--transition);letter-spacing:0.5px}
+#fab-3things:hover{transform:scale(1.05);box-shadow:0 6px 24px rgba(245,183,49,0.4)}
+
+/* SEARCH OVERLAY */
+#search-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:min(15vh,120px);backdrop-filter:blur(4px)}
+#search-overlay.open{display:flex}
+#search-box{width:min(600px,90vw);background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);overflow:hidden}
+#search-input{width:100%;padding:16px 20px;background:transparent;border:none;color:var(--text);font-size:1.1rem;outline:none}
+#search-input::placeholder{color:var(--text3)}
+#search-results{max-height:50vh;overflow-y:auto;border-top:1px solid var(--border)}
+.search-result{padding:12px 20px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.03);transition:var(--transition)}
+.search-result:hover,.search-result.selected{background:var(--raised)}
+.search-result .sr-section{font-size:var(--small);color:var(--amber);font-weight:600}
+.search-result .sr-text{font-size:var(--body);color:var(--text2)}
+.search-result mark{background:rgba(245,183,49,0.3);color:var(--amber);border-radius:2px;padding:0 2px}
+
+/* 3 THINGS MODAL */
+#three-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+#three-modal.open{display:flex}
+#three-modal-content{background:var(--surface);border:2px solid var(--amber);border-radius:var(--radius);padding:32px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto}
+#three-modal-content h2{color:var(--amber);font-size:var(--title);margin-bottom:20px;text-align:center}
+.thing{margin:16px 0;padding:16px;background:var(--raised);border-radius:var(--radius);border-left:4px solid var(--amber)}
+.thing-num{font-size:2rem;color:var(--amber);font-weight:900;line-height:1}
+.thing-title{font-size:var(--kp);color:#fff;font-weight:700;margin:4px 0}
+.thing-detail{font-size:var(--body);color:var(--text2);margin-top:6px}
+
+/* SHORTCUTS MODAL */
+#shortcuts-modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+#shortcuts-modal.open{display:flex}
+#shortcuts-content{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;max-width:440px;width:100%}
+#shortcuts-content h3{color:var(--amber);margin-bottom:14px;font-size:1.2rem}
+.shortcut-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.shortcut-row kbd{background:var(--raised);border:1px solid var(--border);padding:2px 8px;border-radius:4px;font-size:var(--small);color:var(--amber);font-family:inherit}
+.shortcut-row span{color:var(--text2);font-size:var(--body)}
+
+/* VOICE */
+#btn-mic{position:relative}
+#btn-mic.listening{border-color:var(--red);color:var(--red);animation:pulse 1.2s infinite}
+#btn-mic.listening::after{content:'';position:absolute;inset:-4px;border:2px solid var(--red);border-radius:8px;animation:mic-ring 1.5s ease-out infinite;opacity:0}
+@keyframes mic-ring{0%{transform:scale(1);opacity:0.6}100%{transform:scale(1.4);opacity:0}}
+#voice-strip{position:fixed;top:var(--topbar-h);left:0;right:0;height:0;background:var(--surface);border-bottom:1px solid var(--border);z-index:99;overflow:hidden;transition:height 0.3s ease;display:flex;align-items:center;padding:0 16px;gap:10px}
+#voice-strip.open{height:36px}
+#voice-strip .vs-label{font-size:0.7rem;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:1px;flex-shrink:0;display:flex;align-items:center;gap:5px}
+#voice-strip .vs-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 1s infinite}
+#voice-strip .vs-text{font-size:var(--small);color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+#voice-strip .vs-match{font-size:var(--small);color:var(--green);font-weight:700;flex-shrink:0;opacity:0;transition:opacity 0.3s}
+#voice-strip .vs-match.show{opacity:1}
+body.voice-on #main{top:calc(var(--topbar-h) + 36px)}
+body.voice-on #sidebar{top:calc(var(--topbar-h) + 36px)}
+
+/* KP-ONLY MODE */
+body.kp-only .dt,body.kp-only .car,body.kp-only .ref-table,body.kp-only .numbered{display:none}
+body.kp-only .cue,body.kp-only .warn-box{display:none}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  :root{--sidebar-w:220px;--kp:1.3rem;--body:1rem;--title:1.55rem}
+  .panel{padding:22px 24px 50px}
+}
+@media(max-width:768px){
+  :root{--kp:1.25rem;--body:0.95rem;--title:1.4rem}
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,0.5)}
+  #main{left:0!important}
+  #hamburger{display:block}
+  .panel{padding:18px 16px 50px}
+  .script-box{padding:16px;font-size:calc(var(--kp) - 0.1rem)}
+  .ref-table{font-size:var(--small)}
+  .ref-table td,.ref-table th{padding:6px 8px}
+  #fab-3things{padding:8px 12px;font-size:0.72rem}
+}
+@media(max-width:400px){
+  :root{--kp:1.15rem;--body:0.9rem;--title:1.25rem}
+  .panel{padding:14px 12px 50px}
+}
+
+/* ANIMATIONS */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.highlight-flash{animation:flash 1.5s}
+@keyframes flash{0%{background:rgba(245,183,49,0.2)}100%{background:transparent}}
+
+/* UTILITY */
+.mt-sm{margin-top:8px}.mt{margin-top:14px}.mt-lg{margin-top:22px}
+.mb-sm{margin-bottom:8px}.mb{margin-bottom:14px}
+.divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.badge{display:inline-block;background:var(--raised);color:var(--amber);font-size:var(--small);padding:2px 8px;border-radius:4px;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="progress" style="width:0%"></div>
+
+<!-- TOPBAR -->
+<header id="topbar">
+  <div class="left">
+    <button id="hamburger" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+    <span id="section-counter">1 / 21</span>
+    <span id="clock"></span>
+  </div>
+  <div class="right">
+    <span id="timer" title="Click to start/stop timer">00:00</span>
+    <button class="tb-btn" id="btn-timer" title="Start/Stop Timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></button>
+    <button class="tb-btn" id="btn-mic" title="Voice auto-navigate (V)"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> <span class="hide-mobile">Mic</span></button>
+    <button class="tb-btn" id="btn-search" title="Search (Ctrl+K)"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> <span class="hide-mobile">Search</span></button>
+    <button class="tb-btn" id="btn-kp" title="Key Points Only">KP</button>
+    <button class="tb-btn" id="btn-font-down" title="Smaller font">A-</button>
+    <button class="tb-btn" id="btn-font-up" title="Larger font">A+</button>
+    <button class="tb-btn" id="btn-shortcuts" title="Keyboard shortcuts (?)">?</button>
+  </div>
+</header>
+
+<!-- VOICE STRIP -->
+<div id="voice-strip">
+  <span class="vs-label">LISTENING</span>
+  <span class="vs-text" id="vs-transcript">Waiting for speech...</span>
+  <span class="vs-match" id="vs-match"></span>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="group-label">Strategic</div>
+  <button class="nav-item" data-panel="0">§1 Strategic Framing<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="1">§2 Astellas Context<span class="shortcut"></span></button>
+
+  <div class="group-label">Your Script</div>
+  <button class="nav-item" data-panel="2">§3 Opening 90 Sec<span class="shortcut"></span></button>
+
+  <div class="group-label">Q&A Prep (§4)</div>
+  <button class="nav-item" data-panel="3">Q1 End-to-End<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="4">Q2 Didn't Go as Planned<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="5">Q3 Cross-Geography<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="6">Q4 GCC Strategy<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="7">Q5 Comms → Behaviour<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="8">Q6 SharePoint<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="9">Q7 Stakeholder Resist<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="10">Q8 CxO-Level Work<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="11">Q9 Coaching Juniors<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="12">Q10 Capability Outlived<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="13">Q11 Plan Broke<span class="shortcut"></span></button>
+
+  <div class="group-label">Reference</div>
+  <button class="nav-item" data-panel="14">§5 Pharma Fluency<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="15">§6 Language Guide<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="16">§7 Stories Map<span class="shortcut"></span></button>
+
+  <div class="group-label">Endgame</div>
+  <button class="nav-item" data-panel="17">§8 Questions to Ask<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="18">§9 Follow-Up Traps<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="19">§10 Checklist<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="20">§11 Three Things to Land<span class="shortcut"></span></button>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- ============================================ -->
+<!-- PANEL 0: §1 STRATEGIC FRAMING                -->
+<!-- ============================================ -->
+<section class="panel active" data-index="0">
+  <div class="section-label">§1</div>
+  <h1 class="section-title">Strategic Framing</h1>
+
+  <div class="critical">
+    <p class="kp">Wioleta is allergic to framework recitation and rewards execution credibility. Her own words: "95% of value is — can you execute?"</p>
+  </div>
+
+  <div class="card mt">
+    <div class="card-title">Who You're Interviewing With</div>
+    <p class="dt"><strong>Wioleta Kicman</strong> — Director, Transformation Lead Consultant at Astellas, based in Warsaw. She is your peer in the Transformation Office, not a hierarchical interviewer. Behavioural scientist (dual master's in Public Health and Business Psychology), Prosci/PMP/MSP/PRINCE2/SAFe certified, part-time lecturer in Organizational Psychology and Change Management at SWPS. Self-label: "Change &amp; Transformation Lead | Business Psychologist | Business Partner."</p>
+  </div>
+
+  <h2 class="kp mt-lg">Her 7 Hiring Filters (in order)</h2>
+  <div class="filter"><span class="filter-num">1</span><span class="filter-name">Execution credibility</span><span class="filter-desc"> — has candidate actually shipped end-to-end transformation, not just described it?</span></div>
+  <div class="filter"><span class="filter-num">2</span><span class="filter-name">Cross-geography/cultural fluency</span><span class="filter-desc"> — can they bridge divergent perspectives across India, Poland, Mexico?</span></div>
+  <div class="filter"><span class="filter-num">3</span><span class="filter-name">Communication strategy depth</span><span class="filter-desc"> — not comms plans, but architecture that shifts behaviour</span></div>
+  <div class="filter"><span class="filter-num">4</span><span class="filter-name">Capability-building mindset</span><span class="filter-desc"> — building durable change capability, not delivering one-off projects</span></div>
+  <div class="filter"><span class="filter-num">5</span><span class="filter-name">Coaching juniors</span><span class="filter-desc"> — visible capability transfer to Senior Consultants/Consultants</span></div>
+  <div class="filter"><span class="filter-num">6</span><span class="filter-name">Navigating ambiguity</span><span class="filter-desc"> — energy from uncertainty, not panic</span></div>
+  <div class="filter"><span class="filter-num">7</span><span class="filter-name">Pharma context</span><span class="filter-desc"> — strongly preferred but bridgeable if you've operated in regulated, complex environments</span></div>
+
+  <hr class="divider">
+
+  <div class="kp-block mt">
+    <p class="kp">YOUR REFRAME: You are NOT a vendor-side candidate bridging to in-house. You are a candidate who has spent four years inside the operating model Astellas is building — Indegene's Bangalore center is itself a Global Capability Center for pharma clients.</p>
+  </div>
+
+  <h2 class="kp mt-lg">Your 3 Differentiators</h2>
+  <div class="kp-block"><p class="kp">1. Pharma fluency across 12 companies — Sanofi, Amgen (EU top-5), Pfizer, Janssen, AstraZeneca, BI, Merck KGaA, CSL Vifor, Gilead, Regeneron, Haleon, Vertex</p></div>
+  <div class="kp-block"><p class="kp">2. Transformation craft — operating models, governance cadences, change adoption at scale</p></div>
+  <div class="kp-block"><p class="kp">3. Communications/engagement judgement — Change Makers Council, Culture Credo, SharePoint operational instruments</p></div>
+  <p class="dt mt">Most candidates show one or two. You can credibly claim all three.</p>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 1: §2 ASTELLAS CONTEXT                 -->
+<!-- ============================================ -->
+<section class="panel" data-index="1">
+  <div class="section-label">§2</div>
+  <h1 class="section-title">The Astellas Context</h1>
+
+  <h2 class="kp">10 Facts to Memorize Cold</h2>
+
+  <div class="kp-block"><p class="kp">1. CSP2026 launches late May 2026 — you'd join in the first execution wave of a new 5-year plan, not maintain an old one</p></div>
+  <div class="kp-block"><p class="kp">2. SMT targets ~¥150B recurring savings by FY2027; ¥40B delivered FY2024; core OP margin already 27.6% YTD Q3 FY2025, target 30% by FY2027</p></div>
+  <div class="kp-block"><p class="kp">3. XTANDI = ~48% of revenue (¥912B FY2024) — US LOE August 2027, EU June 2028, Japan July 2029; Medicare MFP $7,004/30-day from January 2027</p></div>
+
+  <div class="card mt"><div class="card-title">4. April 2025 Patient-Axis Reorg</div>
+    <p class="dt"><strong>Value Creation</strong> (R&amp;D under CRDO Taniguchi) / <strong>Value Delivery</strong> (Commercial + Medical Affairs unified under CCMAO Claus Zieler) / <strong>Value Enablement</strong></p>
+  </div>
+
+  <div class="card"><div class="card-title">5. CDTO Role Eliminated</div>
+    <p class="dt">October 1, 2025 — DigitalX and Transformation Office now under CStO; Adam Pearson resigned March 31, 2026; Peter Sandor interim</p>
+  </div>
+
+  <div class="card"><div class="card-title">6. Transformation Office Hierarchy</div>
+    <p class="dt">Managing Principal → Principal → <strong>Lead Consultant (your role)</strong> → Senior Consultant → Consultant; organized by Chapters (Change Management, Process Excellence, Agile); delivery via Stream/Crew/Pod Agile framework</p>
+  </div>
+
+  <div class="kp-block mt"><p class="kp">7. Three GCCs: Bengaluru (Mukta Arora, Feb 2025, 300+ staff, full-stack) · Warsaw (Andżelika Zarudzka, ~100+, GBS-heavy, moving to The Bridge March 2026) · Mexico City (Flavio Hecht, Jan 2026, medical/digital/innovation focus) — Kamila Grembowicz (SVP GBS) closest global GCC sponsor</p></div>
+
+  <div class="card"><div class="card-title">8. New Values &amp; Behaviors</div>
+    <p class="dt"><strong>Values:</strong> Integrity, Innovation, Impact + <strong>5 Behaviors:</strong> Courage, Sense of Urgency, One Astellas, Outcome Focus, Accountability — replacing old "Astellas Way". Patient Focus elevated to VISION layer.</p>
+  </div>
+
+  <div class="kp-block"><p class="kp">9. February 2025 Sustainability Meeting flagged "Change Communication" as the top materiality gap — explicit rationale for this hire</p></div>
+
+  <div class="card"><div class="card-title">10. Farallon Capital</div>
+    <p class="dt">~3% activist stake drove June 2025 board additions of Andreas Busch and Mark Enyedy — political context for all margin/capital-discipline conversations</p>
+  </div>
+
+  <hr class="divider">
+  <h2 class="kp mt">Portfolio Picture</h2>
+  <p class="dt"><strong style="color:var(--green)">Bright spots:</strong> PADCEV (FY2025 forecast raised to ¥210B), VYLOY (first-in-class Claudin 18.2 ramping)</p>
+  <p class="dt"><strong style="color:var(--red)">Under pressure:</strong> IZERVAY (FDA CRL Nov 2024, ¥115B ex-US impairment, label updated Feb 2025), VEOZAH (FDA Boxed Warning Dec 2024, guidance cut $375M→$50M), Audentes gene therapy (4 AT132 patient deaths, ¥52B AT466 impairment, sites closing)</p>
+  <p class="dt"><strong>Capital posture:</strong> CEO Okamura at JPM 2026 explicitly rejected "rescue BD"; deleveraging at 2.2x; FY2025 guidance raised three times.</p>
+
+  <hr class="divider">
+  <h2 class="kp mt">Why This Role Exists (Your Hypothesis)</h2>
+  <div class="hypothesis">
+    <p class="kp" style="font-size:var(--body)">Three GCCs scaling fast and uncoordinated → risk of fragmented "three islands"</p>
+    <p class="kp" style="font-size:var(--body)">Astellas self-identified Change Communication as weakest capability</p>
+    <p class="kp" style="font-size:var(--body)">CStO transition + CDTO elimination = TO needs Lead Consultant bench depth</p>
+    <p class="kp" style="font-size:var(--body)">SMT depends on insourcing into GCCs → Bengaluru is delivery mechanism AND narrative</p>
+    <p class="kp" style="font-size:var(--body)">CSP2026 activation requires fast, high-quality cross-site engagement</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 2: §3 OPENING 90 SECONDS               -->
+<!-- ============================================ -->
+<section class="panel" data-index="2">
+  <div class="section-label">§3</div>
+  <h1 class="section-title">The Opening 90 Seconds</h1>
+  <p class="kp mb">Practice this word-for-word. When Wioleta says "Tell me about yourself":</p>
+
+  <div class="script-box">
+    <p>"I've spent the last decade in life sciences. The first three years on the ground as a Medical Representative at Novartis and J&amp;J — institutional sales, key accounts in government and military hospitals — and the last six leading transformation across pharma portfolios at Indegene's Bangalore center, which is itself a <strong>Global Capability Center for pharma clients</strong>. I've worked across a dozen pharma companies — <strong>Sanofi, Amgen across the EU's top-5 markets, Pfizer, Janssen, AstraZeneca, BI, Merck KGaA, CSL Vifor, Gilead, Regeneron, Haleon, and currently Vertex</strong>.</p>
+    <br>
+    <p>What I've learned in that arc is that transformation in pharma isn't a frameworks problem — it's a <strong>meaning-making problem</strong>. The people doing the work — SMEs, mid-managers, engineering teams — <strong>aren't resistant to change. They're overwhelmed by competing priorities and unclear on what they personally own</strong>. The work I find most rewarding is designing the <strong>operating models, governance cadences, and communication architecture</strong> that turn ambiguous strategy into things people actually do differently on Monday morning.</p>
+    <br>
+    <p>The reason this Astellas role caught me is the moment — <strong>CSP2026 launching, three GCCs scaling at different speeds and weights, SMT in flight</strong>, and Astellas's own February 2025 materiality review flagging <strong>'Change Communication' as the top capability gap</strong>. That's not a maintenance role. That's a <strong>build role at a build moment</strong>. And having been on the delivery side of a pharma GCC for four years, I have a clear view of what makes the model work versus what makes it stall."</p>
+  </div>
+
+  <div class="card mt">
+    <div class="card-title">Why This Works</div>
+    <p class="dt">• Pharma fluency front-loaded (12 companies, EU markets named)</p>
+    <p class="dt">• Mirrors Wioleta's "overwhelmed not resistant" thesis in your own words</p>
+    <p class="dt">• Astellas-specific insight (CSP2026, SMT, materiality flag)</p>
+    <p class="dt">• Confident posture on GCC delivery-side experience</p>
+    <p class="dt">• No frameworks named, no jargon stacked</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 3: Q1 END-TO-END TRANSFORMATION         -->
+<!-- ============================================ -->
+<section class="panel" data-index="3">
+  <div class="section-label">§4 · Question 1</div>
+  <p class="q-header">"Walk me through a transformation initiative you led end-to-end. What was the messy middle?"</p>
+  <p class="q-story">Primary story: GenAI Enterprise Adoption at Indegene</p>
+
+  <div class="car">
+    <div class="car-label context">Context · 30 sec</div>
+    <blockquote>"Indegene's 1,000+ employee delivery business unit was facing two pressures in 2023 — clients beginning to ask 'what's your AI play?' and internal margin pressure. Senior leadership wanted enterprise-wide GenAI adoption, but the workforce was a mix of <strong>skeptical SMEs, anxious mid-managers, and engineering teams already experimenting in pockets without coordination</strong>."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Action · The Messy Middle · 60 sec</div>
+    <blockquote>"The first three pilots stalled. Not because the tech didn't work — because <strong>we'd skipped the diagnosis</strong>. We ran listening sessions across six BUs. What we heard was that domain SMEs felt the tools threatened their craft, mid-managers couldn't articulate ROI to their teams, and <strong>our rollout language was wrong — we were saying 'productivity' when people heard 'replacement.'</strong>
+    <br><br>So we paused and reframed. <strong>Repositioned adoption around augmentation, not productivity.</strong> Built a Community of Practice that paired SMEs with engineering, not the other way around. Made wins visible weekly. Worked directly with Microsoft and Adobe on use-case design. Ran 8 pilots, identified 50+ use cases. Most importantly, <strong>gave SMEs the role of validating what good looked like — they became the quality bar, not the audience.</strong>"</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label result">Result · 30 sec</div>
+    <blockquote>"<strong>30%+ efficiency gains</strong> in the 1,000+ employee BU, <strong>400+ employees impacted</strong> across the enterprise. But the outcome I care about more is <strong>what outlived the project</strong> — the CoP grew from 3-4 core members to a <strong>90-person extended team</strong>, became a hiring filter, and the configuration cycle time for new client engagements dropped from <strong>4-5 months to 5-6 weeks</strong> because we'd built the durable capability."</blockquote>
+  </div>
+
+  <div class="cue">"shared understanding" (used implicitly), "what outlived the project" (your closing), "ownership" (SMEs as quality bar). Avoid framework names.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 4: Q2 DIDN'T GO AS PLANNED              -->
+<!-- ============================================ -->
+<section class="panel" data-index="4">
+  <div class="section-label">§4 · Question 2</div>
+  <p class="q-header">"Tell me about a transformation that didn't go as planned. What did you do?"</p>
+  <p class="q-story">Primary story: BSVwithU Year 1 Turnaround</p>
+
+  <div class="car">
+    <div class="car-label context">Context · 30 sec</div>
+    <blockquote>"When I took over BSVwithU — Bharat Serum's digital platform for Women's Health and Fertility doctors — Year 1 was on the brink. <strong>70% of the marketing SOW deliverables hadn't started.</strong> Multiple client SPOCs were giving conflicting UI/UX feedback. Content production had halted because the client was in analysis-paralysis on existing content metrics. Hidden costs across platform and marketing tracks were eating margin. And the <strong>procurement team was refusing to pay</strong> for the majority of marketing and content deliverables."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Action · 60 sec</div>
+    <blockquote>"What I learned quickly was that the resistance from the client wasn't really resistance — it was a <strong>procurement team without a framework to evaluate digital deliverables</strong>. Once we built the framework with them, the conversation completely changed.
+    <br><br><strong>Three moves.</strong> First, transparency on cost — established a Change Request process with itemized costing, which let me negotiate <strong>$32,645 for Year 1 out-of-scope changes</strong>. Second, redrew the SOW co-authored with the client — <strong>quantified 25+ deliverables while maintaining 40% margin</strong>. Third, attacked the cost base — vendor switching for AWS, content, and marketing delivered roughly <strong>$25K AWS savings and $42K BU savings</strong>. Then I established a <strong>monthly cadence with the COO and Digital Transformation Head</strong> with structured RAG status — so the conversation moved from 'why should I fund this' to 'where do we double down.'"</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label result">Result · 30 sec</div>
+    <blockquote>"<strong>MAU grew 75% in six months. ~18 platform enhancements shipped. Project renewed for Year 2.</strong> But the bigger shift was that the client procurement team started treating digital deliverables like they treated tangible assets — <strong>that framework is what made renewal a foregone conclusion.</strong>"</blockquote>
+  </div>
+
+  <div class="cue">"What I learned was..." (her favourite framing), "co-authored with the client" (co-creation), shift from resistance to clarity.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 5: Q3 CROSS-GEOGRAPHY                   -->
+<!-- ============================================ -->
+<section class="panel" data-index="5">
+  <div class="section-label">§4 · Question 3</div>
+  <p class="q-header">"This role spans India, Poland, Mexico. Tell me about leading engagement across geographies or cultures."</p>
+  <p class="q-story">Primary story: Amgen ELMAC commercial delivery across EU's top-5 markets</p>
+
+  <div class="car">
+    <div class="car-label context">Context · 30 sec</div>
+    <blockquote>"I ran multi-million USD content delivery operations for Amgen across the EU's top-5 markets — <strong>UK, Germany, France, Italy, Spain</strong>. The transformation challenge was <strong>repricing the entire engagement from FTE-based to asset-based</strong>, which required aligning Amgen's finance team, our Bangalore delivery operations, country-level commercial leads in Europe, and procurement gatekeepers in each market."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Action · 60 sec</div>
+    <blockquote>"What I learned is that <strong>'one model' doesn't translate across European markets</strong>. Germany wanted granular asset definition with detailed audit trails. Italy wanted relationship continuity above process precision. The UK wanted SLA contractual specificity. France wanted regulatory traceability. Spain prioritized cost transparency.
+    <br><br>The trick wasn't to negotiate a compromise — it was a <strong>shared spine with country-specific configuration</strong>. We defined a common asset taxonomy and pricing logic, then adapted the governance cadence and reporting depth to what each market valued. <strong>Quality and CSAT governance ran on the same instruments globally; the conversation around them was localized.</strong>"</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label result">Result · 30 sec</div>
+    <blockquote>"Pricing model transformation landed across all five markets. Quality governance influenced quarterly business decisions. CSAT held through the transition. What that taught me — and what I'd bring to the three-GCC challenge — is that <strong>'One Astellas' across India, Poland, and Mexico won't work if it's a uniform brand</strong>. Bengaluru's full-stack scale, Warsaw's GBS core, Mexico's medical-digital-innovation weight — those are real differences. <strong>The winning architecture is coherent core, configurable site identity.</strong> It's the same problem I worked inside for two years."</blockquote>
+  </div>
+
+  <div class="cue">"shared spine, configurable layer" (her language for differentiated change), "coherent difference" not sameness.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 6: Q4 GCC ENGAGEMENT STRATEGY           -->
+<!-- ============================================ -->
+<section class="panel" data-index="6">
+  <div class="section-label">§4 · Question 4</div>
+  <p class="q-header">"How would you approach designing engagement strategy across the three GCCs?"</p>
+  <p class="q-story">Hypothetical — answer in three deliberate moves</p>
+
+  <div class="car">
+    <div class="car-label context">Move 1 · Listen Before You Build · 30 sec</div>
+    <blockquote>"First 30-45 days, I'd want listening sessions with each MD — <strong>Mukta Arora, Andżelika Zarudzka, Flavio Hecht</strong> — and at least 2-3 levels deep into each site. Not to validate a pre-built strategy, but to understand what <strong>'One Astellas' means in the lived reality of a 12-month-old hub vs an 18-month-old hub vs a 3-month-old hub</strong>. The maturity curves are different; messaging that lands in Warsaw may overwhelm Mexico City."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Move 2 · Anchor the Spine in CSP2026 + Values &amp; Behaviors · 30 sec</div>
+    <blockquote>"The new Values and Behaviors framework — <strong>Integrity, Innovation, Impact</strong> with <strong>Courage, Sense of Urgency, One Astellas, Outcome Focus, Accountability</strong> — gives a natural editorial spine. Especially because <strong>Patient Focus has been lifted to the VISION layer</strong>, which means it's implicit in everything, not a competing value. <strong>CSP2026 announcing in late May gives us a once-in-a-plan-cycle moment</strong> to anchor the narrative arc."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label result">Move 3 · Use the Calendar as the Editorial Arc · 30 sec</div>
+    <blockquote>"The natural storytelling moments for 2026 are already on the calendar — <strong>Warsaw's move to The Bridge in March, Mexico's first full year, Bengaluru's post-inauguration scale-up, and the late-May CSP2026 announcement</strong>. That's a credible 12-month editorial arc to anchor SharePoint and engagement around. But the goal isn't a comms plan — it's <strong>adoption and behaviour</strong>. Success looks like <strong>leaders in each GCC repeating the narrative in their own words, unprompted, by month nine.</strong>"</blockquote>
+  </div>
+
+  <div class="cue">"adoption and behaviour, not comms plan", "leaders repeating in their own words" — these are her exact filters.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 7: Q5 COMMS THAT SHIFTED BEHAVIOUR      -->
+<!-- ============================================ -->
+<section class="panel" data-index="7">
+  <div class="section-label">§4 · Question 5</div>
+  <p class="q-header">"Tell me about a communication strategy that actually shifted behaviour."</p>
+  <p class="q-story">Primary story: Change Makers Council &amp; Culture Credo</p>
+
+  <div class="car">
+    <div class="car-label context">Context · 30 sec</div>
+    <blockquote>"In 2022, Indegene was scaling fast — rapid expansion, employees joining from different industries with different working styles, completely virtual, knowledge centres siloed by BU. Leadership wanted to embed a <strong>Culture Credo and four Core Values: Collaboration, Empathy, Trust, Innovation</strong>. The risk was the predictable one — top-down launch, awareness without behaviour change, the values living on the intranet but not in performance reviews."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Action · 60 sec</div>
+    <blockquote>"We co-founded the <strong>Change Makers Council. 26 volunteers across business units</strong> — but deliberately not communicators. SMEs, engineers, finance partners, project managers. <strong>People whose voices already carried weight in their own teams.</strong>
+    <br><br>Two design principles. First, <strong>co-creation</strong> — we co-authored the Credo language with Org Development leadership rather than receiving it from them. The volunteers had skin in the words. Second, <strong>multi-wave campaign architecture</strong> — teaser emails (we ran one called 'Riddle N Fiddle' that got people guessing the value), video mailers, a 'Share Your Collaboration Story' competition with Indecoin rewards, themed activities. Each wave was 7-14 days, with deliberate breathing room between.
+    <br><br><strong>The volunteers carried each value into their own teams in their own voice. We weren't running a campaign at people; we were giving 26 ambassadors a vocabulary.</strong>"</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label result">Result · 30 sec</div>
+    <blockquote>"The signal we cared about wasn't pageviews. It was when <strong>'Empathy' and 'Collaboration' started showing up unprompted in performance review conversations and team meetings</strong>. That happened by month four. <strong>The Council outlasted the specific Credo launch — it became a durable culture mechanism that ran subsequent waves on its own.</strong> That's the capability shift I care about most."</blockquote>
+  </div>
+
+  <div class="cue">"co-created" (her word verbatim), "vocabulary not awareness", "outlasted the launch" (her capability-building thesis).</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 8: Q6 SHAREPOINT                        -->
+<!-- ============================================ -->
+<section class="panel" data-index="8">
+  <div class="section-label">§4 · Question 6</div>
+  <p class="q-header">"How would you think about the GCC SharePoint site? What makes it work vs. become a graveyard?"</p>
+  <p class="q-story">Lead with personal credibility, then three principles</p>
+
+  <div class="kp-block">
+    <p class="kp">Open: "I built a SharePoint-based employee utilization tracker for 120+ digital and web project team members in under a month. So I've used SharePoint not as a content repository but as a live operational instrument."</p>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Three Principles · 90 sec</div>
+    <blockquote><strong>First, it must serve a workflow, not be a destination.</strong> Repositories die. Platforms that sit inside how MDs prepare for town halls, how new joiners onboard, how regional wins get amplified — those live. The architecture lesson is that adoption follows workflow integration, not content quality.
+    <br><br><strong>Second, adoption metrics from day one.</strong> Page views are vanity. Time-on-page, return visits, content contributions per site, cross-GCC engagement — those are the signals. Specifically, I'd want to track whether Bengaluru users are reading Warsaw content and vice versa. That's the 'One Astellas' health check.
+    <br><br><strong>Third, editorial governance, not editorial control.</strong> A federated model where each GCC has narrative ownership but a shared spine of tone, hashtag — #ChangingTomorrow, #AstellasCulture — and story types. The MDs need to feel the platform serves their voice, not constrains it.</blockquote>
+  </div>
+
+  <div class="kp-block mt">
+    <p class="kp">Close: "Given Astellas's own flagging of Change Communication as the top materiality gap, I'd treat SharePoint adoption metrics as the operational proof point that the gap is closing — not as a vanity dashboard."</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 9: Q7 SENIOR STAKEHOLDER RESISTANCE     -->
+<!-- ============================================ -->
+<section class="panel" data-index="9">
+  <div class="section-label">§4 · Question 7</div>
+  <p class="q-header">"Tell me about a senior stakeholder who initially resisted you. How did you turn them around?"</p>
+  <p class="q-story">Primary story: Quantive OKR adoption at Indegene leadership level (~90% adoption)</p>
+
+  <div class="car">
+    <div class="car-label context">Context · 30 sec</div>
+    <blockquote>"In 2023, Indegene rolled out Quantive as the OKR tool for senior leadership. Initial pilot saw poor engagement. Leaders weren't logging in. The instinct on the L&amp;D side was 'we need more training.' <strong>My read was different — leaders weren't resistant to goal-setting; they were resistant to a tool that exposed cross-functional misalignment publicly.</strong> Logging into Quantive meant putting your team's dependencies on someone else's roadmap on a screen everyone could see."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Action · 60 sec</div>
+    <blockquote>"I shifted the framing entirely. Stopped positioning Quantive as a tool rollout. <strong>Started positioning it as a leadership clarity instrument.</strong>
+    <br><br>Then worked 1:1 with the most skeptical leaders — not to sell them on the tool but to <strong>sit with their actual pain</strong>. Most of them were carrying cross-functional dependencies they couldn't articulate to their own teams. I'd open Quantive in front of them, map one of their stuck initiatives, show them where the dependency lived, <strong>and walk away. Didn't ask them to adopt. Just left them with a small, useful artifact.</strong>
+    <br><br>By the third or fourth leader, the pattern was that they'd log back in on their own — because they wanted the artifact for their next leadership review. Then we layered governance cadences. UX optimization made the tool less painful. Structured monthly check-ins gave the data a place to land."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label result">Result · 30 sec</div>
+    <blockquote>"<strong>~90% adoption at leadership level within six months.</strong> What I learned was that they didn't need a change philosopher who described Quantive's benefits. <strong>They needed someone willing to sit in their problem with them, then leave.</strong>"</blockquote>
+  </div>
+
+  <div class="cue">"sat with their pain" — close to her "engaging with friction not avoiding it" thesis. "Didn't ask them to adopt; just left them with a useful artifact" mirrors her execution-first ethos.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 10: Q8 CXO-LEVEL WORK                   -->
+<!-- ============================================ -->
+<section class="panel" data-index="10">
+  <div class="section-label">§4 · Question 8</div>
+  <p class="q-header">"Tell me about CxO-level stakeholder work."</p>
+  <p class="q-story">Pick TWO stories — one client-side, one internal — to show range</p>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--blue)">Client-side: AstraZeneca Executive Director engagement (current)</div>
+    <p class="kp" style="font-size:var(--body)">"Since July 2025, I've been working directly with an Executive Director at AstraZeneca on building solutions, agents, data strategy, and adoption playbooks for multiple medical and clinical use cases. The engagement started as a single solution conversation and has scaled into a multi-track program. What's worked is <strong>treating the ED as a thought partner, not a sponsor</strong> — bringing options with trade-offs visible, not pre-baked recommendations. That's the consultative posture I'd bring to working inside a CxO function at Astellas."</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--green)">Internal: Bowler Charts Power BI system used in CXO and board reviews</div>
+    <p class="kp" style="font-size:var(--body)">"Internally at Indegene, I built the Bowler Chart KPI monitoring system on Power BI from scratch — transformed an Excel dashboard into an executive governance instrument used in CXO reviews and board meetings. The technical build wasn't the hard part. The hard part was <strong>assigning POCs per function, establishing data validation cadences, and getting function leaders to treat their data as the voice of their function in board meetings</strong> — rather than as exposure. Once that shift happened, <strong>the dashboard stopped being a reporting tool and started being a decision instrument.</strong>"</p>
+  </div>
+
+  <div class="cue">"thought partner not sponsor", "decision instrument not reporting tool".</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 11: Q9 COACHING JUNIORS                  -->
+<!-- ============================================ -->
+<section class="panel" data-index="11">
+  <div class="section-label">§4 · Question 9</div>
+  <p class="q-header">"The role involves coaching more junior consultants. Tell me about someone you developed."</p>
+  <p class="q-story">Primary story: Vrinda Bagrait and Raja Rajeswari</p>
+
+  <div class="car">
+    <div class="car-label context">Context · 30 sec</div>
+    <blockquote>"In 2025, I onboarded two direct reportees onto the GenAI Strategy team — <strong>Vrinda Bagrait and Raja Rajeswari</strong>. Both joined from non-technical backgrounds. Both were anxious about the GenAI wave because the public narrative around it implied non-technical roles would be sidelined. The natural risk was that they'd default to administrative work and fall behind."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Action · 60 sec</div>
+    <blockquote>"I made <strong>three deliberate choices</strong>. First, I <strong>paired them with engineering leads on real client use cases from week one</strong> — not training modules. The frame was: you're going to learn by sitting in the work, not adjacent to it.
+    <br><br>Second, I gave them <strong>ownership of CoP sessions and live demos</strong>. That meant they had to develop opinions and defend them in front of senior stakeholders. Initially uncomfortable; quickly became the fastest skill accelerator.
+    <br><br>Third, <strong>weekly coaching cadence</strong>. Not status updates — real conversations about ambiguity. Specifically <strong>protecting their permission to say 'I don't know yet'</strong> without faking certainty. That's where the courage comes from."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label result">Result · 30 sec</div>
+    <blockquote>"Both are now contributing meaningfully to live client projects within 6 months of joining. Both run their own use-case streams. One independently leads SME pairing on a portfolio. <strong>What I've learned is that coaching juniors in transformation work isn't teaching them frameworks — it's giving them the courage to sit in ambiguity without faking certainty. The technical skill comes if you protect their permission to say 'I don't know yet.'</strong>"</blockquote>
+  </div>
+
+  <div class="cue">"courage" (her exact word from her early-career post), "permission to say I don't know" — this is her Master of Coaching territory. She'll recognize it.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 12: Q10 CAPABILITY THAT OUTLIVED         -->
+<!-- ============================================ -->
+<section class="panel" data-index="12">
+  <div class="section-label">§4 · Question 10</div>
+  <p class="q-header">"What's a capability you built that outlived the specific initiative?"</p>
+  <p class="q-story">Lead with GenAI Community of Practice</p>
+
+  <div class="car">
+    <div class="car-label context">Context · 30 sec</div>
+    <blockquote>"In late 2023, the Medical Tech team at Indegene was a small skunkworks — <strong>3 to 4 core members</strong> building GenAI experiments without much organizational visibility. There was no shared knowledge, no reusable patterns, no hiring filter. Every new client engagement started from scratch."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Action · 45 sec</div>
+    <blockquote>"I built and scaled a <strong>GenAI Community of Practice</strong>. The design choice that mattered was <strong>who we let in — domain SMEs paired with engineering</strong>, not engineering plus interested others. That meant the CoP carried business-context credibility from day one.
+    <br><br>We codified everything that worked into <strong>reusable orchestration playbooks, evaluation frameworks, QA gates, demo assets</strong>. The CSL Vifor evaluation/hallucination/citation strategies became the architecture pattern reused across NEXT Medical Writing and NEXT Scientific Automation platforms. We didn't 'document for future use' — <strong>we documented as we went, in service of the next engagement.</strong>"</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label result">Result · 45 sec</div>
+    <blockquote>"The CoP grew from <strong>3-4 core members to roughly 90 extended team members</strong>. Configuration cycle time for new client engagements dropped from <strong>4-5 months to 5-6 weeks</strong> across 3 active engagements — because we'd industrialized the work. The CoP became a hiring filter, a knowledge asset, and a <strong>delivery accelerator without me being in the loop anymore</strong>.
+    <br><br>I think the most underrated transformation outcome is <strong>what's still happening 18 months after the project closed</strong>. That's the capability shift I care about most — and it's the lens I'd bring to the Transformation Office Chapter model. <strong>A Chapter only earns its name when its frameworks are alive in delivery, not just in slides.</strong>"</blockquote>
+  </div>
+
+  <div class="cue">"still happening 18 months after the project closed" — directly mirrors her "from managing change to building change capability" thesis. End on the Chapter framing — it shows you've thought about her organizational structure.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 13: Q11 PLAN STOPPED WORKING             -->
+<!-- ============================================ -->
+<section class="panel" data-index="13">
+  <div class="section-label">§4 · Question 11</div>
+  <p class="q-header">"Describe a moment when your plan stopped working. What did you do?"</p>
+  <p class="q-story">Primary story: ICAP Stint 3 charter divergence</p>
+
+  <div class="car">
+    <div class="car-label context">Context · 30 sec</div>
+    <blockquote>"When I started ICAP Rotation 3 at Indegene's Corporate Planning function in 2023, my charter was clean — single department, single Assignment Leader, focused on OKR Management, Workforce Planning, and Dashboards. Within 30 days, the reality had completely diverged. I was <strong>operating across five departments — Corporate Planning, L&amp;D, Other People Functions, ECDS, Finance &amp; CTO Office — and reporting into six different ALs simultaneously.</strong>"</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label action">Action · 60 sec</div>
+    <blockquote>"The pivot wasn't a single decision — it was <strong>learning to operate in matrix mode without dropping commitments</strong>. Three things.
+    <br><br>First, I built a <strong>personal cadence with each AL</strong>. Not the same cadence — Soundarya wanted weekly, Rajesh wanted bi-weekly, Arindom wanted ad-hoc. Matched the rhythm to each leader's preference rather than imposing one.
+    <br><br>Second, I ran a <strong>shared status doc visible to all six</strong>. That solved a problem I didn't realize I had — the ALs didn't know each other was claiming my time. Once visible, they self-prioritized.
+    <br><br>Third — and this was the hardest — I <strong>let the work itself surface where I should spend more time</strong>, rather than defending the original charter. By month three, I was the connective tissue between Corporate Planning and Org Development. That's where Bowlers and the Change Makers Council started to fuse into one operating system."</blockquote>
+  </div>
+
+  <div class="car">
+    <div class="car-label result">Result · 30 sec</div>
+    <blockquote>"Bowler Charts landed in board reviews. Change Makers Council embedded the Culture Credo. Workforce analytics informed FY24 campus hiring decisions and Tier-2 city expansion. <strong>What I learned is that ambiguity isn't an obstacle in transformation work — it's the operating environment. The skill is reading where the energy actually is, not defending the org chart you started with.</strong>"</blockquote>
+  </div>
+
+  <div class="cue">"ambiguity is the operating environment" — close to her "lead through uncertainty every single day" framing. "Reading where the energy is" signals listening as a tactical skill.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 14: §5 PHARMA DOMAIN FLUENCY             -->
+<!-- ============================================ -->
+<section class="panel" data-index="14">
+  <div class="section-label">§5</div>
+  <h1 class="section-title">Pharma Domain Fluency</h1>
+
+  <p class="q-header">Q12. "What do you know about Astellas?"</p>
+  <p class="dt mb">Deliver this in ~90 seconds. Don't recite facts — show you understand the gravity.</p>
+
+  <div class="script-box">
+    <p>"Astellas is at a once-in-a-decade inflection. <strong>XTANDI is roughly 48% of revenue</strong> and faces US LOE in August 2027, with a Medicare MFP of $7,004 per 30-day from January 2027. That's the financial gravity behind everything — including SMT, the <strong>¥150B recurring savings program by FY2027</strong>, where you're already at 27.6% core OP margin tracking toward 30%.</p>
+    <br>
+    <p>Strategically, the April 2025 patient-axis reorg — <strong>Value Creation under Taniguchi, Value Delivery under Zieler</strong> unifying Commercial and Medical Affairs, Value Enablement — gives the Transformation Office cleaner CxO interfaces than most pharma TOs have. <strong>CSP2026 announces in late May</strong>, which means whoever joins now is in the first execution wave, not maintaining an old plan.</p>
+    <br>
+    <p>On the portfolio side, <strong>PADCEV is the bright spot, IZERVAY is rebuilding after the CRL, VEOZAH is in safety-driven reset mode</strong> after the boxed warning, VYLOY is ramping. The Audentes thesis has largely broken — that's the honest read.</p>
+    <br>
+    <p>For this role specifically, what struck me is Astellas's own February 2025 Sustainability Meeting flagged <strong>'Change Communication' as the top materiality gap</strong> — so this isn't a nice-to-have hire, it's a <strong>diagnosed deficit being filled at a critical moment.</strong>"</p>
+  </div>
+
+  <hr class="divider">
+
+  <p class="q-header mt">Q13. "You've worked at a delivery vendor for pharma. What makes you think you can operate inside a pharma transformation office?"</p>
+  <p class="dt mb">This is the question to pre-empt — Wioleta will likely test this.</p>
+
+  <div class="script-box">
+    <p>"Two things. First, <strong>I've been on the receiving end of pharma transformation offices</strong> — Sanofi India's omnichannel team, Amgen's commercial ops governance, Vertex's innovation council, AstraZeneca's medical Executive Director. I know what good looks like from that side, and I know what frustrates the in-house teams about external partners. Second, <strong>Indegene's Bangalore center is itself a Global Capability Center for pharma clients</strong> — I've helped scale its capability footprint, mentored teams through the same maturity arc Bengaluru is going through now, and built the operating rhythms across BUs.</p>
+    <br>
+    <p>The transition isn't from vendor to in-house. It's from <strong>running a multi-pharma portfolio to running one pharma's full agenda</strong>. The craft transfers — operating models, governance cadences, change adoption, communication architecture, coaching juniors. The depth of context — XTANDI bridge, SMT mechanics, 'One Astellas' nuance — is what I'd build deliberately in the <strong>first 60 to 90 days</strong>. I'd rather be honest about that runway than overclaim Astellas-specific fluency I haven't earned yet."</p>
+  </div>
+
+  <div class="card mt">
+    <div class="card-title">Why This Works</div>
+    <p class="dt">Specific numbers, honest portfolio read (you're not sycophantic about IZERVAY/VEOZAH), role-specific punchline. Confident posture + intellectual honesty. Wioleta values courage and specificity over false confidence.</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 15: §6 LANGUAGE GUIDE                    -->
+<!-- ============================================ -->
+<section class="panel" data-index="15">
+  <div class="section-label">§6</div>
+  <h1 class="section-title">Wioleta-Specific Language Guide</h1>
+
+  <h2 class="kp">Words &amp; Phrases to Use Naturally</h2>
+  <table class="ref-table">
+    <thead><tr><th>Use</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td class="use-word">"Adoption and value realization"</td><td>Her core framing — she literally posted hiring criteria using this</td></tr>
+      <tr><td class="use-word">"Hands-on, end-to-end"</td><td>She used "(!)" emphasis on hands-on in her own JD post</td></tr>
+      <tr><td class="use-word">"Building shared understanding"</td><td>Her five pillars include this</td></tr>
+      <tr><td class="use-word">"Building capability, not just delivering"</td><td>Her published thesis</td></tr>
+      <tr><td class="use-word">"Co-created with..."</td><td>Her five pillars include co-creation</td></tr>
+      <tr><td class="use-word">"Operating rhythm"</td><td>You use this naturally; she'll recognize it</td></tr>
+      <tr><td class="use-word">"Coherent difference"</td><td>For GCC strategy — show nuance</td></tr>
+      <tr><td class="use-word">"Capability hub" / "centers of excellence"</td><td>Mukta Arora's framing for Bengaluru</td></tr>
+      <tr><td class="use-word">"What outlived the project was..."</td><td>Her capability-over-projects thesis</td></tr>
+      <tr><td class="use-word">"I sat with the problem before designing the response"</td><td>Mirrors her behavioural-science instinct</td></tr>
+      <tr><td class="use-word">"People weren't resistant — they were overwhelmed/unclear"</td><td>Her exact thesis from public posts</td></tr>
+      <tr><td class="use-word">"Courage to sit in ambiguity"</td><td>Her early-career advocacy framing</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+  <h2 class="kp" style="color:var(--red)">Words &amp; Phrases to AVOID</h2>
+  <table class="ref-table">
+    <thead><tr><th>Avoid</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td class="avoid-word">"Stakeholder alignment"</td><td>Generic consulting jargon</td></tr>
+      <tr><td class="avoid-word">"Best-in-class"</td><td>Empty signaling</td></tr>
+      <tr><td class="avoid-word">"Drove synergies"</td><td>Cliché</td></tr>
+      <tr><td class="avoid-word">"Leveraged frameworks"</td><td>She mocks framework recitation</td></tr>
+      <tr><td class="avoid-word">"Cascaded the message"</td><td>Top-down signaling she rejects</td></tr>
+      <tr><td class="avoid-word">"Overcame resistance"</td><td>She reframes resistance entirely</td></tr>
+      <tr><td class="avoid-word">Naming Prosci/ADKAR/Kotter unprompted</td><td>She's certified in all; will see through it</td></tr>
+      <tr><td class="avoid-word">"AI-powered" / "neuroscience-backed"</td><td>She publicly mocked these</td></tr>
+      <tr><td class="avoid-word">Three frameworks in one answer</td><td>Tells her you don't have substance</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+  <h2 class="kp" style="color:var(--red)">Top 10 Don'ts</h2>
+  <div class="numbered">
+    <div class="item" style="color:var(--red)"><strong>Don't stack frameworks.</strong> If you mention Prosci/ADKAR, mention exactly one, in service of a specific story.</div>
+    <div class="item" style="color:var(--red)"><strong>Don't lead with AI/neuroscience as differentiators.</strong> She literally mocked this.</div>
+    <div class="item" style="color:var(--red)"><strong>Don't recite the old "Astellas Way."</strong> Use new Values &amp; Behaviors.</div>
+    <div class="item" style="color:var(--red)"><strong>Don't call GCCs "offshore" or "cost centers."</strong> Use "capability hubs" or "centers of excellence."</div>
+    <div class="item" style="color:var(--red)"><strong>Don't pitch a uniform GCC brand.</strong> Use "coherent difference."</div>
+    <div class="item" style="color:var(--red)"><strong>Don't oversell pharma fluency.</strong> Acknowledge the depth-context gap, then bridge.</div>
+    <div class="item" style="color:var(--red)"><strong>Don't be flowery.</strong> Polish-English directness — be crisp, not hedged.</div>
+    <div class="item" style="color:var(--red)"><strong>Don't parrot her language back at her.</strong> Reference the idea, not the source.</div>
+    <div class="item" style="color:var(--red)"><strong>Don't be defensive about vendor heritage.</strong> Reframe it as structural advantage.</div>
+    <div class="item" style="color:var(--red)"><strong>Don't ramble.</strong> 2 minutes per story max. Wioleta is a coach who probes — be ready for follow-ups, leave room for them.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 16: §7 STORIES MAP                       -->
+<!-- ============================================ -->
+<section class="panel" data-index="16">
+  <div class="section-label">§7</div>
+  <h1 class="section-title">Stories Map — Quick Reference</h1>
+
+  <table class="ref-table">
+    <thead><tr><th>Filter</th><th>Primary Story</th><th>Backup</th></tr></thead>
+    <tbody>
+      <tr><td><strong>End-to-end transformation</strong></td><td>GenAI enterprise adoption (400+ employees)</td><td>CSL Vifor LLM platform</td></tr>
+      <tr><td><strong>Cross-geography/culture</strong></td><td>Amgen ELMAC across EU top-5</td><td>Multi-pharma GenAI delivery (Merck KGaA, CSL Vifor, Gilead, Vertex)</td></tr>
+      <tr><td><strong>Comms that shifted behavior</strong></td><td>Change Makers Council + Culture Credo</td><td>Quantive OKR ~90% adoption</td></tr>
+      <tr><td><strong>Senior stakeholder turnaround</strong></td><td>Quantive OKR with leadership</td><td>BSV COO monthly cadence</td></tr>
+      <tr><td><strong>CxO-level engagement</strong></td><td>AstraZeneca Executive Director (current)</td><td>Bowler Charts in CXO/board reviews</td></tr>
+      <tr><td><strong>Coaching juniors</strong></td><td>Vrinda + Raja, 6-month ramp</td><td>CoP scaled 3-4 → 90</td></tr>
+      <tr><td><strong>Ambiguity/pivot</strong></td><td>ICAP Stint 3 (1 AL → 6 ALs)</td><td>BSV Year 1 turnaround</td></tr>
+      <tr><td><strong>Capability that outlived</strong></td><td>GenAI CoP scaled 3 → 90</td><td>CSL Vifor evaluation framework reused across NEXT platforms</td></tr>
+      <tr><td><strong>Multi-stakeholder coalition</strong></td><td>Vertex Innovation Center</td><td>Sanofi Connect renewal</td></tr>
+      <tr><td><strong>Operational cost transformation</strong></td><td>Amgen FTE → asset-based pricing</td><td>BSV $25K AWS + $42K vendor savings</td></tr>
+      <tr><td><strong>Pharma fluency at scale</strong></td><td>12 pharma companies named</td><td>Novartis/J&amp;J ground-level field experience</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 17: §8 QUESTIONS TO ASK                  -->
+<!-- ============================================ -->
+<section class="panel" data-index="17">
+  <div class="section-label">§8</div>
+  <h1 class="section-title">Questions to Ask Wioleta</h1>
+  <p class="dt mb">Pick three. Ask them in this priority order.</p>
+
+  <div class="card" style="border-color:var(--amber)">
+    <div class="card-title">Question 1 — HIGHEST LEVERAGE</div>
+    <p class="kp" style="font-size:calc(var(--kp) - 0.05rem)">"You've written about people being overwhelmed rather than resistant. Inside Astellas's current transformation moment — XTANDI cliff, SMT, CSP2026 launch, three new GCCs — what's contributing most to that overwhelm right now, and how is the Transformation Office addressing it?"</p>
+    <p class="dt mt-sm">This question demonstrates you've engaged with her thinking specifically. She'll know you've read her, but you're referencing the idea, not the source — which is the right level of acknowledgment.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Question 2</div>
+    <p class="kp" style="font-size:calc(var(--kp) - 0.05rem)">"How is the Transformation Office thinking about the shift from delivering individual initiatives to building durable change capability across Astellas? Especially given the Chapters model — Change Management, Process Excellence, Agile."</p>
+    <p class="dt mt-sm">Mirrors her capability-over-projects thesis directly. Shows you've thought about the TO structure.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Question 3</div>
+    <p class="kp" style="font-size:calc(var(--kp) - 0.05rem)">"Across India, Poland, Mexico — where do you see the biggest engagement gap today, and what would 'good' look like in 12 months?"</p>
+    <p class="dt mt-sm">Lets her tell you the actual problem you'd be solving. Listen carefully — her answer tells you how to position your follow-ups.</p>
+  </div>
+
+  <div class="card" style="border-color:var(--text3)">
+    <div class="card-title" style="color:var(--text3)">Hold in Reserve — Only if rapport is strong</div>
+    <p class="kp" style="font-size:var(--body);color:var(--text2)">"What's something a Lead Consultant did in the last year that surprised you positively — and what's something you'd want done differently?"</p>
+    <p class="dt mt-sm">This is a vulnerable question for her. Use only if rapport is strong. It reveals what she actually values in the role.</p>
+  </div>
+
+  <div class="card" style="border-color:var(--text3)">
+    <div class="card-title" style="color:var(--text3)">Hold in Reserve — Operational</div>
+    <p class="kp" style="font-size:var(--body);color:var(--text2)">"How do Bengaluru-based Lead Consultants typically partner with Managing Principals and CxO-function Chiefs of Staff across time zones — is there a working pattern you've seen succeed, especially with Tokyo and Northbrook?"</p>
+    <p class="dt mt-sm">Practical, signals you're already thinking about delivery rhythm.</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 18: §9 FOLLOW-UP TRAPS                   -->
+<!-- ============================================ -->
+<section class="panel" data-index="18">
+  <div class="section-label">§9</div>
+  <h1 class="section-title">Potential Follow-Up Traps</h1>
+  <p class="dt mb">Wioleta is a coach. She probes. Here are the follow-ups she's most likely to throw.</p>
+
+  <div class="card">
+    <div class="card-title">"Tell me more about that resistance — what specifically did the SME say?"</div>
+    <p class="warn-box" style="margin-top:8px">Don't generalize. Have one specific dialogue moment ready per major story.</p>
+    <p class="kp" style="font-size:var(--body)">Sample (GenAI story): "One senior medical writer told me, <strong>'You're asking me to teach the machine to do what I do. Why would I help replace myself?'</strong> That was the moment I realized the language was wrong."</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">"What would you have done differently?"</div>
+    <p class="warn-box" style="margin-top:8px">Always have a real answer.</p>
+    <p class="kp" style="font-size:var(--body)">Sample (BSVwithU): "I should have insisted on the change-request framework in <strong>week one, not month three</strong>. I lost three months of trust I had to rebuild."</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">"That sounds like Prosci. Did you use ADKAR?"</div>
+    <p class="warn-box" style="margin-top:8px">If she names a framework, acknowledge crisply.</p>
+    <p class="kp" style="font-size:var(--body)">Sample: "Some of the moves I made map to ADKAR, yes — particularly the 'Awareness' and 'Desire' stages. But <strong>I designed them from the listening sessions, not from the framework</strong>. I find when I lead with the framework, the design gets generic."</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">"How would you have measured success?"</div>
+    <p class="warn-box" style="margin-top:8px">Have adoption metrics ready, not output metrics.</p>
+    <p class="kp" style="font-size:var(--body)">Sample (Change Makers Council): "Pageviews on the Credo page were vanity. The metric I cared about was whether <strong>'Empathy' showed up unprompted in performance review conversations</strong>. We measured that through quarterly HR sampling."</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">"What did your reportee struggle with most?"</div>
+    <p class="warn-box" style="margin-top:8px">Be specific.</p>
+    <p class="kp" style="font-size:var(--body)">Sample (Vrinda): "Confidence in client-facing demos. Her technical understanding outpaced her presentation comfort. <strong>We did dry-runs every Tuesday for two months.</strong> I'd push back hard on weak points so the real demos felt easier."</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">"Why are you leaving Indegene?"</div>
+    <p class="warn-box" style="margin-top:8px">Don't disparage.</p>
+    <p class="kp" style="font-size:var(--body)">Sample: "Indegene has been formative — <strong>three promotions in five years</strong>, deep pharma exposure, the chance to build durable capability. What I'm looking for now is <strong>depth over breadth</strong>. Running one pharma's full transformation agenda inside a CxO function is a different craft than running multiple pharma portfolios from outside. Astellas at this moment — CSP2026, three GCCs, the Change Communication mandate — is the <strong>right specific opportunity, not just the right next step.</strong>"</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 19: §10 PRE-INTERVIEW CHECKLIST          -->
+<!-- ============================================ -->
+<section class="panel" data-index="19">
+  <div class="section-label">§10</div>
+  <h1 class="section-title">Pre-Interview Checklist</h1>
+
+  <div class="check-group">
+    <div class="check-group-title">48 Hours Before</div>
+    <div class="check-item"><input type="checkbox" id="c1"><label for="c1">Memorize the 10 Astellas facts cold (§2)</label></div>
+    <div class="check-item"><input type="checkbox" id="c2"><label for="c2">Practice opening 90 seconds out loud, three times, until the cadence is natural</label></div>
+    <div class="check-item"><input type="checkbox" id="c3"><label for="c3">Practice each of your 11 primary stories in CAR format, 2 minutes each</label></div>
+    <div class="check-item"><input type="checkbox" id="c4"><label for="c4">Drill the three differentiators: pharma fluency (12 companies), transformation craft, comms judgement</label></div>
+    <div class="check-item"><input type="checkbox" id="c5"><label for="c5">Re-read Wioleta's seven hiring filters (§1)</label></div>
+    <div class="check-item"><input type="checkbox" id="c6"><label for="c6">Re-read the language guide (§6) — particularly what NOT to say</label></div>
+  </div>
+
+  <div class="check-group">
+    <div class="check-group-title">24 Hours Before</div>
+    <div class="check-item"><input type="checkbox" id="c7"><label for="c7">Light review only. No new prep.</label></div>
+    <div class="check-item"><input type="checkbox" id="c8"><label for="c8">Re-read this document once, end-to-end.</label></div>
+    <div class="check-item"><input type="checkbox" id="c9"><label for="c9">Sleep 7+ hours.</label></div>
+  </div>
+
+  <div class="check-group">
+    <div class="check-group-title">60 Minutes Before</div>
+    <div class="check-item"><input type="checkbox" id="c10"><label for="c10">Re-read §3 (Opening 90 seconds) and §8 (Questions to ask)</label></div>
+    <div class="check-item"><input type="checkbox" id="c11"><label for="c11">Glass of water; loosen voice with light conversation</label></div>
+    <div class="check-item"><input type="checkbox" id="c12"><label for="c12">Confidence anchor: three promotions in five years, 12 pharma companies, 90-person CoP scaled, GenAI 30%+ efficiency in 1,000+ BU. The evidence is real. You have earned this room.</label></div>
+  </div>
+
+  <div class="check-group">
+    <div class="check-group-title">During the Interview</div>
+    <div class="check-item"><input type="checkbox" id="c13"><label for="c13">Crisp, not flowery. Polish-English directness.</label></div>
+    <div class="check-item"><input type="checkbox" id="c14"><label for="c14">2 minutes per story max. Leave room for her follow-ups.</label></div>
+    <div class="check-item"><input type="checkbox" id="c15"><label for="c15">One framework named per answer maximum, in service of a story.</label></div>
+    <div class="check-item"><input type="checkbox" id="c16"><label for="c16">Specific over generic always. Names, numbers, dialogue moments.</label></div>
+    <div class="check-item"><input type="checkbox" id="c17"><label for="c17">"I don't know" is allowed. Better than faking. Wioleta values courage over certainty.</label></div>
+    <div class="check-item"><input type="checkbox" id="c18"><label for="c18">Listen before you answer. If she pushes back, hear what she's actually testing.</label></div>
+    <div class="check-item"><input type="checkbox" id="c19"><label for="c19">End strong. Last question to her should be Question 1 from §8.</label></div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 20: §11 THREE THINGS TO LAND             -->
+<!-- ============================================ -->
+<section class="panel" data-index="20">
+  <div class="section-label">§11</div>
+  <h1 class="section-title">The Three Things to Land</h1>
+  <p class="kp mb">If you only land three things in this interview, land these:</p>
+
+  <div class="thing" style="border-left-width:6px">
+    <div class="thing-num">ONE</div>
+    <div class="thing-title">You are an executor, not a framework reciter.</div>
+    <div class="thing-detail">Demonstrate this with the messy middle of the <strong>GenAI adoption story</strong>, the <strong>BSVwithU turnaround</strong>, and the <strong>ICAP Stint 3 ambiguity story</strong>. Specific dialogue, specific dependencies, specific pivots.</div>
+  </div>
+
+  <div class="thing" style="border-left-width:6px">
+    <div class="thing-num">TWO</div>
+    <div class="thing-title">You build capability that outlives the project.</div>
+    <div class="thing-detail">Demonstrate this with the <strong>GenAI CoP (3-4 → 90)</strong>, <strong>Change Makers Council (outlasted Credo launch)</strong>, and <strong>CSL Vifor evaluation framework (reused across NEXT platforms)</strong>. This is Wioleta's personal thesis — she will hire someone who thinks this way.</div>
+  </div>
+
+  <div class="thing" style="border-left-width:6px">
+    <div class="thing-num">THREE</div>
+    <div class="thing-title">You bring rare combination of pharma fluency + transformation craft + delivery-side GCC perspective.</div>
+    <div class="thing-detail">Most candidates will have one or two of these. You can credibly claim all three. The <strong>Amgen ELMAC story across EU's top-5 markets</strong>, paired with <strong>Indegene's GCC delivery model</strong>, is the strongest single proof point.</div>
+  </div>
+
+  <div class="kp-block mt-lg">
+    <p class="kp">Land these three with confidence — not with bridge language, not with apologies for the vendor heritage — and Wioleta will advocate for you.</p>
+  </div>
+
+  <hr class="divider">
+
+  <div class="card mt">
+    <div class="card-title">Closing Note</div>
+    <p class="dt">You have a strong, specific, evidence-rich profile. Three promotions in five years inside a high-bar firm. Twelve pharma companies in your delivery footprint. A 90-person Community of Practice you built from 3-4 members. A Change Makers Council that embedded a Culture Credo at organizational scale. CXO-level engagement on both client and internal sides. Reportees ramping to live client work in 6 months.</p>
+    <p class="kp mt-sm">The interview is yours to win on execution credibility + capability mindset + Astellas-specific judgement.</p>
+    <p class="kp">Walk in with the confidence of someone who has done the work. Wioleta will recognize it.</p>
+    <p class="kp mt" style="color:var(--green);text-align:center;font-size:var(--title)">Good luck on May 4.</p>
+  </div>
+</section>
+
+</main><!-- /main -->
+
+<!-- BOTTOM NAV -->
+<footer id="bottombar">
+  <button class="nav-arrow" id="btn-prev" aria-label="Previous section"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <div id="dots"></div>
+  <button class="nav-arrow" id="btn-next" aria-label="Next section"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+</footer>
+
+<!-- FLOATING: 3 THINGS -->
+<button id="fab-3things">3 THINGS TO LAND</button>
+
+<!-- SEARCH OVERLAY -->
+<div id="search-overlay">
+  <div id="search-box">
+    <input id="search-input" type="text" placeholder="Search across all sections... (Esc to close)" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<!-- 3 THINGS MODAL -->
+<div id="three-modal">
+  <div id="three-modal-content">
+    <h2>The Three Things to Land</h2>
+    <div class="thing">
+      <div class="thing-num">ONE</div>
+      <div class="thing-title">You are an executor, not a framework reciter.</div>
+      <div class="thing-detail">GenAI messy middle · BSVwithU turnaround · ICAP Stint 3 ambiguity</div>
+    </div>
+    <div class="thing">
+      <div class="thing-num">TWO</div>
+      <div class="thing-title">You build capability that outlives the project.</div>
+      <div class="thing-detail">CoP 3-4 → 90 · Change Makers Council · CSL Vifor evaluation framework</div>
+    </div>
+    <div class="thing">
+      <div class="thing-num">THREE</div>
+      <div class="thing-title">Rare combo: pharma fluency + transformation craft + GCC delivery perspective.</div>
+      <div class="thing-detail">Amgen ELMAC EU5 + Indegene GCC model = strongest proof point</div>
+    </div>
+    <p style="text-align:center;margin-top:20px;color:var(--text3);font-size:var(--small)">Press Esc or click outside to close</p>
+  </div>
+</div>
+
+<!-- SHORTCUTS MODAL -->
+<div id="shortcuts-modal">
+  <div id="shortcuts-content">
+    <h3>Keyboard Shortcuts</h3>
+    <div class="shortcut-row"><kbd>&larr;</kbd> <span>Previous section</span></div>
+    <div class="shortcut-row"><kbd>&rarr;</kbd> <span>Next section</span></div>
+    <div class="shortcut-row"><kbd>Ctrl + K</kbd> <span>Search</span></div>
+    <div class="shortcut-row"><kbd>/</kbd> <span>Search</span></div>
+    <div class="shortcut-row"><kbd>K</kbd> <span>Toggle Key Points only</span></div>
+    <div class="shortcut-row"><kbd>T</kbd> <span>Start / stop timer</span></div>
+    <div class="shortcut-row"><kbd>3</kbd> <span>Show "3 Things to Land"</span></div>
+    <div class="shortcut-row"><kbd>Home</kbd> <span>Go to first section</span></div>
+    <div class="shortcut-row"><kbd>End</kbd> <span>Go to last section</span></div>
+    <div class="shortcut-row"><kbd>+</kbd> / <kbd>-</kbd> <span>Increase / decrease font</span></div>
+    <div class="shortcut-row"><kbd>Esc</kbd> <span>Close overlay</span></div>
+    <div class="shortcut-row"><kbd>V</kbd> <span>Toggle voice auto-navigate</span></div>
+    <div class="shortcut-row"><kbd>?</kbd> <span>This help</span></div>
+    <p style="margin-top:14px;color:var(--text3);font-size:var(--small)">On mobile: swipe left/right to navigate</p>
+    <p style="margin-top:6px;color:var(--text3);font-size:var(--small)">Voice: listens to conversation &amp; auto-jumps to matching section</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* STATE */
+  const TOTAL = 21;
+  let current = 0;
+  let timerRunning = false;
+  let timerStart = 0;
+  let timerElapsed = 0;
+  let timerInterval = null;
+  let fontScale = 0;
+  const panels = document.querySelectorAll('.panel');
+  const navItems = document.querySelectorAll('.nav-item');
+  const dotsC = document.getElementById('dots');
+
+  /* BUILD DOTS */
+  for(let i = 0; i < TOTAL; i++){
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.dataset.index = i;
+    d.addEventListener('click', () => goTo(i));
+    dotsC.appendChild(d);
+  }
+
+  /* NAVIGATION */
+  function goTo(idx){
+    if(idx < 0 || idx >= TOTAL) return;
+    panels[current].classList.remove('active');
+    panels[idx].classList.add('active');
+    navItems[current].classList.remove('active');
+    navItems[idx].classList.add('active');
+    dotsC.children[current].classList.remove('active');
+    dotsC.children[idx].classList.add('active');
+    current = idx;
+    document.getElementById('main').scrollTop = 0;
+    document.getElementById('section-counter').textContent = (idx+1) + ' / ' + TOTAL;
+    document.getElementById('progress').style.width = ((idx+1)/TOTAL*100) + '%';
+    document.getElementById('btn-prev').disabled = idx === 0;
+    document.getElementById('btn-next').disabled = idx === TOTAL - 1;
+    /* scroll dot into view */
+    const activeDot = dotsC.children[idx];
+    activeDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    /* scroll nav item into view */
+    navItems[idx].scrollIntoView({behavior:'smooth',block:'nearest'});
+    closeSidebar();
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('btn-next').addEventListener('click', () => goTo(current + 1));
+  navItems.forEach(n => n.addEventListener('click', () => goTo(parseInt(n.dataset.panel))));
+
+  /* KEYBOARD */
+  document.addEventListener('keydown', e => {
+    const tag = e.target.tagName;
+    const inInput = tag === 'INPUT' || tag === 'TEXTAREA';
+
+    if(e.key === 'Escape'){
+      closeSearch(); closeThreeModal(); closeShortcuts(); closeSidebar();
+      return;
+    }
+    if((e.ctrlKey || e.metaKey) && e.key === 'k'){
+      e.preventDefault(); openSearch(); return;
+    }
+    if(inInput) return;
+
+    switch(e.key){
+      case 'ArrowLeft': e.preventDefault(); goTo(current - 1); break;
+      case 'ArrowRight': e.preventDefault(); goTo(current + 1); break;
+      case 'Home': e.preventDefault(); goTo(0); break;
+      case 'End': e.preventDefault(); goTo(TOTAL - 1); break;
+      case '/': e.preventDefault(); openSearch(); break;
+      case 'k': case 'K': toggleKP(); break;
+      case 't': case 'T': toggleTimer(); break;
+      case '3': openThreeModal(); break;
+      case '?': openShortcuts(); break;
+      case 'v': case 'V': toggleVoice(); break;
+      case '+': case '=': adjustFont(1); break;
+      case '-': case '_': adjustFont(-1); break;
+    }
+  });
+
+  /* TOUCH / SWIPE */
+  let touchX = 0, touchY = 0, swiping = false;
+  document.getElementById('main').addEventListener('touchstart', e => {
+    touchX = e.changedTouches[0].screenX;
+    touchY = e.changedTouches[0].screenY;
+    swiping = true;
+  }, {passive:true});
+  document.getElementById('main').addEventListener('touchend', e => {
+    if(!swiping) return;
+    swiping = false;
+    const dx = e.changedTouches[0].screenX - touchX;
+    const dy = e.changedTouches[0].screenY - touchY;
+    if(Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
+    if(dx > 0) goTo(current - 1);
+    else goTo(current + 1);
+  }, {passive:true});
+
+  /* TIMER */
+  function toggleTimer(){
+    if(timerRunning){
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('btn-timer').classList.remove('active');
+    } else {
+      timerStart = Date.now() - timerElapsed;
+      timerInterval = setInterval(updateTimer, 1000);
+      timerRunning = true;
+      document.getElementById('btn-timer').classList.add('active');
+      updateTimer();
+    }
+  }
+  function updateTimer(){
+    timerElapsed = Date.now() - timerStart;
+    const s = Math.floor(timerElapsed / 1000);
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    const el = document.getElementById('timer');
+    el.textContent = String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+    el.classList.toggle('warn', m >= 45);
+  }
+  document.getElementById('btn-timer').addEventListener('click', toggleTimer);
+  document.getElementById('timer').addEventListener('click', toggleTimer);
+
+  /* CLOCK */
+  function updateClock(){
+    const now = new Date();
+    document.getElementById('clock').textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  /* KEY POINTS ONLY */
+  function toggleKP(){
+    document.body.classList.toggle('kp-only');
+    document.getElementById('btn-kp').classList.toggle('active');
+  }
+  document.getElementById('btn-kp').addEventListener('click', toggleKP);
+
+  /* FONT SIZE */
+  function adjustFont(dir){
+    fontScale = Math.max(-10, Math.min(8, fontScale + dir));
+    const base = 1 + fontScale * 0.1;
+    document.documentElement.style.setProperty('--kp', (1.45 * base) + 'rem');
+    document.documentElement.style.setProperty('--body', (1.05 * base) + 'rem');
+    document.documentElement.style.setProperty('--title', (1.8 * base) + 'rem');
+    document.documentElement.style.setProperty('--small', (0.82 * base) + 'rem');
+  }
+  document.getElementById('btn-font-up').addEventListener('click', () => adjustFont(1));
+  document.getElementById('btn-font-down').addEventListener('click', () => adjustFont(-1));
+
+  /* SEARCH */
+  const searchOverlay = document.getElementById('search-overlay');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  let searchData = [];
+  let selectedResult = -1;
+
+  /* Build search index */
+  panels.forEach((p, i) => {
+    const label = navItems[i] ? navItems[i].textContent.replace(/\d+$/, '').trim() : '';
+    const texts = p.querySelectorAll('.kp, .dt, blockquote, .q-header, .card-title, .cue, .warn-box, .check-item label, .thing-title, .thing-detail, .script-box p, .use-word, .avoid-word, .item, td');
+    texts.forEach(t => {
+      const txt = t.textContent.trim();
+      if(txt.length > 10){
+        searchData.push({panel: i, label: label, text: txt});
+      }
+    });
+  });
+
+  function openSearch(){
+    searchOverlay.classList.add('open');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    selectedResult = -1;
+    setTimeout(() => searchInput.focus(), 50);
+  }
+  function closeSearch(){
+    searchOverlay.classList.remove('open');
+  }
+  document.getElementById('btn-search').addEventListener('click', openSearch);
+  searchOverlay.addEventListener('click', e => { if(e.target === searchOverlay) closeSearch(); });
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    searchResults.innerHTML = '';
+    selectedResult = -1;
+    if(q.length < 2) return;
+    const matches = searchData.filter(d => d.text.toLowerCase().includes(q)).slice(0, 15);
+    matches.forEach((m, i) => {
+      const div = document.createElement('div');
+      div.className = 'search-result';
+      div.dataset.idx = i;
+      const idx = m.text.toLowerCase().indexOf(q);
+      const snippet = m.text.substring(Math.max(0, idx - 40), Math.min(m.text.length, idx + q.length + 60));
+      const highlighted = snippet.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '<mark>$&</mark>');
+      div.innerHTML = '<div class="sr-section">' + m.label + '</div><div class="sr-text">' + highlighted + '</div>';
+      div.addEventListener('click', () => { goTo(m.panel); closeSearch(); });
+      searchResults.appendChild(div);
+    });
+  });
+
+  searchInput.addEventListener('keydown', e => {
+    const items = searchResults.querySelectorAll('.search-result');
+    if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      selectedResult = Math.min(selectedResult + 1, items.length - 1);
+      items.forEach((it, i) => it.classList.toggle('selected', i === selectedResult));
+      if(items[selectedResult]) items[selectedResult].scrollIntoView({block:'nearest'});
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      selectedResult = Math.max(selectedResult - 1, 0);
+      items.forEach((it, i) => it.classList.toggle('selected', i === selectedResult));
+      if(items[selectedResult]) items[selectedResult].scrollIntoView({block:'nearest'});
+    } else if(e.key === 'Enter' && selectedResult >= 0 && items[selectedResult]){
+      items[selectedResult].click();
+    }
+  });
+
+  /* 3 THINGS MODAL */
+  const threeModal = document.getElementById('three-modal');
+  function openThreeModal(){ threeModal.classList.add('open'); }
+  function closeThreeModal(){ threeModal.classList.remove('open'); }
+  document.getElementById('fab-3things').addEventListener('click', openThreeModal);
+  threeModal.addEventListener('click', e => { if(e.target === threeModal) closeThreeModal(); });
+
+  /* SHORTCUTS MODAL */
+  const shortcutsModal = document.getElementById('shortcuts-modal');
+  function openShortcuts(){ shortcutsModal.classList.add('open'); }
+  function closeShortcuts(){ shortcutsModal.classList.remove('open'); }
+  document.getElementById('btn-shortcuts').addEventListener('click', openShortcuts);
+  shortcutsModal.addEventListener('click', e => { if(e.target === shortcutsModal) closeShortcuts(); });
+
+  /* SIDEBAR MOBILE */
+  const sidebar = document.getElementById('sidebar');
+  function closeSidebar(){ if(window.innerWidth <= 768) sidebar.classList.remove('open'); }
+  document.getElementById('hamburger').addEventListener('click', () => sidebar.classList.toggle('open'));
+  document.getElementById('main').addEventListener('click', closeSidebar);
+
+  /* RESPONSIVE SIDEBAR */
+  function handleResize(){
+    const main = document.getElementById('main');
+    if(window.innerWidth <= 768){
+      main.classList.add('no-sidebar');
+    } else {
+      main.classList.remove('no-sidebar');
+      sidebar.classList.remove('open');
+    }
+  }
+  handleResize();
+  window.addEventListener('resize', handleResize);
+
+  /* ============================================ */
+  /* VOICE AUTO-NAVIGATE                          */
+  /* ============================================ */
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let voiceOn = false;
+  let recognition = null;
+  let voiceCooldown = false;
+  const micBtn = document.getElementById('btn-mic');
+  const vsTranscript = document.getElementById('vs-transcript');
+  const vsMatch = document.getElementById('vs-match');
+  const voiceStrip = document.getElementById('voice-strip');
+
+  const voiceRules = [
+    // Q1 end-to-end / messy middle
+    {panel:3, phrases:['tell me about yourself','walk me through','transformation initiative','end to end','messy middle','led end to end','transformation you led']},
+    // Opening / intro
+    {panel:2, phrases:['introduce yourself','about yourself','tell me about you','who are you','your background','your experience']},
+    // Q2 didn't go as planned
+    {panel:4, phrases:['didn\'t go as planned','went wrong','not go as planned','failure','setback','mistake','didn\'t work out','bsv','bharat serum']},
+    // Q3 cross-geography
+    {panel:5, phrases:['geography','geographies','cultures','culture','india poland mexico','cross-cultural','across countries','different markets','elmac','amgen']},
+    // Q4 GCC strategy
+    {panel:6, phrases:['gcc','engagement strategy','three gccs','global capability','bengaluru warsaw mexico','design engagement','capability center']},
+    // Q5 comms shifted behaviour
+    {panel:7, phrases:['communication strategy','shifted behaviour','shifted behavior','change behaviour','change behavior','comms strategy','change makers','culture credo']},
+    // Q6 SharePoint
+    {panel:8, phrases:['sharepoint','intranet','graveyard','platform','portal','site design','content repository']},
+    // Q7 stakeholder resistance
+    {panel:9, phrases:['senior stakeholder','resisted you','turned them around','resistance','resistant','skeptical','push back','quantive','okr']},
+    // Q8 CxO-level
+    {panel:10, phrases:['cxo','c-suite','executive','board level','senior leadership','astrazeneca','bowler','executive director']},
+    // Q9 coaching juniors
+    {panel:11, phrases:['coaching','junior','develop someone','mentored','mentoring','reportee','direct report','vrinda','rajeswari']},
+    // Q10 capability outlived
+    {panel:12, phrases:['capability','outlived','outlast','durable','community of practice','lasted beyond','still running','still happening']},
+    // Q11 plan broke
+    {panel:13, phrases:['plan stopped','plan broke','plan didn\'t work','ambiguity','pivot','charter','diverged','changed direction','icap']},
+    // Q12 what do you know about Astellas
+    {panel:14, phrases:['what do you know about astellas','know about us','about astellas','xtandi','padcev','izervay','veozah','smt','csp2026','pharma fluency','pharma knowledge']},
+    // Q13 vendor to in-house
+    {panel:14, phrases:['vendor','delivery vendor','operate inside','why should we hire','why this move','why leave','leaving indegene','in-house']},
+    // Language guide
+    {panel:15, phrases:['language','what words','terminology','how should i say','phrasing','avoid saying','don\'t say']},
+    // Stories map
+    {panel:16, phrases:['stories','which story','story map','backup story','primary story']},
+    // Questions to ask
+    {panel:17, phrases:['questions for me','any questions','questions do you have','ask me','your turn','what would you like to know','want to ask']},
+    // Follow-up traps
+    {panel:18, phrases:['tell me more','what specifically','done differently','measured success','what would you change','prosci','adkar','why are you leaving']},
+    // Checklist
+    {panel:19, phrases:['checklist','before the interview','preparation','ready']},
+    // Three things
+    {panel:20, phrases:['three things','most important','key takeaway','what should i remember','land these']},
+    // Astellas context
+    {panel:1, phrases:['astellas context','ten facts','company background','transformation office','hierarchy','values','behaviors']}
+  ];
+
+  function scoreMatch(transcript){
+    const t = transcript.toLowerCase();
+    let bestPanel = -1, bestScore = 0;
+    for(const rule of voiceRules){
+      let score = 0;
+      for(const phrase of rule.phrases){
+        if(t.includes(phrase)){
+          score += phrase.split(' ').length * 2;
+        } else {
+          const words = phrase.split(' ');
+          let matched = 0;
+          for(const w of words){
+            if(w.length >= 3 && t.includes(w)) matched++;
+          }
+          if(matched >= Math.ceil(words.length * 0.5)){
+            score += matched;
+          }
+        }
+      }
+      if(score > bestScore){
+        bestScore = score;
+        bestPanel = rule.panel;
+      }
+    }
+    return {panel: bestPanel, score: bestScore};
+  }
+
+  function startVoice(){
+    if(!SpeechRecognition){
+      alert('Speech Recognition not supported in this browser. Use Chrome or Edge.');
+      return;
+    }
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = function(e){
+      let interim = '';
+      let final_ = '';
+      for(let i = e.resultIndex; i < e.results.length; i++){
+        const text = e.results[i][0].transcript;
+        if(e.results[i].isFinal) final_ += text;
+        else interim += text;
+      }
+
+      vsTranscript.textContent = interim || final_ || 'Listening...';
+
+      const checkText = final_ || interim;
+      if(checkText.length > 5 && !voiceCooldown){
+        const {panel, score} = scoreMatch(checkText);
+        if(score >= 2 && panel !== current){
+          voiceCooldown = true;
+          vsMatch.textContent = '→ ' + navItems[panel].textContent.replace(/\d+$/, '').trim();
+          vsMatch.classList.add('show');
+          goTo(panel);
+          setTimeout(() => {
+            voiceCooldown = false;
+            vsMatch.classList.remove('show');
+          }, 4000);
+        }
+      }
+    };
+
+    recognition.onerror = function(e){
+      if(e.error === 'no-speech') return;
+      if(e.error === 'aborted') return;
+      console.warn('Voice error:', e.error);
+      vsTranscript.textContent = 'Error: ' + e.error + '. Restarting...';
+      if(voiceOn) setTimeout(startVoice, 1000);
+    };
+
+    recognition.onend = function(){
+      if(voiceOn){
+        try{ recognition.start(); }catch(e){}
+      }
+    };
+
+    try{ recognition.start(); }catch(e){}
+  }
+
+  function toggleVoice(){
+    voiceOn = !voiceOn;
+    micBtn.classList.toggle('listening', voiceOn);
+    document.body.classList.toggle('voice-on', voiceOn);
+    voiceStrip.classList.toggle('open', voiceOn);
+
+    if(voiceOn){
+      vsTranscript.textContent = 'Listening...';
+      startVoice();
+    } else {
+      if(recognition){
+        try{ recognition.stop(); }catch(e){}
+        recognition = null;
+      }
+      vsTranscript.textContent = 'Waiting for speech...';
+      vsMatch.classList.remove('show');
+    }
+  }
+
+  micBtn.addEventListener('click', toggleVoice);
+
+  /* INIT */
+  goTo(0);
+})();
+</script>
+</body>
+</html>
