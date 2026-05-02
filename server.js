@@ -1,10 +1,13 @@
 const http = require('http');
 const https = require('https');
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 8080;
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+const AWS_KEY = process.env.AWS_ACCESS_KEY_ID;
+const AWS_SECRET = process.env.AWS_SECRET_ACCESS_KEY;
+const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 
 const SYSTEM_PROMPT = `You classify interview questions into one of 11 categories. You will receive a transcript snippet from a live job interview. Determine which prepared question (Q1-Q11) the interviewer is asking about BY MEANING, not keywords.
@@ -31,26 +34,61 @@ Rules:
 
 const PANEL_MAP = {Q1:3,Q2:4,Q3:5,Q4:6,Q5:7,Q6:8,Q7:9,Q8:10,Q9:11,Q10:12,Q11:13};
 
+/* ---- AWS Signature V4 for Bedrock ---- */
+function hmac(key, data, encoding) {
+  return crypto.createHmac('sha256', key).update(data).digest(encoding);
+}
+function sha256(data) {
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+function signV4(method, host, pathStr, headers, body, region, service) {
+  const datetime = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const date = datetime.slice(0, 8);
+  headers['x-amz-date'] = datetime;
+  headers['host'] = host;
+
+  const signedHeaderKeys = Object.keys(headers).sort().map(k => k.toLowerCase());
+  const signedHeaders = signedHeaderKeys.join(';');
+  const canonicalHeaders = signedHeaderKeys.map(k => k.toLowerCase() + ':' + headers[k].trim()).join('\n') + '\n';
+
+  const canonicalRequest = [method, pathStr, '', canonicalHeaders, signedHeaders, sha256(body)].join('\n');
+  const scope = `${date}/${region}/${service}/aws4_request`;
+  const stringToSign = ['AWS4-HMAC-SHA256', datetime, scope, sha256(canonicalRequest)].join('\n');
+
+  let signingKey = hmac('AWS4' + AWS_SECRET, date);
+  signingKey = hmac(signingKey, region);
+  signingKey = hmac(signingKey, service);
+  signingKey = hmac(signingKey, 'aws4_request');
+  const signature = hmac(signingKey, stringToSign, 'hex');
+
+  headers['Authorization'] = `AWS4-HMAC-SHA256 Credential=${AWS_KEY}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+  return headers;
+}
+
 function callHaiku(transcript) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
+    const modelId = 'us.anthropic.claude-haiku-4-5-20251001-v1:0';
+    const apiPath = `/model/${encodeURIComponent(modelId)}/invoke`;
+    const host = `bedrock-runtime.${AWS_REGION}.amazonaws.com`;
+
     const body = JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      anthropic_version: 'bedrock-2023-05-31',
       max_tokens: 4,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: transcript }]
     });
+
+    const headers = { 'Content-Type': 'application/json' };
+    signV4('POST', host, apiPath, headers, body, AWS_REGION, 'bedrock');
+    headers['Content-Length'] = Buffer.byteLength(body);
+
     const opts = {
-      hostname: 'api.anthropic.com',
-      path: '/v1/messages',
+      hostname: host,
+      path: apiPath,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'Content-Length': Buffer.byteLength(body)
-      },
-      rejectUnauthorized: false
+      headers
     };
+
     const req = https.request(opts, res => {
       let data = '';
       res.on('data', c => data += c);
@@ -59,11 +97,14 @@ function callHaiku(transcript) {
           const j = JSON.parse(data);
           const text = (j.content && j.content[0] && j.content[0].text) || 'NONE';
           resolve(text.trim());
-        } catch(e) { resolve('NONE'); }
+        } catch(e) {
+          console.error('Bedrock parse error:', data.slice(0, 300));
+          resolve('NONE');
+        }
       });
     });
-    req.on('error', () => resolve('NONE'));
-    req.setTimeout(3000, () => { req.destroy(); resolve('NONE'); });
+    req.on('error', (e) => { console.error('Bedrock request error:', e.message); resolve('NONE'); });
+    req.setTimeout(4000, () => { req.destroy(); resolve('NONE'); });
     req.write(body);
     req.end();
   });
