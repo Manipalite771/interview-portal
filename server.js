@@ -54,6 +54,129 @@ Q11 — PLAN BROKE / AMBIGUITY / PIVOT: Any question about adapting when plans c
 
 const PANEL_MAP = {Q1:3,Q2:4,Q3:5,Q4:6,Q5:7,Q6:8,Q7:9,Q8:10,Q9:11,Q10:12,Q11:13};
 
+const CUES = {
+  Q1: [
+    'GenAI Enterprise Adoption — 1,000+ employee BU',
+    'First 3 pilots STALLED — skipped diagnosis',
+    'Saying "productivity" → people heard "replacement"',
+    'Reframed: augmentation, not productivity',
+    'SMEs became the quality bar, not the audience',
+    'CoP: 3-4 → 90 members',
+    '30%+ efficiency gains, 400+ employees impacted',
+    'Config cycle: 4-5 months → 5-6 weeks',
+    'What outlived the project = durable capability',
+  ],
+  Q2: [
+    'BSVwithU — Bharat Serum digital platform',
+    '70% of marketing SOW hadn\'t started',
+    'Procurement couldn\'t evaluate digital deliverables',
+    'Built evaluation framework WITH them → conversation changed',
+    'Change Request process → $32,645 negotiated',
+    'SOW redrawn: 25+ deliverables, 40% margin held',
+    '$25K AWS + $42K BU vendor savings',
+    'Monthly cadence with COO + DT Head — RAG status',
+    'MAU grew 75%, renewed Year 2',
+  ],
+  Q3: [
+    'Amgen ELMAC — EU top-5: UK, DE, FR, IT, ES',
+    'FTE-based → asset-based repricing across all markets',
+    'Germany: audit trails · Italy: relationships · UK: SLA specificity',
+    'France: regulatory traceability · Spain: cost transparency',
+    'NOT a compromise — shared spine, country-specific config',
+    'Quality/CSAT governance global; conversation localized',
+    '"One Astellas" won\'t work if uniform — coherent core, configurable identity',
+    'Bengaluru full-stack, Warsaw GBS, Mexico medical-digital',
+  ],
+  Q4: [
+    'MOVE 1: Listen first 30-45 days — Mukta, Andżelika, Flavio + 2-3 levels deep',
+    '12-month hub vs 18-month vs 3-month — maturity curves are different',
+    'MOVE 2: Anchor in CSP2026 + Values & Behaviors',
+    'Patient Focus lifted to VISION layer — implicit, not competing',
+    'MOVE 3: Calendar IS the editorial arc',
+    'Warsaw Bridge move, Mexico first year, Bengaluru scale-up, CSP2026 launch',
+    'Success = leaders repeating narrative in own words by month 9',
+    'Adoption and behaviour, NOT comms plan',
+  ],
+  Q5: [
+    'Change Makers Council — 26 volunteers, NOT communicators',
+    'SMEs, engineers, finance — voices that carry weight in their teams',
+    'Co-created Credo language WITH Org Dev, not received from them',
+    'Multi-wave: teasers ("Riddle N Fiddle"), video mailers, story competitions',
+    'Each wave 7-14 days, breathing room between',
+    'Volunteers carried values in their own voice',
+    'Not campaign AT people — giving 26 ambassadors a vocabulary',
+    'Signal: "Empathy" showing up unprompted in performance reviews by month 4',
+    'Council outlasted the Credo launch — durable culture mechanism',
+  ],
+  Q6: [
+    'Built SharePoint utilization tracker for 120+ team members in <1 month',
+    'SharePoint as live operational instrument, NOT content repository',
+    'Principle 1: Must serve a workflow — repositories die',
+    'Principle 2: Adoption metrics from day 1 — not pageviews',
+    'Track if Bengaluru reads Warsaw content → "One Astellas" health check',
+    'Principle 3: Editorial governance, not editorial control',
+    'Federated model — shared spine, each GCC owns narrative',
+    '#ChangingTomorrow #AstellasCulture — shared tone, local voice',
+  ],
+  Q7: [
+    'Quantive OKR adoption — leadership level',
+    'Leaders weren\'t resistant to goals — resistant to PUBLIC misalignment',
+    'Reframed: tool rollout → leadership clarity instrument',
+    'Worked 1:1 with most skeptical leaders',
+    'Sat with their actual pain — mapped stuck initiatives',
+    'Left them with a useful artifact — didn\'t ask them to adopt',
+    'They logged back in for their next leadership review',
+    'Layered governance cadences + UX optimization',
+    '~90% adoption within 6 months',
+  ],
+  Q8: [
+    'CLIENT: AstraZeneca Executive Director — since July 2025',
+    'Solutions, agents, data strategy, adoption playbooks',
+    'Single conversation → scaled to multi-track program',
+    'Treat ED as thought partner, not sponsor — options with trade-offs visible',
+    'INTERNAL: Bowler Charts Power BI — built from scratch',
+    'Excel dashboard → executive governance instrument',
+    'Used in CXO reviews and board meetings',
+    'Hard part: getting leaders to treat data as voice of their function',
+    'Dashboard: reporting tool → decision instrument',
+  ],
+  Q9: [
+    'Vrinda Bagrait + Raja Rajeswari — GenAI Strategy team, 2025',
+    'Both non-technical backgrounds, anxious about GenAI wave',
+    'Paired with engineering leads on REAL client use cases from week 1',
+    'Learn by sitting IN the work, not adjacent to it',
+    'Gave them ownership of CoP sessions and live demos',
+    'Weekly coaching: real conversations about ambiguity, not status updates',
+    'Protected their permission to say "I don\'t know yet"',
+    'Both contributing to live client projects within 6 months',
+    'Coaching ≠ frameworks — it\'s courage to sit in ambiguity',
+  ],
+  Q10: [
+    'GenAI Community of Practice — the capability that outlived',
+    'Started: 3-4 core members, no shared knowledge, no patterns',
+    'Design choice: domain SMEs paired WITH engineering',
+    'CoP carried business-context credibility from day 1',
+    'Codified: orchestration playbooks, eval frameworks, QA gates',
+    'CSL Vifor patterns → reused across NEXT MedWriting & NEXT SciAuto',
+    '3-4 → 90 extended team members',
+    'Config cycle: 4-5 months → 5-6 weeks',
+    'Still running 18 months after project closed — that\'s capability',
+    'Chapter earns its name when frameworks alive in delivery, not slides',
+  ],
+  Q11: [
+    'ICAP Stint 3 — Corporate Planning, 2023',
+    'Charter: 1 department, 1 Assignment Leader',
+    'Reality in 30 days: 5 departments, 6 ALs simultaneously',
+    'Built personal cadence per AL — weekly/bi-weekly/ad-hoc',
+    'Shared status doc visible to all 6 → they self-prioritized',
+    'Let the work surface where to spend time, not defend original charter',
+    'Became connective tissue between Corp Planning + Org Dev',
+    'Bowlers + Change Makers Council fused into one operating system',
+    'Ambiguity is the operating environment — read where energy is',
+  ],
+  NONE: []
+};
+
 /* ---- AWS Signature V4 for Bedrock ---- */
 function hmac(key, data, encoding) {
   return crypto.createHmac('sha256', key).update(data).digest(encoding);
@@ -152,8 +275,9 @@ const server = http.createServer(async (req, res) => {
         const m = raw.match(/\b(Q1[01]?|Q[1-9]|NONE)\b/);
         const label = m ? m[1] : 'NONE';
         const panel = PANEL_MAP[label] ?? -1;
+        const cues = CUES[label] || [];
         res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-        res.end(JSON.stringify({ panel, label }));
+        res.end(JSON.stringify({ panel, label, cues }));
       } catch(e) {
         res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
         res.end(JSON.stringify({ panel: -1, label: 'NONE' }));

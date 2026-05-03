@@ -191,6 +191,48 @@ body.voice-on #sidebar{top:calc(var(--topbar-h) + 36px)}
 body.kp-only .dt,body.kp-only .car,body.kp-only .ref-table,body.kp-only .numbered{display:none}
 body.kp-only .cue,body.kp-only .warn-box{display:none}
 
+/* ============ LIVE MODE ============ */
+#live-overlay{position:fixed;inset:0;background:var(--bg);z-index:300;display:none;flex-direction:column;overflow:hidden}
+#live-overlay.open{display:flex}
+
+#live-top{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+#live-top .lt-label{font-size:0.8rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--red);display:flex;align-items:center;gap:6px}
+#live-top .lt-label::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1s infinite}
+#live-q{font-size:0.8rem;color:var(--amber);font-weight:700}
+#live-close{background:none;border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:6px;cursor:pointer;font-size:0.8rem}
+
+#live-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:0;transition:all 0.3s ease}
+
+/* Listening state */
+#live-listening{display:flex;flex-direction:column;align-items:center;gap:16px}
+#live-listening .pulse-ring{width:80px;height:80px;border-radius:50%;border:3px solid var(--red);animation:live-pulse 2s ease-in-out infinite;display:flex;align-items:center;justify-content:center}
+#live-listening .pulse-ring svg{width:36px;height:36px;fill:none;stroke:var(--red);stroke-width:1.5}
+@keyframes live-pulse{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.15);opacity:1}}
+#live-listening .lt-status{font-size:1.1rem;color:var(--text2);text-align:center}
+#live-transcript{font-size:0.9rem;color:var(--text3);text-align:center;max-width:80%;min-height:1.2em;margin-top:8px;font-style:italic}
+
+/* Cues state */
+#live-cues{display:none;width:100%;max-width:700px;padding:0 4px}
+#live-cues.show{display:block}
+#live-cues .cue-item{font-size:1.35rem;color:var(--amber);font-weight:700;line-height:1.5;padding:7px 0;border-bottom:1px solid rgba(245,183,49,0.1)}
+#live-cues .cue-item:last-child{border-bottom:none}
+#live-cues .cue-num{color:var(--text3);font-weight:400;font-size:1rem;margin-right:6px}
+
+#live-bottom{padding:10px 16px;background:var(--surface);border-top:1px solid var(--border);text-align:center;flex-shrink:0}
+#live-reset{background:none;border:1px solid var(--border);color:var(--text2);padding:8px 20px;border-radius:8px;cursor:pointer;font-size:0.85rem}
+#live-reset:active{background:var(--amber);color:var(--bg);border-color:var(--amber)}
+
+@media(max-width:768px){
+  #live-cues .cue-item{font-size:1.15rem;padding:6px 0}
+  #live-listening .pulse-ring{width:60px;height:60px}
+  #live-listening .pulse-ring svg{width:28px;height:28px}
+  #live-listening .lt-status{font-size:1rem}
+  #live-body{padding:14px}
+}
+@media(max-width:400px){
+  #live-cues .cue-item{font-size:1.05rem}
+}
+
 /* MOBILE TOOLBAR TRAY — slides up from bottom on hamburger long-press or toolbar-more btn */
 #mobile-tray{display:none}
 .hide-mobile{display:inline}
@@ -331,6 +373,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   <div class="right">
     <span id="timer" title="Click to start/stop timer">00:00</span>
     <button class="tb-btn" id="btn-timer" title="Start/Stop Timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></button>
+    <button class="tb-btn" id="btn-live" title="Live Mode (L)" style="border-color:var(--red);color:var(--red)">LIVE</button>
     <button class="tb-btn" id="btn-mic" title="Voice auto-navigate (V)"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> <span class="hide-mobile">Mic</span></button>
     <button class="tb-btn" id="btn-search" title="Search (Ctrl+K)"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> <span class="hide-mobile">Search</span></button>
     <button class="tb-btn" id="btn-kp" title="Key Points Only">KP</button>
@@ -1091,6 +1134,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 
 <!-- MOBILE TRAY -->
 <div id="mobile-tray">
+  <button class="tray-btn" id="m-live" style="border-color:var(--red);color:var(--red)">LIVE MODE</button>
   <button class="tray-btn" id="m-kp">KP Only</button>
   <button class="tray-btn" id="m-font-up">A+</button>
   <button class="tray-btn" id="m-font-down">A-</button>
@@ -1155,9 +1199,30 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     <div class="shortcut-row"><kbd>+</kbd> / <kbd>-</kbd> <span>Increase / decrease font</span></div>
     <div class="shortcut-row"><kbd>Esc</kbd> <span>Close overlay</span></div>
     <div class="shortcut-row"><kbd>V</kbd> <span>Toggle voice auto-navigate</span></div>
+    <div class="shortcut-row"><kbd>L</kbd> <span>Toggle Live Mode (cue screen)</span></div>
     <div class="shortcut-row"><kbd>?</kbd> <span>This help</span></div>
     <p style="margin-top:14px;color:var(--text3);font-size:var(--small)">On mobile: swipe left/right to navigate</p>
     <p style="margin-top:6px;color:var(--text3);font-size:var(--small)">Voice: listens to conversation &amp; auto-jumps to matching section</p>
+  </div>
+</div>
+
+<!-- LIVE MODE OVERLAY -->
+<div id="live-overlay">
+  <div id="live-top">
+    <span class="lt-label">LIVE</span>
+    <span id="live-q"></span>
+    <button id="live-close">EXIT</button>
+  </div>
+  <div id="live-body">
+    <div id="live-listening">
+      <div class="pulse-ring"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+      <div class="lt-status">Listening for interviewer's question...</div>
+      <div id="live-transcript"></div>
+    </div>
+    <div id="live-cues"></div>
+  </div>
+  <div id="live-bottom">
+    <button id="live-reset">Back to Listening</button>
   </div>
 </div>
 
@@ -1236,6 +1301,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
       case '3': openThreeModal(); break;
       case '?': openShortcuts(); break;
       case 'v': case 'V': toggleVoice(); break;
+      case 'l': case 'L': toggleLive(); break;
       case '+': case '=': adjustFont(1); break;
       case '-': case '_': adjustFont(-1); break;
     }
@@ -1606,6 +1672,140 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   }
 
   micBtn.addEventListener('click', toggleVoice);
+
+  /* ============================================ */
+  /* LIVE MODE — full-screen cue teleprompter      */
+  /* ============================================ */
+  const liveOverlay = document.getElementById('live-overlay');
+  const liveCues = document.getElementById('live-cues');
+  const liveListening = document.getElementById('live-listening');
+  const liveTranscript = document.getElementById('live-transcript');
+  const liveQ = document.getElementById('live-q');
+  let liveOn = false;
+  let liveRecog = null;
+  let liveBuf = '';
+  let liveLastInterim = '';
+  let liveSendTimer = null;
+  let liveInterimTimer = null;
+  let livePending = false;
+  let liveCooldown = false;
+
+  function liveSend(text){
+    if(livePending || liveCooldown || text.trim().length < 8) return;
+    livePending = true;
+    liveTranscript.textContent = 'Matching...';
+    fetch('/match', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({transcript: text.trim()})
+    })
+    .then(r=>r.json())
+    .then(data => {
+      livePending = false;
+      if(data.cues && data.cues.length > 0){
+        liveCooldown = true;
+        liveBuf = '';
+        liveLastInterim = '';
+        liveQ.textContent = data.label;
+        liveListening.style.display = 'none';
+        liveCues.innerHTML = data.cues.map((c,i) =>
+          '<div class="cue-item"><span class="cue-num">' + (i+1) + '</span>' + c + '</div>'
+        ).join('');
+        liveCues.classList.add('show');
+        setTimeout(() => { liveCooldown = false; }, 12000);
+      } else {
+        liveTranscript.textContent = '';
+      }
+    })
+    .catch(() => { livePending = false; });
+  }
+
+  function liveScheduleFinal(){
+    clearTimeout(liveSendTimer);
+    liveSendTimer = setTimeout(() => {
+      if(liveBuf.trim().length >= 8) liveSend(liveBuf);
+    }, 1200);
+  }
+  function liveScheduleInterim(){
+    clearTimeout(liveInterimTimer);
+    liveInterimTimer = setTimeout(() => {
+      if(liveLastInterim.trim().length >= 8 && !livePending)
+        liveSend(liveBuf + ' ' + liveLastInterim);
+    }, 2500);
+  }
+
+  function startLiveRecog(){
+    if(!SpeechRecognition) return;
+    liveRecog = new SpeechRecognition();
+    liveRecog.continuous = true;
+    liveRecog.interimResults = true;
+    liveRecog.lang = 'en-US';
+
+    liveRecog.onstart = function(){ liveTranscript.textContent = ''; };
+
+    liveRecog.onresult = function(e){
+      let interim = '', final_ = '';
+      for(let i = e.resultIndex; i < e.results.length; i++){
+        if(e.results[i].isFinal) final_ += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
+      }
+      if(final_){
+        liveTranscript.textContent = final_;
+        liveBuf += ' ' + final_;
+        if(liveBuf.length > 600) liveBuf = liveBuf.slice(-600);
+        liveLastInterim = '';
+        liveScheduleFinal();
+      } else if(interim){
+        liveTranscript.textContent = interim;
+        liveLastInterim = interim;
+        liveScheduleInterim();
+      }
+    };
+
+    liveRecog.onerror = function(e){
+      if(e.error === 'aborted') return;
+      if(e.error === 'no-speech') return;
+      if(e.error === 'not-allowed'){
+        liveTranscript.textContent = 'Mic blocked — allow in browser settings';
+        return;
+      }
+      if(liveOn) setTimeout(startLiveRecog, 500);
+    };
+
+    liveRecog.onend = function(){
+      if(liveOn) setTimeout(() => { if(liveOn) try{ startLiveRecog(); }catch(e){} }, 300);
+    };
+
+    try{ liveRecog.start(); }catch(e){}
+  }
+
+  function liveReset(){
+    liveCues.classList.remove('show');
+    liveCues.innerHTML = '';
+    liveListening.style.display = 'flex';
+    liveQ.textContent = '';
+    liveTranscript.textContent = '';
+    liveBuf = '';
+    liveLastInterim = '';
+    liveCooldown = false;
+  }
+
+  function toggleLive(){
+    liveOn = !liveOn;
+    liveOverlay.classList.toggle('open', liveOn);
+    if(liveOn){
+      liveReset();
+      startLiveRecog();
+    } else {
+      if(liveRecog){ try{ liveRecog.abort(); }catch(e){} liveRecog = null; }
+      clearTimeout(liveSendTimer);
+      clearTimeout(liveInterimTimer);
+    }
+  }
+
+  document.getElementById('btn-live').addEventListener('click', toggleLive);
+  document.getElementById('m-live').addEventListener('click', () => { closeTray(); toggleLive(); });
+  document.getElementById('live-close').addEventListener('click', toggleLive);
+  document.getElementById('live-reset').addEventListener('click', liveReset);
 
   /* INIT */
   goTo(0);
