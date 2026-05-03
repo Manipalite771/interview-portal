@@ -10,49 +10,62 @@ const AWS_SECRET = process.env.AWS_SECRET_ACCESS_KEY;
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 
-const SYSTEM_PROMPT = `You are a real-time interview assistant. You receive live speech transcript from a job interview for a Transformation Lead Consultant role at Astellas pharma. Your job: route the interviewer's questions to the best matching prepared answer.
+const SYSTEM_PROMPT = `You are a real-time interview assistant for a Transformation Lead Consultant role at Astellas pharma. You receive live speech-to-text from the interview. Route every interviewer utterance to the best matching prepared section.
 
-You MUST respond with exactly one token. No explanation, no preamble, no punctuation.
+Respond with EXACTLY one token. No explanation, no preamble, no punctuation.
 
-## The 11 prepared answers (always pick the CLOSEST match):
+## Sections (pick the CLOSEST match):
 
-Q1 — TRANSFORMATION END-TO-END: Any question asking the candidate to walk through, describe, or share a transformation initiative, change program, or large-scale project they led. Includes: "biggest project", "most impactful work", "tell me about your experience", "what have you done", "walk me through your work". This is the DEFAULT for broad open-ended questions about the candidate's experience.
+INTRO — "Tell me about yourself", "introduce yourself", "walk me through your background", "your experience", any opening/icebreaker question about who the candidate is. DEFAULT for the start of the interview.
 
-Q2 — FAILURE / SETBACK: Any question about things going wrong, not working, failing, challenges, difficulties, mistakes, lessons learned the hard way, tough situations, or what the candidate would do differently. Includes: "biggest challenge", "what was hard", "what did you learn", "tell me about a difficult time".
+Q1 — TRANSFORMATION END-TO-END: Walk through a transformation initiative, change program, or large-scale project led end-to-end. The messy middle. Biggest project. Most impactful work.
 
-Q3 — CROSS-GEOGRAPHY / CULTURE: Any question about working across countries, regions, cultures, markets, geographies, diverse teams, international experience, remote/distributed teams, or bridging differences. Includes: "India Poland Mexico", "global teams", "cultural differences", "working across time zones".
+Q2 — FAILURE / SETBACK: Things going wrong, failing, challenges, difficulties, mistakes, lessons learned, tough situations, what would you do differently.
 
-Q4 — GCC / MULTI-SITE ENGAGEMENT STRATEGY: Any question about designing engagement, communication, or transformation strategy across multiple offices, sites, capability centers, GCCs, hubs, or locations. Includes: "how would you approach this role", "your first 90 days", "engagement plan", "strategy across sites".
+Q3 — CROSS-GEOGRAPHY / CULTURE: Working across countries, regions, cultures, markets, geographies, diverse teams, international experience, India Poland Mexico, global teams, time zones.
 
-Q5 — COMMUNICATION THAT CHANGED BEHAVIOUR: Any question about communications, messaging, campaigns, internal comms, employee engagement, culture change, values rollout, or getting people to actually change what they do. Includes: "how do you communicate change", "employee engagement", "culture", "values".
+Q4 — GCC / MULTI-SITE ENGAGEMENT STRATEGY: Designing engagement or transformation strategy across multiple offices/sites/capability centers/GCCs/hubs. First 90 days. How would you approach this role.
 
-Q6 — SHAREPOINT / INTRANET / PLATFORMS: Any question about internal platforms, SharePoint, intranets, knowledge management, content portals, digital workplace tools, or internal sites. Includes: "digital tools", "knowledge sharing platforms", "collaboration tools".
+Q5 — COMMUNICATION THAT CHANGED BEHAVIOUR: Communications, messaging, campaigns, internal comms, employee engagement, culture change, values rollout, getting people to actually change what they do.
 
-Q7 — STAKEHOLDER RESISTANCE: Any question about dealing with resistance, skeptics, difficult stakeholders, people who pushed back, gaining buy-in, influencing without authority, or winning over opponents. Includes: "convince someone", "disagreement", "pushback", "skeptical leader", "buy-in".
+Q6 — SHAREPOINT / INTRANET / PLATFORMS: Internal platforms, SharePoint, intranets, knowledge management, content portals, digital workplace tools, what makes them work vs die.
 
-Q8 — CXO / EXECUTIVE ENGAGEMENT: Any question about working with senior leadership, C-suite, executives, VPs, directors, board members, or leadership-level stakeholders. Includes: "senior leaders", "executive sponsors", "leadership engagement", "presenting to leadership".
+Q7 — STAKEHOLDER RESISTANCE: Dealing with resistance, skeptics, difficult stakeholders, pushback, gaining buy-in, influencing without authority, winning over opponents, convincing someone.
 
-Q9 — COACHING / DEVELOPING JUNIORS: Any question about coaching, mentoring, developing, teaching, growing, managing, or supporting junior or less experienced team members. Includes: "team development", "growing your team", "helping someone learn", "management style", "leadership style with reports".
+Q8 — CXO / EXECUTIVE ENGAGEMENT: Working with senior leadership, C-suite, executives, VPs, directors, board members, presenting to leadership.
 
-Q10 — LASTING CAPABILITY / SUSTAINABILITY: Any question about building something that lasted, sustained impact, durable outcomes, things that outlived a project, scalable solutions, institutional capability, or legacy. Includes: "long-term impact", "what stayed after you left", "sustainable change", "institutionalize".
+Q9 — COACHING / DEVELOPING JUNIORS: Coaching, mentoring, developing, teaching, growing, managing junior or less experienced team members, management style, leadership style with reports.
 
-Q11 — PLAN BROKE / AMBIGUITY / PIVOT: Any question about adapting when plans changed, navigating uncertainty, ambiguity, pivoting, dealing with unclear situations, or operating without a clear roadmap. Includes: "unexpected change", "ambiguous situation", "no clear answer", "how do you handle uncertainty", "things not going to plan".
+Q10 — LASTING CAPABILITY / SUSTAINABILITY: Building something that lasted, sustained impact, durable outcomes, outlived a project, scalable solutions, institutional capability, legacy, long-term impact.
+
+Q11 — PLAN BROKE / AMBIGUITY / PIVOT: Adapting when plans changed, navigating uncertainty, ambiguity, pivoting, unclear situations, no clear roadmap, unexpected change.
+
+PHARMA — "What do you know about Astellas", "what do you know about us", "about our company", "our pipeline", "our products", any question testing the candidate's knowledge of Astellas or the pharma industry specifically.
+
+VENDOR — "Why should we hire you from a vendor/agency", "what makes you think you can operate inside pharma/in-house", "transition from vendor to in-house", "why move from consulting", "why Indegene to Astellas".
+
+WHYLEAVE — "Why are you leaving your current company", "why leave Indegene", "why are you looking for a change", "what's motivating this move", "why now".
+
+ASKME — "Do you have any questions for me", "any questions", "what would you like to know", "your turn to ask", end of interview questions invitation.
+
+FOLLOWUP — The interviewer is probing deeper into a previous answer: "tell me more", "can you elaborate", "what specifically", "what would you have done differently", "how did you measure that", "sounds like Prosci/ADKAR", "what did your reportee struggle with". This is a follow-up, not a new topic.
 
 ## When to respond NONE:
-- The candidate is answering (statements like "I built...", "We ran...", "In my experience...", "So what we did was...")
+- The candidate is answering (statements starting with "I built...", "We ran...", "In my experience...", "So what we did was...", "The result was...")
 - Pure small talk ("how are you", "nice to meet you", "can you hear me okay")
 - Logistics ("let me share my screen", "can you see this", "we have about 30 minutes")
 - Truly unintelligible or single-word fragments
 
 ## CRITICAL RULES:
-- If the interviewer is asking ANY question about the candidate's experience, work, or approach — ALWAYS pick the closest Q1-Q11. Do NOT return NONE for interviewer questions.
-- When in doubt between two categories, pick the one that is more specific to the question.
+- If the interviewer is asking, prompting, or directing ANY question — ALWAYS pick the closest section. NEVER return NONE for an interviewer question.
+- When in doubt between two categories, pick the more specific one.
 - When in doubt between a category and NONE, pick the category.
-- Q1 is the catch-all for broad "tell me about your work/experience" questions that don't fit a more specific category.
-- The transcript may be imperfect (speech-to-text errors, fragments). Do your best to interpret the intent.
-- Respond with EXACTLY one token: Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 or NONE`;
+- Q1 is the catch-all for broad experience questions that don't fit a more specific Q2-Q11.
+- INTRO is for the very start — "tell me about yourself" style openers.
+- The transcript may be imperfect (speech-to-text errors, fragments, Polish accent). Do your best to interpret intent.
+- Respond with EXACTLY one token: INTRO Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 PHARMA VENDOR WHYLEAVE ASKME FOLLOWUP or NONE`;
 
-const PANEL_MAP = {Q1:3,Q2:4,Q3:5,Q4:6,Q5:7,Q6:8,Q7:9,Q8:10,Q9:11,Q10:12,Q11:13};
+const PANEL_MAP = {INTRO:2,Q1:3,Q2:4,Q3:5,Q4:6,Q5:7,Q6:8,Q7:9,Q8:10,Q9:11,Q10:12,Q11:13,PHARMA:14,VENDOR:14,WHYLEAVE:18,ASKME:17,FOLLOWUP:18};
 
 const CUES = {
   Q1: [
@@ -174,6 +187,66 @@ const CUES = {
     'Bowlers + Change Makers Council fused into one operating system',
     'Ambiguity is the operating environment — read where energy is',
   ],
+  INTRO: [
+    'Decade in life sciences — 3 yrs field (Novartis, J&J) + 6 yrs transformation at Indegene',
+    'Indegene Bangalore center IS a GCC for pharma clients',
+    '12 pharma companies: Sanofi, Amgen EU5, Pfizer, Janssen, AZ, BI, Merck KGaA, CSL Vifor, Gilead, Regeneron, Haleon, Vertex',
+    'Transformation ≠ frameworks problem — it\'s a meaning-making problem',
+    'People aren\'t resistant — they\'re overwhelmed and unclear on what they own',
+    'Operating models + governance cadences + communication architecture',
+    'Astellas moment: CSP2026, 3 GCCs scaling, SMT in flight',
+    '"Change Communication" = top materiality gap (Feb 2025)',
+    'Build role at a build moment — delivery-side GCC perspective',
+  ],
+  PHARMA: [
+    'XTANDI = ~48% revenue, US LOE Aug 2027, Medicare MFP $7,004/30-day Jan 2027',
+    'SMT: ¥150B recurring savings by FY2027, core OP margin 27.6% → 30%',
+    'April 2025 reorg: Value Creation (Taniguchi) / Value Delivery (Zieler) / Value Enablement',
+    'CSP2026 launches late May — first execution wave',
+    'PADCEV bright spot (¥210B), VYLOY ramping',
+    'IZERVAY: CRL rebuild · VEOZAH: boxed warning reset · Audentes: thesis broken',
+    '3 GCCs: Bengaluru (Mukta, 300+), Warsaw (Andżelika, The Bridge), Mexico (Flavio, Jan 2026)',
+    'New Values: Integrity, Innovation, Impact + 5 Behaviors',
+    '"Change Communication" top materiality gap — this hire fills a diagnosed deficit',
+    'CEO Okamura rejected "rescue BD" — deleveraging at 2.2x',
+  ],
+  VENDOR: [
+    'NOT vendor-to-inhouse — delivery side of the GCC model Astellas is building',
+    'Been on RECEIVING end of pharma TOs: Sanofi, Amgen, Vertex, AstraZeneca ED',
+    'Know what frustrates in-house teams about external partners',
+    'Indegene Bangalore = Global Capability Center for pharma clients',
+    'Transition: multi-pharma portfolio → one pharma\'s full agenda',
+    'Craft transfers: operating models, governance, change adoption, comms architecture',
+    'XTANDI bridge, SMT mechanics, "One Astellas" nuance — build in first 60-90 days',
+    'Honest about runway — courage > false confidence (Wioleta values this)',
+  ],
+  WHYLEAVE: [
+    'DON\'T disparage Indegene',
+    'Indegene = formative — 3 promotions in 5 years, deep pharma exposure',
+    'Looking for DEPTH over BREADTH',
+    'Running one pharma\'s full agenda inside CxO function = different craft',
+    'Astellas at THIS moment — CSP2026, 3 GCCs, Change Communication mandate',
+    'Right specific opportunity, not just right next step',
+  ],
+  ASKME: [
+    'Q1 (HIGHEST): "You\'ve written about overwhelmed not resistant — what contributes most to that overwhelm at Astellas right now?"',
+    'Q2: "How is the TO shifting from delivering initiatives to building durable change capability? Especially Chapters model."',
+    'Q3: "Across India, Poland, Mexico — biggest engagement gap today? What does good look like in 12 months?"',
+    'RESERVE (if rapport strong): "What surprised you positively from a Lead Consultant? What would you want different?"',
+    'RESERVE (operational): "How do Bengaluru Lead Consultants partner with Managing Principals across time zones?"',
+    'End strong — last question should be Q1',
+  ],
+  FOLLOWUP: [
+    'TRAP: "Tell me more about that resistance" → Have ONE specific dialogue moment ready',
+    'GenAI: "You\'re asking me to teach the machine to do what I do. Why would I help replace myself?"',
+    'TRAP: "What would you have done differently?" → Always have a REAL answer',
+    'BSV: "Should have insisted on change-request framework week 1, not month 3"',
+    'TRAP: "Sounds like Prosci/ADKAR" → Acknowledge crisply, designed from listening sessions not framework',
+    'TRAP: "How did you measure success?" → Adoption metrics, NOT output metrics',
+    'Change Makers: "Empathy" showing up unprompted in perf reviews — quarterly HR sampling',
+    'TRAP: "What did your reportee struggle with?" → Be specific: Vrinda = confidence in client demos, dry-runs every Tuesday',
+    '"I don\'t know" is allowed — better than faking. Wioleta values courage.',
+  ],
   NONE: []
 };
 
@@ -272,7 +345,7 @@ const server = http.createServer(async (req, res) => {
           return;
         }
         const raw = await callHaiku(transcript);
-        const m = raw.match(/\b(Q1[01]?|Q[1-9]|NONE)\b/);
+        const m = raw.match(/\b(INTRO|Q1[01]?|Q[1-9]|PHARMA|VENDOR|WHYLEAVE|ASKME|FOLLOWUP|NONE)\b/);
         const label = m ? m[1] : 'NONE';
         const panel = PANEL_MAP[label] ?? -1;
         const cues = CUES[label] || [];
