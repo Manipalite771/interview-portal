@@ -1455,49 +1455,63 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   const vsMatch = document.getElementById('vs-match');
   const voiceStrip = document.getElementById('voice-strip');
 
-  /* Buffer collects finalized speech, sends to /match when a sentence completes */
-  let sentenceBuffer = '';
+  /* Speech buffer — collects both final and interim results.
+     Mobile Chrome often never finalizes, so we send on interim too. */
+  let speechBuf = '';
+  let lastInterim = '';
   let sendTimer = null;
+  let interimTimer = null;
+  let aliveTimer = null;
+  let resultCount = 0;
 
   function sendToMatch(text){
-    if(pendingMatch || voiceCooldown || text.length < 8) return;
+    if(pendingMatch || voiceCooldown || text.trim().length < 8) return;
     pendingMatch = true;
-    vsMatch.textContent = '...';
+    vsMatch.textContent = 'matching...';
     vsMatch.classList.add('show');
     fetch('/match', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({transcript: text})
+      body: JSON.stringify({transcript: text.trim()})
     })
     .then(r => r.json())
     .then(data => {
       pendingMatch = false;
       if(data.panel >= 0 && data.panel !== current){
         voiceCooldown = true;
-        sentenceBuffer = '';
-        vsMatch.textContent = '→ ' + navItems[data.panel].textContent.replace(/\d+$/, '').trim();
+        speechBuf = '';
+        lastInterim = '';
+        vsMatch.textContent = '-> ' + navItems[data.panel].textContent.replace(/\d+$/, '').trim();
         vsMatch.classList.add('show');
         goTo(data.panel);
         setTimeout(() => { voiceCooldown = false; vsMatch.classList.remove('show'); }, 10000);
       } else {
-        vsMatch.classList.remove('show');
+        vsMatch.textContent = '(' + (data.label||'NONE') + ')';
+        setTimeout(() => vsMatch.classList.remove('show'), 2000);
       }
     })
     .catch(() => { pendingMatch = false; vsMatch.classList.remove('show'); });
   }
 
-  function scheduleSend(){
+  function scheduleSendFinal(){
     clearTimeout(sendTimer);
     sendTimer = setTimeout(() => {
-      if(sentenceBuffer.trim().length >= 8){
-        sendToMatch(sentenceBuffer.trim());
+      if(speechBuf.trim().length >= 8) sendToMatch(speechBuf);
+    }, 1200);
+  }
+
+  function scheduleSendInterim(){
+    clearTimeout(interimTimer);
+    interimTimer = setTimeout(() => {
+      if(lastInterim.trim().length >= 8 && !pendingMatch){
+        sendToMatch(speechBuf + ' ' + lastInterim);
       }
-    }, 1500);
+    }, 2500);
   }
 
   function startVoice(){
     if(!SpeechRecognition){
-      alert('Speech Recognition not supported in this browser. Use Chrome or Edge.');
+      alert('Speech Recognition not supported. Use Chrome.');
       return;
     }
     recognition = new SpeechRecognition();
@@ -1506,7 +1520,14 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     recognition.lang = 'en-US';
     recognition.maxAlternatives = 1;
 
+    recognition.onstart = function(){
+      vsTranscript.textContent = 'Mic active — speak...';
+      resultCount = 0;
+      resetAliveCheck();
+    };
+
     recognition.onresult = function(e){
+      resultCount++;
       let interim = '';
       let final_ = '';
       for(let i = e.resultIndex; i < e.results.length; i++){
@@ -1515,27 +1536,53 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
         else interim += text;
       }
 
-      vsTranscript.textContent = interim || final_ || 'Listening...';
-
       if(final_){
-        sentenceBuffer += ' ' + final_;
-        if(sentenceBuffer.length > 600) sentenceBuffer = sentenceBuffer.slice(-600);
-        scheduleSend();
+        vsTranscript.textContent = final_;
+        speechBuf += ' ' + final_;
+        if(speechBuf.length > 600) speechBuf = speechBuf.slice(-600);
+        lastInterim = '';
+        scheduleSendFinal();
+      } else if(interim){
+        vsTranscript.textContent = interim;
+        lastInterim = interim;
+        scheduleSendInterim();
       }
+      resetAliveCheck();
     };
 
     recognition.onerror = function(e){
-      if(e.error === 'no-speech' || e.error === 'aborted') return;
-      console.warn('Voice error:', e.error);
-      vsTranscript.textContent = 'Error: ' + e.error + '. Restarting...';
+      if(e.error === 'aborted') return;
+      if(e.error === 'no-speech'){
+        vsTranscript.textContent = 'No speech heard — still listening...';
+        return;
+      }
+      if(e.error === 'not-allowed'){
+        vsTranscript.textContent = 'Mic blocked — tap address bar lock icon to allow';
+        return;
+      }
+      vsTranscript.textContent = 'Error: ' + e.error + ' — restarting...';
       if(voiceOn) setTimeout(startVoice, 1000);
     };
 
     recognition.onend = function(){
-      if(voiceOn){ try{ recognition.start(); }catch(e){} }
+      if(voiceOn){
+        vsTranscript.textContent = 'Reconnecting mic...';
+        setTimeout(() => { if(voiceOn) try{ startVoice(); }catch(e){} }, 300);
+      }
     };
 
-    try{ recognition.start(); }catch(e){}
+    try{ recognition.start(); }catch(e){
+      vsTranscript.textContent = 'Failed to start mic: ' + e.message;
+    }
+  }
+
+  function resetAliveCheck(){
+    clearTimeout(aliveTimer);
+    aliveTimer = setTimeout(() => {
+      if(voiceOn && recognition){
+        vsTranscript.textContent = 'Silence detected — still listening...';
+      }
+    }, 8000);
   }
 
   function toggleVoice(){
@@ -1544,14 +1591,17 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     document.body.classList.toggle('voice-on', voiceOn);
     voiceStrip.classList.toggle('open', voiceOn);
     if(voiceOn){
-      sentenceBuffer = '';
-      vsTranscript.textContent = 'Listening...';
+      speechBuf = '';
+      lastInterim = '';
+      vsTranscript.textContent = 'Starting mic...';
       startVoice();
     } else {
-      if(recognition){ try{ recognition.stop(); }catch(e){} recognition = null; }
-      vsTranscript.textContent = 'Waiting for speech...';
+      if(recognition){ try{ recognition.abort(); }catch(e){} recognition = null; }
+      vsTranscript.textContent = 'Mic off';
       vsMatch.classList.remove('show');
       clearTimeout(sendTimer);
+      clearTimeout(interimTimer);
+      clearTimeout(aliveTimer);
     }
   }
 
