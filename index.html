@@ -1712,27 +1712,33 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     .then(r=>r.json())
     .then(data => {
       livePending = false;
-      liveBuf = '';
-      liveLastInterim = '';
-      if(data.label === 'NONE') return;
+      if(data.label === 'NONE'){
+        /* Keep buffer — you're answering, Wioleta's next question may follow soon */
+        return;
+      }
       if(data.cues && data.cues.length > 0 && data.label !== currentLiveLabel){
+        /* New question detected — swap cues and reset buffer */
+        liveBuf = '';
+        liveLastInterim = '';
         showCues(data);
       }
     })
     .catch(() => { livePending = false; });
   }
 
+  /* Send the last ~300 chars of buffer (recent context) every time we schedule */
   function liveScheduleFinal(){
     clearTimeout(liveSendTimer);
     liveSendTimer = setTimeout(() => {
-      if(liveBuf.trim().length >= 8) liveSend(liveBuf);
-    }, 1200);
+      const text = liveBuf.trim();
+      if(text.length >= 8) liveSend(text.slice(-300));
+    }, 1500);
   }
   function liveScheduleInterim(){
     clearTimeout(liveInterimTimer);
     liveInterimTimer = setTimeout(() => {
-      if(liveLastInterim.trim().length >= 8 && !livePending)
-        liveSend(liveBuf + ' ' + liveLastInterim);
+      const text = (liveBuf + ' ' + liveLastInterim).trim();
+      if(text.length >= 8 && !livePending) liveSend(text.slice(-300));
     }, 2500);
   }
 
