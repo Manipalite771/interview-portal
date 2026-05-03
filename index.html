@@ -1690,10 +1690,21 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   let livePending = false;
   let liveCooldown = false;
 
+  let currentLiveLabel = '';
+
+  function showCues(data){
+    liveQ.textContent = data.label;
+    liveListening.style.display = 'none';
+    liveCues.innerHTML = data.cues.map((c,i) =>
+      '<div class="cue-item"><span class="cue-num">' + (i+1) + '</span>' + c + '</div>'
+    ).join('');
+    liveCues.classList.add('show');
+    currentLiveLabel = data.label;
+  }
+
   function liveSend(text){
-    if(livePending || liveCooldown || text.trim().length < 8) return;
+    if(livePending || text.trim().length < 8) return;
     livePending = true;
-    liveTranscript.textContent = 'Matching...';
     fetch('/match', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({transcript: text.trim()})
@@ -1701,19 +1712,11 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     .then(r=>r.json())
     .then(data => {
       livePending = false;
-      if(data.cues && data.cues.length > 0){
-        liveCooldown = true;
-        liveBuf = '';
-        liveLastInterim = '';
-        liveQ.textContent = data.label;
-        liveListening.style.display = 'none';
-        liveCues.innerHTML = data.cues.map((c,i) =>
-          '<div class="cue-item"><span class="cue-num">' + (i+1) + '</span>' + c + '</div>'
-        ).join('');
-        liveCues.classList.add('show');
-        setTimeout(() => { liveCooldown = false; }, 12000);
-      } else {
-        liveTranscript.textContent = '';
+      liveBuf = '';
+      liveLastInterim = '';
+      if(data.label === 'NONE') return;
+      if(data.cues && data.cues.length > 0 && data.label !== currentLiveLabel){
+        showCues(data);
       }
     })
     .catch(() => { livePending = false; });
@@ -1786,7 +1789,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     liveTranscript.textContent = '';
     liveBuf = '';
     liveLastInterim = '';
-    liveCooldown = false;
+    currentLiveLabel = '';
   }
 
   function toggleLive(){
