@@ -46,6 +46,24 @@ VENDOR — "Why should we hire you from a vendor/agency", "what makes you think 
 
 WHYLEAVE — "Why are you leaving your current company", "why leave Indegene", "why are you looking for a change", "what's motivating this move", "why now".
 
+CURROLE — Current role at Indegene, what do you do today, describe your current responsibilities, day-to-day work, what does your current role look like, tell me about your current position.
+
+ROLEALIGN — Why this role, how does your experience align with this job, why are you a good fit, why Astellas, why this specific role, what attracted you to this position, how does your background match.
+
+FIVEYEAR — Where do you see yourself in 5 years, long-term career goals, short-term and long-term goals, career aspirations, career vision, where is your career heading, how does this role fit your career plan.
+
+TECHTONOTCH — Your role seems very tech/GenAI focused, how would you transition into a non-technical transformation role, this is largely a change management role not a tech role, how do you move from tech to people-focused work, are you too technical for this.
+
+GCCCHALLENGE — Common challenges GCCs face, what are typical problems new capability centers encounter, challenges for pharma GCCs specifically, scaling GCCs, growing pains for new global centers, what issues do you think our GCCs face.
+
+SVCGCC — Transitioning from a service-based/vendor model to a GCC model, how is a GCC different from an outsourcing setup, operating model differences between service delivery and in-house capability centers.
+
+FOCUS — What areas do you want to focus on now, what do you want to work on next, what interests you most about this work, what part of transformation are you most drawn to, where do you want to grow.
+
+STRENGTH — Your strengths, what are you good at, what do colleagues say about you, what is your superpower, competitive advantage, what sets you apart.
+
+WEAKNESS — Your weaknesses, areas for improvement, what are you working on, development areas, what do you struggle with, where do you need to grow.
+
 ASKME — "Do you have any questions for me", "any questions", "what would you like to know", "your turn to ask", end of interview questions invitation.
 
 FOLLOWUP — The interviewer is probing deeper into a previous answer: "tell me more", "can you elaborate", "what specifically", "what would you have done differently", "how did you measure that", "sounds like Prosci/ADKAR", "what did your reportee struggle with". This is a follow-up, not a new topic.
@@ -63,9 +81,10 @@ FOLLOWUP — The interviewer is probing deeper into a previous answer: "tell me 
 - Q1 is the catch-all for broad experience questions that don't fit a more specific Q2-Q11.
 - INTRO is for the very start — "tell me about yourself" style openers.
 - The transcript may be imperfect (speech-to-text errors, fragments, Polish accent). Do your best to interpret intent.
-- Respond with EXACTLY one token: INTRO Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 PHARMA VENDOR WHYLEAVE ASKME FOLLOWUP or NONE`;
+- Valid tokens: INTRO Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 PHARMA VENDOR WHYLEAVE CURROLE ROLEALIGN FIVEYEAR TECHTONOTCH GCCCHALLENGE SVCGCC FOCUS STRENGTH WEAKNESS ASKME FOLLOWUP NONE
+- Respond with EXACTLY one of the above tokens`;
 
-const PANEL_MAP = {INTRO:2,Q1:3,Q2:4,Q3:5,Q4:6,Q5:7,Q6:8,Q7:9,Q8:10,Q9:11,Q10:12,Q11:13,PHARMA:14,VENDOR:14,WHYLEAVE:18,ASKME:17,FOLLOWUP:18};
+const PANEL_MAP = {INTRO:2,Q1:3,Q2:4,Q3:5,Q4:6,Q5:7,Q6:8,Q7:9,Q8:10,Q9:11,Q10:12,Q11:13,PHARMA:14,VENDOR:14,WHYLEAVE:18,CURROLE:-2,ROLEALIGN:-2,FIVEYEAR:-2,TECHTONOTCH:-2,GCCCHALLENGE:-2,SVCGCC:-2,FOCUS:-2,STRENGTH:-2,WEAKNESS:-2,ASKME:17,FOLLOWUP:18};
 
 const CUES = {
   Q1: [
@@ -247,6 +266,93 @@ const CUES = {
     'TRAP: "What did your reportee struggle with?" → Be specific: Vrinda = confidence in client demos, dry-runs every Tuesday',
     '"I don\'t know" is allowed — better than faking. Wioleta values courage.',
   ],
+  CURROLE: [
+    'Senior Manager, Strategic Initiatives at Indegene (3 promotions in 5 years)',
+    'Leading GenAI Innovation Center for Vertex Pharmaceuticals — roadmap, governance, scale-up',
+    'Scaling solutioning engagement with AstraZeneca — directly with Executive Director',
+    'Previously: enterprise GenAI adoption (400+ employees), CoP (3→90), Bowler Charts, Change Makers Council',
+    'Multi-pharma portfolio: Sanofi, Amgen EU5, Pfizer, Janssen, AZ, BI, CSL Vifor, Gilead, Regeneron, Haleon, Vertex',
+    'Indegene Bangalore = Global Capability Center for pharma clients — delivery-side of GCC model',
+    'Operating models + governance cadences + communication architecture at scale',
+    'Current work sits at intersection of strategy, transformation, and pharma domain',
+  ],
+  ROLEALIGN: [
+    'Three differentiators: pharma fluency (12 companies) + transformation craft + GCC delivery perspective',
+    'Been ON the delivery side of a pharma GCC for 4 years — Indegene Bangalore IS a GCC',
+    'Astellas moment: CSP2026 launching, 3 GCCs scaling, "Change Communication" = diagnosed gap',
+    'Operating models, governance cadences, change adoption at scale — that IS the role',
+    'Cross-geography experience: Amgen EU5 (UK, DE, FR, IT, ES), multi-pharma portfolios',
+    'Communication architecture: Change Makers Council, Culture Credo, SharePoint instruments',
+    'CxO engagement: AstraZeneca ED, Bowler Charts in board reviews',
+    'Not a maintenance role — build role at a build moment. My career arc matches that energy.',
+  ],
+  FIVEYEAR: [
+    'Short-term: become the Lead Consultant who builds "One Astellas" engagement architecture across 3 GCCs',
+    'Build durable change capability that outlives my involvement — Chapters model alive in delivery',
+    'Earn Astellas-specific depth — XTANDI bridge, SMT mechanics, CSP2026 execution',
+    'Medium-term: grow into a Principal role within the Transformation Office',
+    'Long-term: lead transformation at the intersection of pharma strategy and organizational change',
+    'This role is the SPECIFIC next step — depth over breadth, one pharma\'s full agenda inside CxO function',
+    'Astellas at this moment = rare alignment between what I want to build and what needs building',
+  ],
+  TECHTONOTCH: [
+    'My tech work was always MEANS to transformation, never the end itself',
+    'GenAI adoption: the hard part was NOT the tech — it was reframing "productivity" to "augmentation"',
+    'Gave SMEs the role of quality bar — that\'s change management, not engineering',
+    'Quantive OKR: sat with leaders\' actual pain, not the tool features — ~90% adoption',
+    'Change Makers Council, Culture Credo — zero tech, pure organizational behaviour change',
+    'Bowler Charts: hard part was getting leaders to treat data as voice of their function',
+    'Tech is one lever. My craft is operating models, governance cadences, communication architecture.',
+    'The 12 pharma companies are all change contexts, not tech contexts',
+  ],
+  GCCCHALLENGE: [
+    'Challenge 1: "Three islands" risk — GCCs scaling fast but uncoordinated',
+    'Challenge 2: Identity crisis — are we a cost center or a capability hub? Framing matters.',
+    'Challenge 3: Maturity mismatch — 12-month hub vs 3-month hub need different messaging',
+    'Challenge 4: Talent integration — new joiners don\'t feel connected to the mothership narrative',
+    'Challenge 5: Change Communication gap — Astellas flagged this as top materiality gap (Feb 2025)',
+    'Challenge 6: Governance fragmentation — each site builds its own cadences, no shared spine',
+    'Solution: coherent core + configurable site identity — NOT uniform brand',
+    'Bengaluru (full-stack), Warsaw (GBS-heavy), Mexico (medical-digital-innovation) — real differences to respect',
+    'Success = leaders in each GCC repeating the narrative in their own words, unprompted',
+  ],
+  SVCGCC: [
+    'Service model: deliver for many clients, breadth over depth, project-based relationships',
+    'GCC model: deliver for ONE company, depth over breadth, embedded in the org',
+    'Key shift: you ARE the organization, not an external partner — skin in the game changes everything',
+    'Indegene Bangalore IS itself a GCC for pharma clients — I\'ve lived the model from inside',
+    'Same maturity arc: onboarding waves, capability building, governance cadences, retention',
+    'What I bring: I know what makes the model work vs stall — from the delivery side',
+    'The craft transfers: operating models, governance, change adoption, communication architecture',
+    'What I build in first 60-90 days: Astellas-specific depth — XTANDI, SMT, "One Astellas" nuance',
+  ],
+  FOCUS: [
+    'Area 1: Designing cross-GCC engagement architecture — "One Astellas" that respects site identity',
+    'Area 2: Building durable change capability — Chapters model alive in delivery, not just slides',
+    'Area 3: Communication architecture that shifts behaviour — not comms plans, adoption mechanisms',
+    'Area 4: Coaching the next layer of consultants — capability transfer, not dependency on me',
+    'What draws me: the intersection of pharma strategy + organizational transformation + GCC scaling',
+    'The moment matters: CSP2026, three GCCs, Change Communication mandate — it\'s a build moment',
+    'I want to be in the room where ambiguous strategy becomes things people do differently on Monday morning',
+  ],
+  STRENGTH: [
+    'Execution credibility — I ship end-to-end, not just describe. GenAI: 30%+ efficiency, 400+ employees.',
+    'Pharma fluency — 12 companies, EU5 markets, institutional sales to CxO engagement',
+    'Coalition building — Change Makers Council (26 cross-BU volunteers), CoP (3→90), multi-stakeholder programs',
+    'Communication architecture — not just "comms plans" but instruments that shift behaviour',
+    'Navigating ambiguity — ICAP Stint 3 went from 1 AL to 6 ALs; I read where the energy is',
+    'Coaching — Vrinda + Raja both contributing to live client projects in 6 months, from non-technical backgrounds',
+    'Colleagues say: "simplifies the complex, shares right examples at right time, keeps focus on outcomes" (Rahul Umare)',
+    'Evidence: 3 promotions in 5 years, National Winner Flipkart Wired (1st of 3,290 teams), Dean\'s Merit List',
+  ],
+  WEAKNESS: [
+    'Honest answer — not a fake-humble "I\'m a perfectionist"',
+    'Depth of Astellas-specific context — XTANDI bridge mechanics, SMT details, internal politics',
+    'I\'d build that deliberately in first 60-90 days — listen before designing',
+    'Earlier in career: took too long to push back on scope creep (BSV lesson — should have insisted on CR framework week 1)',
+    'Learning to let go of work that others can own — as CoP scaled to 90, I had to stop being in the loop',
+    'Wioleta values courage and honesty over false confidence — "I don\'t know yet" is allowed',
+  ],
   NONE: []
 };
 
@@ -345,7 +451,7 @@ const server = http.createServer(async (req, res) => {
           return;
         }
         const raw = await callHaiku(transcript);
-        const m = raw.match(/\b(INTRO|Q1[01]?|Q[1-9]|PHARMA|VENDOR|WHYLEAVE|ASKME|FOLLOWUP|NONE)\b/);
+        const m = raw.match(/\b(INTRO|Q1[01]?|Q[1-9]|PHARMA|VENDOR|WHYLEAVE|CURROLE|ROLEALIGN|FIVEYEAR|TECHTONOTCH|GCCCHALLENGE|SVCGCC|FOCUS|STRENGTH|WEAKNESS|ASKME|FOLLOWUP|NONE)\b/);
         const label = m ? m[1] : 'NONE';
         const panel = PANEL_MAP[label] ?? -1;
         const cues = CUES[label] || [];
