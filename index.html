@@ -1720,7 +1720,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     .then(r=>r.json())
     .then(data => {
       livePending = false;
-      if(data.label === 'NONE') return;
+      if(data.label === 'NONE' || data.label === 'FOLLOWUP') return;
       if(data.cues && data.cues.length > 0 && data.label !== currentLiveLabel){
         liveBuf = '';
         liveLastInterim = '';
