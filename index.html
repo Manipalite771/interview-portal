@@ -1689,7 +1689,9 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   let liveSendTimer = null;
   let liveInterimTimer = null;
   let livePending = false;
-  let liveCooldown = false;
+  let livePaused = false;
+  let liveSilenceTimer = null;
+  let liveLastSpeechTime = 0;
 
   let currentLiveLabel = '';
 
@@ -1703,10 +1705,13 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     document.getElementById('live-body').classList.add('has-cues');
     document.getElementById('live-body').scrollTop = 0;
     currentLiveLabel = data.label;
+    /* Pause sending — candidate is about to answer */
+    livePaused = true;
+    clearTimeout(liveSilenceTimer);
   }
 
   function liveSend(text){
-    if(livePending || text.trim().length < 8) return;
+    if(livePending || livePaused || text.trim().length < 8) return;
     livePending = true;
     fetch('/match', {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -1715,12 +1720,8 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     .then(r=>r.json())
     .then(data => {
       livePending = false;
-      if(data.label === 'NONE'){
-        /* Keep buffer — you're answering, Wioleta's next question may follow soon */
-        return;
-      }
+      if(data.label === 'NONE') return;
       if(data.cues && data.cues.length > 0 && data.label !== currentLiveLabel){
-        /* New question detected — swap cues and reset buffer */
         liveBuf = '';
         liveLastInterim = '';
         showCues(data);
@@ -1729,7 +1730,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     .catch(() => { livePending = false; });
   }
 
-  /* Send the last ~300 chars of buffer (recent context) every time we schedule */
   function liveScheduleFinal(){
     clearTimeout(liveSendTimer);
     liveSendTimer = setTimeout(() => {
@@ -1743,6 +1743,22 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
       const text = (liveBuf + ' ' + liveLastInterim).trim();
       if(text.length >= 8 && !livePending) liveSend(text.slice(-300));
     }, 2500);
+  }
+
+  /* After cues show, we detect a silence gap to know the candidate stopped
+     answering and Wioleta is likely speaking next. Then we unpause and
+     clear the buffer so only her new question gets classified. */
+  function liveSpeechDetected(){
+    liveLastSpeechTime = Date.now();
+    if(livePaused){
+      clearTimeout(liveSilenceTimer);
+      liveSilenceTimer = setTimeout(() => {
+        /* 4 seconds of no speech results → candidate likely done answering */
+        livePaused = false;
+        liveBuf = '';
+        liveLastInterim = '';
+      }, 4000);
+    }
   }
 
   function startLiveRecog(){
@@ -1760,16 +1776,24 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
         if(e.results[i].isFinal) final_ += e.results[i][0].transcript;
         else interim += e.results[i][0].transcript;
       }
+
+      /* Always track speech timing for silence detection */
+      liveSpeechDetected();
+
       if(final_){
         liveTranscript.textContent = final_;
-        liveBuf += ' ' + final_;
-        if(liveBuf.length > 600) liveBuf = liveBuf.slice(-600);
-        liveLastInterim = '';
-        liveScheduleFinal();
+        if(!livePaused){
+          liveBuf += ' ' + final_;
+          if(liveBuf.length > 600) liveBuf = liveBuf.slice(-600);
+          liveLastInterim = '';
+          liveScheduleFinal();
+        }
       } else if(interim){
         liveTranscript.textContent = interim;
-        liveLastInterim = interim;
-        liveScheduleInterim();
+        if(!livePaused){
+          liveLastInterim = interim;
+          liveScheduleInterim();
+        }
       }
     };
 
@@ -1800,6 +1824,8 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     liveBuf = '';
     liveLastInterim = '';
     currentLiveLabel = '';
+    livePaused = false;
+    clearTimeout(liveSilenceTimer);
   }
 
   function toggleLive(){
