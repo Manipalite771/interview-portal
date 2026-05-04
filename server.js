@@ -64,6 +64,14 @@ STRENGTH — Your strengths, what are you good at, what do colleagues say about 
 
 WEAKNESS — Your weaknesses, areas for improvement, what are you working on, development areas, what do you struggle with, where do you need to grow.
 
+TOMANDATE — Questions about the Transformation Office mandate, what the TO does, how it operates, Chapters, Stream/Crew/Pod, CxO embedding model, how transformation is structured at Astellas, what kind of work the TO delivers, the internal consulting model, how initiatives are run, how the TO partners with CxO functions, what the role will actually involve day to day.
+
+ASTELLASTRANSFORM — Questions about Astellas's transformation agenda broadly, what are the big strategic challenges, what is SMT, what is CSP2026, the XTANDI cliff, what pressures Astellas faces, the biggest risks, restructuring, the reorg, what does transformation mean at Astellas, the twelve live tensions, pain points.
+
+YEARONE — What would you do in your first year, first 90 days plan (when not specifically about GCCs), how would you approach the role, what would success look like, what would you prioritize, your plan for the first few months, what would you deliver.
+
+ONEASTELLAS — Questions about "One Astellas" as a concept, how to unify culture across sites, how to make distributed teams feel connected, how to build a shared identity, corporate values across geographies, brand consistency, how to prevent silos.
+
 ASKME — "Do you have any questions for me", "any questions", "what would you like to know", "your turn to ask", end of interview questions invitation.
 
 FOLLOWUP — The interviewer is probing deeper into a previous answer: "tell me more", "can you elaborate", "what specifically", "what would you have done differently", "how did you measure that", "sounds like Prosci/ADKAR", "what did your reportee struggle with". This is a follow-up, not a new topic.
@@ -81,10 +89,10 @@ FOLLOWUP — The interviewer is probing deeper into a previous answer: "tell me 
 - Q1 is the catch-all for broad experience questions that don't fit a more specific Q2-Q11.
 - INTRO is for the very start — "tell me about yourself" style openers.
 - The transcript may be imperfect (speech-to-text errors, fragments, Polish accent). Do your best to interpret intent.
-- Valid tokens: INTRO Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 PHARMA VENDOR WHYLEAVE CURROLE ROLEALIGN FIVEYEAR TECHTONOTCH GCCCHALLENGE SVCGCC FOCUS STRENGTH WEAKNESS ASKME FOLLOWUP NONE
+- Valid tokens: INTRO Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 PHARMA VENDOR WHYLEAVE CURROLE ROLEALIGN FIVEYEAR TECHTONOTCH GCCCHALLENGE SVCGCC FOCUS STRENGTH WEAKNESS TOMANDATE ASTELLASTRANSFORM YEARONE ONEASTELLAS ASKME FOLLOWUP NONE
 - Respond with EXACTLY one of the above tokens`;
 
-const PANEL_MAP = {INTRO:2,Q1:3,Q2:4,Q3:5,Q4:6,Q5:7,Q6:8,Q7:9,Q8:10,Q9:11,Q10:12,Q11:13,PHARMA:14,VENDOR:14,WHYLEAVE:18,CURROLE:-2,ROLEALIGN:-2,FIVEYEAR:-2,TECHTONOTCH:-2,GCCCHALLENGE:-2,SVCGCC:-2,FOCUS:-2,STRENGTH:-2,WEAKNESS:-2,ASKME:17,FOLLOWUP:18};
+const PANEL_MAP = {INTRO:2,Q1:3,Q2:4,Q3:5,Q4:6,Q5:7,Q6:8,Q7:9,Q8:10,Q9:11,Q10:12,Q11:13,PHARMA:14,VENDOR:14,WHYLEAVE:18,CURROLE:-2,ROLEALIGN:-2,FIVEYEAR:-2,TECHTONOTCH:-2,GCCCHALLENGE:-2,SVCGCC:-2,FOCUS:-2,STRENGTH:-2,WEAKNESS:-2,TOMANDATE:-2,ASTELLASTRANSFORM:-2,YEARONE:-2,ONEASTELLAS:-2,ASKME:17,FOLLOWUP:18};
 
 const CUES = {
   Q1: [
@@ -353,6 +361,55 @@ const CUES = {
     'Learning to let go of work that others can own — as CoP scaled to 90, I had to stop being in the loop',
     'Wioleta values courage and honesty over false confidence — "I don\'t know yet" is allowed',
   ],
+  TOMANDATE: [
+    'TO = real internal consulting unit, NOT a loose program office',
+    'Hierarchy: Managing Principal → Principal → Lead Consultant → Senior Consultant → Consultant',
+    'Organised by Chapters: Change Management, Process Excellence, Agile',
+    'Delivery via Agile Stream/Crew/Pod framework',
+    'CxO-EMBEDDED: Managing Principals partner with CxOs + Chiefs of Staff',
+    'Lead Consultant leads significant workstreams within a CxO function',
+    'Post Oct 2025: TO + DigitalX under CStO — transformation = strategy execution, not digital bet',
+    'Scope: initiative scoping, stakeholder coalitions, adoption metrics, capability building (methods/tools/playbooks)',
+    'Coach Senior Consultants + Consultants — build the bench, not just deliver',
+    'Change Communication flagged as TOP GAP — this role fills a diagnosed deficit',
+  ],
+  ASTELLASTRANSFORM: [
+    'SMT = ¥150B recurring savings by FY2027 — insourcing, vendor rationalisation, IT streamlining',
+    'CSP2026 launches late May — first execution wave of new 5-year plan',
+    'XTANDI cliff: ~48% revenue, US LOE Aug 2027, Medicare MFP $7,004 from Jan 2027',
+    'April 2025 reorg: Value Creation (R&D) / Value Delivery (Commercial + Medical) / Value Enablement',
+    'CDTO eliminated Oct 2025 — transformation now under CStO, strategy-execution framing',
+    'CStO Pearson resigned Mar 2026 → Sandor interim — leadership transition at worst moment',
+    'Farallon ~3% activist stake — ghost in every margin/efficiency conversation',
+    'IZERVAY CRL + ¥115B impairment, VEOZAH boxed warning, Audentes thesis broken',
+    'PADCEV bright spot (¥210B forecast), VYLOY ramping',
+    '3 GCCs scaling simultaneously — federated governance, no single owner',
+    '"Change Communication" = Astellas self-identified weakest capability (Feb 2025)',
+  ],
+  YEARONE: [
+    'Days 1-45: LISTEN — sessions with Mukta, Andżelika, Flavio + 2-3 levels deep per site',
+    'Understand what "One Astellas" means in lived reality of each hub at its maturity stage',
+    'Days 45-90: Build GCC narrative framework — pillars, tone, hashtag, story types — tested with MDs',
+    'Anchor in CSP2026 + new Values & Behaviors as natural editorial spine',
+    'Months 3-6: Launch governed cross-GCC SharePoint with adoption metrics from day 1',
+    'Deliver at least one CxO-function workstream with Managing Principal sponsorship',
+    'Calendar = editorial arc: Warsaw Bridge move, Mexico first year, Bengaluru scale-up, CSP2026 launch',
+    'Months 6-12: Coached development of 1-2 Senior Consultants',
+    'Success signal: leaders in each GCC repeating the narrative in own words, unprompted, by month 9',
+    'Measurable: SharePoint adoption (cross-GCC reads), behaviour adoption (not just awareness)',
+  ],
+  ONEASTELLAS: [
+    '"One Astellas" = formal corporate value: leveraging diverse perspectives to achieve org goals',
+    'Won\'t work if it means UNIFORM — must be coherent core + configurable site identity',
+    'Bengaluru: full-stack capability hub · Warsaw: GBS/clinical core · Mexico: medical-digital-innovation',
+    'Three different maturity curves: messaging that lands in Warsaw may overwhelm Mexico City',
+    'New Values: Integrity, Innovation, Impact + 5 Behaviors (Courage, Urgency, One Astellas, Outcome Focus, Accountability)',
+    'Patient Focus elevated to VISION layer — implicit everywhere, not a competing value',
+    '"Excellence" swapped for "Impact" because of cross-cultural resonance — Astellas is aware',
+    'Federated model: each GCC MD owns narrative, shared spine of tone + hashtags',
+    'Integrating mechanism = communications layer — no single Global Head of GCCs exists',
+    'Legacy-market anxiety (US/EU offshoring fears) — GCC branding must pair with internal narrative for sending sites',
+  ],
   NONE: []
 };
 
@@ -451,7 +508,7 @@ const server = http.createServer(async (req, res) => {
           return;
         }
         const raw = await callHaiku(transcript);
-        const m = raw.match(/\b(INTRO|Q1[01]?|Q[1-9]|PHARMA|VENDOR|WHYLEAVE|CURROLE|ROLEALIGN|FIVEYEAR|TECHTONOTCH|GCCCHALLENGE|SVCGCC|FOCUS|STRENGTH|WEAKNESS|ASKME|FOLLOWUP|NONE)\b/);
+        const m = raw.match(/\b(INTRO|Q1[01]?|Q[1-9]|PHARMA|VENDOR|WHYLEAVE|CURROLE|ROLEALIGN|FIVEYEAR|TECHTONOTCH|GCCCHALLENGE|SVCGCC|FOCUS|STRENGTH|WEAKNESS|TOMANDATE|ASTELLASTRANSFORM|YEARONE|ONEASTELLAS|ASKME|FOLLOWUP|NONE)\b/);
         const label = m ? m[1] : 'NONE';
         const panel = PANEL_MAP[label] ?? -1;
         const cues = CUES[label] || [];
