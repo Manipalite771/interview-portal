@@ -202,6 +202,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 #live-close{background:none;border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:6px;cursor:pointer;font-size:0.8rem}
 
 #live-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:0;transition:all 0.3s ease}
+#live-body.has-cues{justify-content:flex-start}
 
 /* Listening state */
 #live-listening{display:flex;flex-direction:column;align-items:center;gap:16px}
@@ -212,7 +213,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 #live-transcript{font-size:0.9rem;color:var(--text3);text-align:center;max-width:80%;min-height:1.2em;margin-top:8px;font-style:italic}
 
 /* Cues state */
-#live-cues{display:none;width:100%;max-width:700px;padding:0 4px}
+#live-cues{display:none;width:100%;max-width:700px;padding:10px 4px 20px}
 #live-cues.show{display:block}
 #live-cues .cue-item{font-size:1.35rem;color:var(--amber);font-weight:700;line-height:1.5;padding:7px 0;border-bottom:1px solid rgba(245,183,49,0.1)}
 #live-cues .cue-item:last-child{border-bottom:none}
@@ -1699,6 +1700,8 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
       '<div class="cue-item"><span class="cue-num">' + (i+1) + '</span>' + c + '</div>'
     ).join('');
     liveCues.classList.add('show');
+    document.getElementById('live-body').classList.add('has-cues');
+    document.getElementById('live-body').scrollTop = 0;
     currentLiveLabel = data.label;
   }
 
@@ -1790,6 +1793,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   function liveReset(){
     liveCues.classList.remove('show');
     liveCues.innerHTML = '';
+    document.getElementById('live-body').classList.remove('has-cues');
     liveListening.style.display = 'flex';
     liveQ.textContent = '';
     liveTranscript.textContent = '';
