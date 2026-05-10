@@ -10,7 +10,7 @@ const AWS_SECRET = process.env.AWS_SECRET_ACCESS_KEY;
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 
-const SYSTEM_PROMPT = `You are a real-time interview assistant for a Transformation Lead Consultant role at Astellas pharma. You receive live speech-to-text from the interview. Route every interviewer utterance to the best matching prepared section.
+const SYSTEM_PROMPT = `You are a real-time interview assistant for Round 2 (culture fit / hiring manager round) of a Transformation Lead Consultant role at Astellas Pharma. The interviewer is Mukta Arora, Managing Director of the Bangalore GCC. She is a senior GCC builder (Lilly, Elanco, now Astellas). Route every interviewer utterance to the best matching prepared section.
 
 Respond with EXACTLY one token. No explanation, no preamble, no punctuation.
 
@@ -18,63 +18,63 @@ Respond with EXACTLY one token. No explanation, no preamble, no punctuation.
 
 INTRO — "Tell me about yourself", "introduce yourself", "walk me through your background", "your experience", any opening/icebreaker question about who the candidate is. DEFAULT for the start of the interview.
 
-Q1 — TRANSFORMATION END-TO-END: Walk through a transformation initiative, change program, or large-scale project led end-to-end. The messy middle. Biggest project. Most impactful work.
+CAREER — "Walk me through your career", "why pharma", "why transformation", "your career journey", "how did you get here", "your career path", "from pharma sales to transformation".
 
-Q2 — FAILURE / SETBACK: Things going wrong, failing, challenges, difficulties, mistakes, lessons learned, tough situations, what would you do differently.
+WHYASTELLAS — "Why Astellas", "what do you know about us", "what attracted you to Astellas", "why this company", "what do you know about our company", "what excites you about Astellas".
 
-Q3 — CROSS-GEOGRAPHY / CULTURE: Working across countries, regions, cultures, markets, geographies, diverse teams, international experience, India Poland Mexico, global teams, time zones.
+WHYROLE — "Why this role", "what attracted you to this position", "how does your experience align", "why are you a good fit", "what makes you right for this role", "how do you see yourself in this role".
 
-Q4 — GCC / MULTI-SITE ENGAGEMENT STRATEGY: Designing engagement or transformation strategy across multiple offices/sites/capability centers/GCCs/hubs. First 90 days. How would you approach this role.
+SERVICESGCC — "How will you transition from services/vendor to GCC/in-house", "you come from a services company", "vendor to internal", "agency to in-house", "consulting to internal", "how would you operate inside pharma".
 
-Q5 — COMMUNICATION THAT CHANGED BEHAVIOUR: Communications, messaging, campaigns, internal comms, employee engagement, culture change, values rollout, getting people to actually change what they do.
+TECHSHIFT — "Your profile looks very GenAI/tech heavy", "this role is broader/less technical", "how do you move from tech to people-focused", "are you too technical", "this is a change management role not a tech role".
 
-Q6 — SHAREPOINT / INTRANET / PLATFORMS: Internal platforms, SharePoint, intranets, knowledge management, content portals, digital workplace tools, what makes them work vs die.
+CHANGECULTURE — "Tell me about a culture change initiative", "culture program", "values rollout", "embedding culture", "change program you led", "engaging hearts and minds", "organizational culture".
 
-Q7 — STAKEHOLDER RESISTANCE: Dealing with resistance, skeptics, difficult stakeholders, pushback, gaining buy-in, influencing without authority, winning over opponents, convincing someone.
+TRISITE — "How would you build engagement across India Poland Mexico", "cross-geography engagement", "multi-site strategy", "three GCCs", "global engagement", "One Astellas across sites", "tri-site communication".
 
-Q8 — CXO / EXECUTIVE ENGAGEMENT: Working with senior leadership, C-suite, executives, VPs, directors, board members, presenting to leadership.
+SHAREPOINT — "SharePoint", "intranet", "digital platform", "internal platform", "knowledge management platform", "engagement platform", "town square", "digital workplace".
 
-Q9 — COACHING / DEVELOPING JUNIORS: Coaching, mentoring, developing, teaching, growing, managing junior or less experienced team members, management style, leadership style with reports.
+SENIORADOPT — "Driving adoption among senior leaders", "leadership adoption", "getting leaders to adopt", "executive buy-in for tools/processes", "OKR adoption", "Bowler Charts adoption", "governance mechanisms".
 
-Q10 — LASTING CAPABILITY / SUSTAINABILITY: Building something that lasted, sustained impact, durable outcomes, outlived a project, scalable solutions, institutional capability, legacy, long-term impact.
+RESISTANCE — "Tell me about resistance", "managing resistance", "stakeholder pushback", "difficult stakeholders", "skeptics", "winning over opponents", "dealing with pushback", "people who didn't want to change".
 
-Q11 — PLAN BROKE / AMBIGUITY / PIVOT: Adapting when plans changed, navigating uncertainty, ambiguity, pivoting, unclear situations, no clear roadmap, unexpected change.
+LEADSTYLE — "What is your leadership style", "how do you lead", "describe your management approach", "how do you manage teams", "leadership philosophy".
 
-PHARMA — "What do you know about Astellas", "what do you know about us", "about our company", "our pipeline", "our products", any question testing the candidate's knowledge of Astellas or the pharma industry specifically.
+FIRST90 — "First 90 days", "first three months", "how would you approach the role", "what would you do initially", "your plan for getting started", "how would you ramp up", "onboarding plan".
 
-VENDOR — "Why should we hire you from a vendor/agency", "what makes you think you can operate inside pharma/in-house", "transition from vendor to in-house", "why move from consulting", "why Indegene to Astellas".
+GENAI — "GenAI adoption", "AI transformation", "enterprise AI", "400 employees", "8 pilots", "50 use cases", "how did you drive adoption of AI", "technology adoption at scale", "GenAI Community of Practice".
 
-WHYLEAVE — "Why are you leaving your current company", "why leave Indegene", "why are you looking for a change", "what's motivating this move", "why now".
+BOWLERS — "Bowler Charts", "KPI system", "executive dashboard", "governance dashboard", "Power BI", "how did this become a governance mechanism", "CXO reviews", "board-level reporting".
 
-CURROLE — Current role at Indegene, what do you do today, describe your current responsibilities, day-to-day work, what does your current role look like, tell me about your current position.
+COACHING — "How do you coach juniors", "developing team members", "mentoring", "growing people", "leadership development", "managing direct reports", "upskilling", "team development".
 
-ROLEALIGN — Why this role, how does your experience align with this job, why are you a good fit, why Astellas, why this specific role, what attracted you to this position, how does your background match.
+FAILURE — "Tell me about a failure", "something that didn't go to plan", "biggest mistake", "what went wrong", "lessons learned", "what would you do differently", "setback".
 
-FIVEYEAR — Where do you see yourself in 5 years, long-term career goals, short-term and long-term goals, career aspirations, career vision, where is your career heading, how does this role fit your career plan.
+CXOWORK — "Working with C-suite", "senior stakeholders", "executive engagement", "presenting to leadership", "COO", "Executive Director", "Managing Principal", "how do you work with senior leaders".
 
-TECHTONOTCH — Your role seems very tech/GenAI focused, how would you transition into a non-technical transformation role, this is largely a change management role not a tech role, how do you move from tech to people-focused work, are you too technical for this.
+CURRENTROLE — "What is your current role", "what do you do today", "Vertex", "AstraZeneca", "current responsibilities", "describe your current work", "what are you working on now".
 
-GCCCHALLENGE — Common challenges GCCs face, what are typical problems new capability centers encounter, challenges for pharma GCCs specifically, scaling GCCs, growing pains for new global centers, what issues do you think our GCCs face.
+WHYLEAVE — "Why are you leaving", "why leave Indegene", "why are you looking for a change", "what's motivating this move", "you were just promoted".
 
-SVCGCC — Transitioning from a service-based/vendor model to a GCC model, how is a GCC different from an outsourcing setup, operating model differences between service delivery and in-house capability centers.
+PHARMACHECK — "What's your read on Astellas portfolio", "XTANDI", "PADCEV", "pipeline", "SMT", "what do you know about our products", "our strategic challenges", "pharma industry knowledge".
 
-FOCUS — What areas do you want to focus on now, what do you want to work on next, what interests you most about this work, what part of transformation are you most drawn to, where do you want to grow.
+VALUES — "Values and Behaviors", "Integrity Innovation Impact", "Courage Urgency One Astellas", "what do you think of our values", "how would you embed values", "why these values".
 
-STRENGTH — Your strengths, what are you good at, what do colleagues say about you, what is your superpower, competitive advantage, what sets you apart.
+TOMANDATE — "Transformation Office", "how the TO works", "Chapters", "Stream Crew Pod", "Managing Principal", "what does the role actually involve", "day to day", "how initiatives are run".
 
-WEAKNESS — Your weaknesses, areas for improvement, what are you working on, development areas, what do you struggle with, where do you need to grow.
+ONEASTELLAS — "One Astellas", "unified culture", "shared identity", "how to connect distributed teams", "silos", "coherence across sites", "how to make people feel part of one company".
 
-TOMANDATE — Questions about the Transformation Office mandate, what the TO does, how it operates, Chapters, Stream/Crew/Pod, CxO embedding model, how transformation is structured at Astellas, what kind of work the TO delivers, the internal consulting model, how initiatives are run, how the TO partners with CxO functions, what the role will actually involve day to day.
+BUDGET — "Budget management", "financial ownership", "cost management", "have you managed budgets", "P&L", "cost optimization", "vendor negotiations".
 
-ASTELLASTRANSFORM — Questions about Astellas's transformation agenda broadly, what are the big strategic challenges, what is SMT, what is CSP2026, the XTANDI cliff, what pressures Astellas faces, the biggest risks, restructuring, the reorg, what does transformation mean at Astellas, the twelve live tensions, pain points.
+GAPS — "You've never worked inside a pharma", "global experience within one org", "years of experience", "multi-geography within one org", "what don't you know", "where are your gaps".
 
-YEARONE — What would you do in your first year, first 90 days plan (when not specifically about GCCs), how would you approach the role, what would success look like, what would you prioritize, your plan for the first few months, what would you deliver.
+SANOFI — "Sanofi Connect", "omnichannel", "HCP engagement", "digital channels", "field force transformation", "pharma marketing", "multichannel".
 
-ONEASTELLAS — Questions about "One Astellas" as a concept, how to unify culture across sites, how to make distributed teams feel connected, how to build a shared identity, corporate values across geographies, brand consistency, how to prevent silos.
+BSV — "BSVwithU", "Bharat Serum", "platform management", "women's health", "monthly reporting to COO", "end-to-end project ownership".
 
 ASKME — "Do you have any questions for me", "any questions", "what would you like to know", "your turn to ask", end of interview questions invitation.
 
-FOLLOWUP — The interviewer is probing deeper into a previous answer: "tell me more", "can you elaborate", "what specifically", "what would you have done differently", "how did you measure that", "sounds like Prosci/ADKAR", "what did your reportee struggle with". This is a follow-up, not a new topic.
+FOLLOWUP — The interviewer is probing deeper into a previous answer: "tell me more", "can you elaborate", "what specifically", "what would you have done differently", "how did you measure that", "give me an example", "what was the outcome", "and then what happened".
 
 ## When to respond NONE:
 - The candidate is answering (statements starting with "I built...", "We ran...", "In my experience...", "So what we did was...", "The result was...")
@@ -86,329 +86,415 @@ FOLLOWUP — The interviewer is probing deeper into a previous answer: "tell me 
 - If the interviewer is asking, prompting, or directing ANY question — ALWAYS pick the closest section. NEVER return NONE for an interviewer question.
 - When in doubt between two categories, pick the more specific one.
 - When in doubt between a category and NONE, pick the category.
-- Q1 is the catch-all for broad experience questions that don't fit a more specific Q2-Q11.
 - INTRO is for the very start — "tell me about yourself" style openers.
-- The transcript may be imperfect (speech-to-text errors, fragments, Polish accent). Do your best to interpret intent.
-- Valid tokens: INTRO Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 PHARMA VENDOR WHYLEAVE CURROLE ROLEALIGN FIVEYEAR TECHTONOTCH GCCCHALLENGE SVCGCC FOCUS STRENGTH WEAKNESS TOMANDATE ASTELLASTRANSFORM YEARONE ONEASTELLAS ASKME FOLLOWUP NONE
+- The transcript may be imperfect (speech-to-text errors, fragments, Indian accent). Do your best to interpret intent.
+- Valid tokens: INTRO CAREER WHYASTELLAS WHYROLE SERVICESGCC TECHSHIFT CHANGECULTURE TRISITE SHAREPOINT SENIORADOPT RESISTANCE LEADSTYLE FIRST90 GENAI BOWLERS COACHING FAILURE CXOWORK CURRENTROLE WHYLEAVE PHARMACHECK VALUES TOMANDATE ONEASTELLAS BUDGET GAPS SANOFI BSV ASKME FOLLOWUP NONE
 - Respond with EXACTLY one of the above tokens`;
 
-const PANEL_MAP = {INTRO:2,Q1:3,Q2:4,Q3:5,Q4:6,Q5:7,Q6:8,Q7:9,Q8:10,Q9:11,Q10:12,Q11:13,PHARMA:14,VENDOR:14,WHYLEAVE:18,CURROLE:-2,ROLEALIGN:-2,FIVEYEAR:-2,TECHTONOTCH:-2,GCCCHALLENGE:-2,SVCGCC:-2,FOCUS:-2,STRENGTH:-2,WEAKNESS:-2,TOMANDATE:-2,ASTELLASTRANSFORM:-2,YEARONE:-2,ONEASTELLAS:-2,ASKME:17,FOLLOWUP:18};
+const PANEL_MAP = {
+  INTRO: 1, CAREER: 2, WHYASTELLAS: 3, WHYROLE: 4, SERVICESGCC: 5,
+  TECHSHIFT: 6, CHANGECULTURE: 7, TRISITE: 8, SHAREPOINT: 9,
+  SENIORADOPT: 10, RESISTANCE: 11, LEADSTYLE: 12, FIRST90: 13,
+  GENAI: 14, BOWLERS: 15, COACHING: 16, FAILURE: 17, CXOWORK: 18,
+  CURRENTROLE: 19, WHYLEAVE: 20, PHARMACHECK: 21, VALUES: 22,
+  TOMANDATE: 23, ONEASTELLAS: 24, BUDGET: 25, GAPS: 26,
+  SANOFI: 27, BSV: 28, ASKME: 29, FOLLOWUP: 30
+};
 
 const CUES = {
-  Q1: [
-    'GenAI Enterprise Adoption — 1,000+ employee BU',
-    'First 3 pilots STALLED — skipped diagnosis',
-    'Saying "productivity" → people heard "replacement"',
-    'Reframed: augmentation, not productivity',
-    'SMEs became the quality bar, not the audience',
-    'CoP: 3-4 → 90 members',
-    '30%+ efficiency gains, 400+ employees impacted',
-    'Config cycle: 4-5 months → 5-6 weeks',
-    'What outlived the project = durable capability',
+  INTRO: [
+    'Decade in life sciences — 3 yrs field (Intas, J&J, Novartis) + 5+ yrs transformation at Indegene',
+    'Arc: field sales → MBA NMIMS → strategic transformation at scale',
+    'Indegene Bangalore IS a GCC for pharma clients — delivery-side of GCC model',
+    '12 pharma companies: Sanofi, Amgen EU5, Pfizer, Janssen, AZ, BI, Merck KGaA, CSL Vifor, Gilead, Regeneron, Haleon, Vertex',
+    'Common thread: helping complex orgs move from strategic intent → adoption at scale',
+    'Operating models + governance cadences + communication architecture + capability building',
+    'Astellas moment: CSP2026, 3 GCCs scaling, SMT, "Change Communication" = top gap',
+    'NOT a GenAI person — strategy-execution leader who builds adoption at scale',
+    'CLOSE: "What excites me is that GCCs, CSP2026, and One Astellas need exactly that bridge between strategy, communication, and execution."',
   ],
-  Q2: [
-    'BSVwithU — Bharat Serum digital platform',
-    '70% of marketing SOW hadn\'t started',
-    'Procurement couldn\'t evaluate digital deliverables',
-    'Built evaluation framework WITH them → conversation changed',
-    'Change Request process → $32,645 negotiated',
-    'SOW redrawn: 25+ deliverables, 40% margin held',
-    '$25K AWS + $42K BU vendor savings',
-    'Monthly cadence with COO + DT Head — RAG status',
-    'MAU grew 75%, renewed Year 2',
+  CAREER: [
+    'Anchor 1 — Pharma is INTENTIONAL, not accidental. B.Pharm Manipal → field sales → MBA NMIMS → Indegene',
+    'Field sales (Intas, J&J, Novartis): customer ground-truth, HCP behaviour, execution reality',
+    'Anchor 2 — Arc is "from the field to the boardroom"',
+    'MBA + Indegene moved into transformation execution at scale',
+    'Each phase deepened pharma fluency while expanding transformation breadth',
+    'Anchor 3 — Why Astellas NOW. CSP2026, 3 GCCs at 3 maturity curves, Change Communication gap',
+    'Once-in-a-plan-cycle window to shape activation, not just translate it',
+    'Build role at a build moment — and chance to build alongside someone who has done it twice before (learning multiplier)',
+    'MUKTA-CUE: Close with "…and ultimately, this all ladders up to VALUE for patients"',
   ],
-  Q3: [
-    'Amgen ELMAC — EU top-5: UK, DE, FR, IT, ES',
-    'FTE-based → asset-based repricing across all markets',
-    'Germany: audit trails · Italy: relationships · UK: SLA specificity',
-    'France: regulatory traceability · Spain: cost transparency',
-    'NOT a compromise — shared spine, country-specific config',
-    'Quality/CSAT governance global; conversation localized',
-    '"One Astellas" won\'t work if uniform — coherent core, configurable identity',
-    'Bengaluru full-stack, Warsaw GBS, Mexico medical-digital',
+  WHYASTELLAS: [
+    'Real transformation inflection point — NOT generic "innovative company"',
+    'CSP2026 launching late May — first execution wave of new 5-year plan',
+    'SMT: ¥150B recurring savings by FY2027 — insourcing, vendor rationalisation',
+    'April 2025 reorg: Value Creation / Value Delivery / Value Enablement',
+    '3 GCCs positioned as CRITICAL ENABLERS, not support centers',
+    '"Change Communication" self-identified as TOP materiality gap (Feb 2025)',
+    'Transformation is not theoretical here — must show up as operating rhythm, alignment, capability, metrics',
+    'Specific: the chance to build the third GCC alongside someone who has done it twice = learning multiplier',
+    'AVOID: "Astellas is innovative and patient-focused" — too generic',
   ],
-  Q4: [
-    'MOVE 1: Listen first 30-45 days — Mukta, Andżelika, Flavio + 2-3 levels deep',
-    '12-month hub vs 18-month vs 3-month — maturity curves are different',
-    'MOVE 2: Anchor in CSP2026 + Values & Behaviors',
-    'Patient Focus lifted to VISION layer — implicit, not competing',
-    'MOVE 3: Calendar IS the editorial arc',
-    'Warsaw Bridge move, Mexico first year, Bengaluru scale-up, CSP2026 launch',
-    'Success = leaders repeating narrative in own words by month 9',
-    'Adoption and behaviour, NOT comms plan',
+  WHYROLE: [
+    'Sits at intersection of THREE things I\'ve built career around:',
+    '1. Transformation execution → Bowlers, OKRs, automation, Vertex Innovation Center',
+    '2. Engagement/communication strategy → Change Makers, Sanofi Connect, Reg Intel GTM',
+    '3. GCC/capability building → GenAI CoP, cross-functional teams, SharePoint tracker',
+    'Success = NOT more communication artefacts',
+    'Success = repeatable engagement system: India/Poland/Mexico as One Astellas while preserving site strengths',
+    'Three differentiators: pharma fluency (12 co) + transformation craft + GCC delivery perspective',
+    'Not a maintenance role — BUILD role at a BUILD moment. Career arc matches that energy.',
+    'MUKTA-CUE: "Operating models, governance cadences, change adoption at scale — that IS the role"',
   ],
-  Q5: [
-    'Change Makers Council — 26 volunteers, NOT communicators',
-    'SMEs, engineers, finance — voices that carry weight in their teams',
-    'Co-created Credo language WITH Org Dev, not received from them',
-    'Multi-wave: teasers ("Riddle N Fiddle"), video mailers, story competitions',
-    'Each wave 7-14 days, breathing room between',
-    'Volunteers carried values in their own voice',
-    'Not campaign AT people — giving 26 ambassadors a vocabulary',
+  SERVICESGCC: [
+    'DON\'T sound defensive — this transition EXCITES me',
+    'Services taught breadth and speed across multiple pharma operating contexts',
+    'Limitation: one step removed from long-term enterprise ownership',
+    'GCC expectation: own capability building, continuity, institutional memory, internal adoption',
+    'My transition: delivering transformation FOR pharma → building transformation capability INSIDE pharma',
+    'Indegene Bangalore IS itself a GCC for pharma clients — I\'ve lived the model from inside',
+    'Cite: Vertex Innovation Center, AZ solutioning, Bowler Charts, Change Makers Council',
+    'KEY LINE: "Moving from vendor-side execution to enterprise-side capability ownership"',
+    'What I build in first 60-90 days: Astellas-specific depth — XTANDI, SMT, "One Astellas" nuance',
+  ],
+  TECHSHIFT: [
+    'GenAI is ONE EXPRESSION of transformation — not my identity',
+    'Real skill: adoption, operating model, stakeholder transformation. Tech is one vehicle.',
+    'GenAI adoption: hard part was NOT tech — reframing "productivity" to "augmentation"',
+    'Gave SMEs role of quality bar — that\'s CHANGE MANAGEMENT, not engineering',
+    'Change Makers Council, Culture Credo — zero tech, pure organisational behaviour change',
+    'Bowler Charts: hard part = getting leaders to treat data as voice of their function',
+    'OKR ~90% adoption: sat with leaders\' actual pain, not tool features',
+    'KEY LINE: "The role gives me a broader enterprise canvas for the same capability: helping people, processes, tools, and leadership narratives move together"',
+    'DO NOT SAY "I am okay doing less tech" — sounds like compromise',
+  ],
+  CHANGECULTURE: [
+    'STRONGEST CULTURE-FIT STORY — Mukta will love this. Do NOT undersell.',
+    'Change Makers Council — 26 volunteers, NOT communicators (SMEs, engineers, finance)',
+    'Problem: Indegene scaling fast, 4 Core Values articulated at top but not lived day-to-day',
+    'Co-authored Credo language WITH OD leadership — of the people, not for them',
+    'Multi-wave campaigns: teaser "Riddle N Fiddle", video mailers, story competitions',
+    'Each wave 7-14 days, breathing room between — consistency beats intensity',
+    'Volunteers carried values in THEIR own voice — influencing without authority',
     'Signal: "Empathy" showing up unprompted in performance reviews by month 4',
-    'Council outlasted the Credo launch — durable culture mechanism',
+    'Council outlasted the launch — self-renewing capability, durable culture mechanism',
+    'ASTELLAS BRIDGE: "Exactly the muscle for embedding 3 Values + 5 Behaviors across 3 GCCs — One Astellas in three time zones, one narrative, locally resonant"',
+    'MUKTA-CUES: "Engaging hearts and minds", "Consistency beats intensity", "Not internal marketing — relationship architecture"',
   ],
-  Q6: [
-    'Built SharePoint utilization tracker for 120+ team members in <1 month',
-    'SharePoint as live operational instrument, NOT content repository',
-    'Principle 1: Must serve a workflow — repositories die',
-    'Principle 2: Adoption metrics from day 1 — not pageviews',
-    'Track if Bengaluru reads Warsaw content → "One Astellas" health check',
-    'Principle 3: Editorial governance, not editorial control',
-    'Federated model — shared spine, each GCC owns narrative',
-    '#ChangingTomorrow #AstellasCulture — shared tone, local voice',
+  TRISITE: [
+    'ONE OF THE MOST IMPORTANT QUESTIONS — prepare deeply',
+    'Step 1: DIAGNOSE before designing — maturity, functional mix, leadership priorities, sentiment, channels',
+    'Step 2: Common GCC narrative — One Astellas, but NOT sameness',
+    'Step 3: Site-specific story pillars:',
+    '  → India: full-stack capability hub (Mukta, 300+)',
+    '  → Poland/Warsaw: GBS/clinical core (Andżelika, The Bridge)',
+    '  → Mexico: medical-digital-innovation (Flavio, Jan 2026)',
+    'Step 4: SharePoint engagement hub — leadership messages, milestones, stories, FAQs, recognition, analytics',
+    'Step 5: Governance — editorial calendar, content owners, approval, leadership cadence',
+    'Step 6: Measure adoption — visits, repeat users, story submissions, leadership engagement, qualitative pulse',
+    'KEY LINE: "The comms job is NOT to flatten three GCCs into one voice. It is to create coherent difference under One Astellas."',
+    'Three different maturity curves = different messaging. 12-month hub ≠ 3-month hub.',
+    'Success = leaders in each GCC repeating the narrative in own words, unprompted, by month 9',
   ],
-  Q7: [
-    'Quantive OKR adoption — leadership level',
-    'Leaders weren\'t resistant to goals — resistant to PUBLIC misalignment',
-    'Reframed: tool rollout → leadership clarity instrument',
-    'Worked 1:1 with most skeptical leaders',
-    'Sat with their actual pain — mapped stuck initiatives',
-    'Left them with a useful artifact — didn\'t ask them to adopt',
-    'They logged back in for their next leadership review',
-    'Layered governance cadences + UX optimization',
-    '~90% adoption within 6 months',
+  SHAREPOINT: [
+    'NOT "I know SharePoint" — treat it as OPERATING BACKBONE for engagement',
+    'It should answer 5 questions for every employee and leader:',
+    '  1. What is the GCC strategy?',
+    '  2. What is changing?',
+    '  3. How does my work connect to Astellas priorities?',
+    '  4. What stories prove impact?',
+    '  5. Where is the latest source of truth?',
+    'Architecture: Homepage (narrative + updates) → Strategy (CSP2026 in GCC context) → Site Pages (India/Poland/Mexico) → Engagement Calendar → Leadership Archive → Stories → Recognition → Analytics',
+    'NOT a document dump — must serve a WORKFLOW. Repositories die.',
+    'Adoption metrics from day 1 — not pageviews but cross-GCC reads = "One Astellas" health check',
+    'Federated model: each GCC MD owns narrative, shared spine of tone + hashtags',
+    'MY PROOF: Built SharePoint utilization tracker for 120+ team in <1 month',
+    'MUKTA-CUE: Think of it as the "digital town square" — connective tissue for cross-GCC governance',
   ],
-  Q8: [
-    'CLIENT: AstraZeneca Executive Director — since July 2025',
-    'Solutions, agents, data strategy, adoption playbooks',
-    'Single conversation → scaled to multi-track program',
-    'Treat ED as thought partner, not sponsor — options with trade-offs visible',
-    'INTERNAL: Bowler Charts Power BI — built from scratch',
-    'Excel dashboard → executive governance instrument',
-    'Used in CXO reviews and board meetings',
-    'Hard part: getting leaders to treat data as voice of their function',
-    'Dashboard: reporting tool → decision instrument',
+  SENIORADOPT: [
+    'TWO STORIES: OKR/Quantive adoption OR Bowler Charts — pick based on context',
+    'OKR STORY:',
+    '  Leaders weren\'t resistant to goals — resistant to PUBLIC misalignment',
+    '  Reframed: tool rollout → leadership clarity instrument',
+    '  Three levers: change enablement (workshops), UX optimisation, governance (cadences)',
+    '  Worked 1:1 with most skeptical leaders — sat with THEIR actual pain',
+    '  Left them with useful artifact — didn\'t ask them to adopt',
+    '  They logged back in for their next leadership review',
+    '  ~90% adoption within 6 months',
+    'BOWLER STORY:',
+    '  Excel → Power BI → artefact that organised CXO reviews',
+    '  Assigned POCs per function, data-gathering processes, decision-forcing cadence',
+    '  Transformed from reporting → spine of CXO/board strategic decision-making',
+    'KEY: "Executive governance tools succeed on three things: data discipline, named accountability, decision-forcing cadence"',
+    'MUKTA-CUE: "Sustained behavioral change at senior levels requires courage — both ours and theirs. That\'s the Courage behaviour Astellas talks about."',
   ],
-  Q9: [
+  RESISTANCE: [
+    '"I don\'t treat resistance as negativity. I treat it as data about what the transformation has not yet explained well."',
+    'Resistance is RATIONAL, not personal',
+    'GenAI example: People heard "productivity" as "replacement"',
+    '  → Reframed to "augmentation" — SMEs became quality bar, not audience',
+    '  → Segmented stakeholders, used pilots, champions, hands-on workshops',
+    '  → Measured adoption and iterated',
+    'Pattern: Diagnose WHY → Segment stakeholders → Create safe pilots → Visible champions → Measure → Iterate',
+    'One specific dialogue moment: "You\'re asking me to teach the machine to do what I do. Why would I help replace myself?"',
+    '  → Response: "You\'re not teaching it to replace you. You\'re teaching it to handle the repetitive parts so you can do the parts only you can do."',
+    'ASTELLAS BRIDGE: Same approach for GCC engagement — understand what each site fears, not just what they resist',
+    'MUKTA-CUE: "Psychological safety mattered — people had to feel safe to admit they didn\'t know how to use these tools"',
+  ],
+  LEADSTYLE: [
+    '"Structured but not rigid"',
+    'Create clarity quickly: outcomes, owners, cadence, risks, decisions',
+    'Invest in TRUST — transformation depends on informal influence as much as formal governance',
+    'Coach by giving frameworks and ownership — NOT by becoming the bottleneck',
+    'TIE TO ASTELLAS BEHAVIORS:',
+    '  Courage → escalating early, speaking up',
+    '  Sense of Urgency → fast structuring of ambiguity',
+    '  One Astellas → cross-functional alignment',
+    '  Outcome Focus → adoption/value metrics',
+    '  Accountability → clear owners and governance',
+    'BRIDGE-BUILDING: Never "I drove..." without naming the coalition',
+    'MUKTA-CUE: "Don\'t treat people as objects — give them career maps so they see they\'re part of a long-term strategy"',
+    'MUKTA-CUE: "Speed with discipline — in regulated environments, speed ≠ chaos. It means clear ownership, fast alignment, documented decisions, early risk escalation"',
+  ],
+  FIRST90: [
+    'Structure: Listen → Map → Narrative → Cadence → Quick Win',
+    'Days 1-30: LISTEN TOUR',
+    '  → Mukta + Andżelika (Poland) + Flavio (Mexico) + Managing Principal/Principal you report to',
+    '  → Kamila Grembowicz (GBS line) + Communications & IR team + CF Division Heads',
+    '  → Understand: GCC strategy, TO ways of working, stakeholder map, SharePoint maturity',
+    '  → 2-3 levels deep per site — not just leadership',
+    'Days 30-60: MAP AND AUDIT',
+    '  → Stakeholder influence/interest map across 3 GCCs',
+    '  → Brand/narrative audit: what does each GCC say about itself vs One Astellas story?',
+    '  → SharePoint diagnostic: IA, governance, content cadence, adoption signals',
+    '  → Draft engagement framework: pillars, editorial calendar, stakeholder governance',
+    'Days 60-90: LAND THE ARCHITECTURE',
+    '  → Engagement architecture proposal',
+    '  → SharePoint reset plan',
+    '  → CSP2026 activation calendar tied to natural moments (Warsaw move, Mexico first year, India scale)',
+    '  → One visible quick win',
+    '  → Coaching whoever\'s on the team — capability transfer from day 1',
+    'CLOSE: "Bias toward visible momentum early, but NOT by flooding. First create the right listening map and governance so the engine scales."',
+    'MUKTA-CUE: Use "hypothesis" language — "My hypothesis would be..." not "I would fix..."',
+  ],
+  GENAI: [
+    'Frame as TRANSFORMATION story, not tech story',
+    'Enterprise GenAI adoption: 400+ employees, 8 pilots, 50+ use cases',
+    'DIAGNOSIS FIRST: mapped where resistance would come from — not WHO but WHY',
+    '  → Fear of job displacement, learning curve, productivity dip during adoption',
+    'Coalition over mandate: partnered with Microsoft + Adobe directly',
+    'Built CoP: 3-4 core → ~90 extended members',
+    'Made early adopters VISIBLE — created safe environment to experiment',
+    'Start small, scale carefully: 8 pilots first — diverse cohorts (functional + technical mix)',
+    'Measurable: 30%+ efficiency gains, config cycle 4-5 months → 5-6 weeks',
+    'ASTELLAS BRIDGE: "AI and analytics are competitive differentiators — but the cultural shift is a 5-6 year horizon, not a quarter"',
+    'MUKTA-CUE: "Different functional teams sitting together with technology experts — that\'s where the most differentiated capability gets built" (her exact framing)',
+    'MUKTA-CUE: "Psychological safety mattered — people had to feel safe to admit they didn\'t know"',
+  ],
+  BOWLERS: [
+    'Built 0-to-1: Excel dashboard → Power BI executive governance instrument',
+    'Used in CXO reviews and BOARD MEETINGS',
+    'The SHIFT: dashboard → governance tool. Technology was easy; governance design was value.',
+    'Structural choices:',
+    '  → Assigned POCs per function (named accountability, not diffused)',
+    '  → Established data-gathering processes (reliable refresh, not heroic)',
+    '  → Built cadences: monthly review → decision-forcing conversation, not status report',
+    'Outcome: spine of CXO and board-level strategic decision-making across corporate planning',
+    'DEEPER POINT: "Executive governance tools succeed on three things — data discipline, named accountability, decision-forcing cadence. Tools without governance = more noise."',
+    'ASTELLAS TIE: "Directly relevant to GCC SharePoint — not document repository, but connective tissue and decision-forcing surface for cross-GCC engagement governance"',
+    'MUKTA-CUE: "Hard part was getting leaders to treat data as voice of their function"',
+  ],
+  COACHING: [
     'Vrinda Bagrait + Raja Rajeswari — GenAI Strategy team, 2025',
     'Both non-technical backgrounds, anxious about GenAI wave',
+    'Approach: Diagnose where they ARE, not where I wish they were (Situational Leadership)',
     'Paired with engineering leads on REAL client use cases from week 1',
     'Learn by sitting IN the work, not adjacent to it',
-    'Gave them ownership of CoP sessions and live demos',
+    'Gave them ownership: CoP sessions, live demos',
     'Weekly coaching: real conversations about ambiguity, not status updates',
     'Protected their permission to say "I don\'t know yet"',
     'Both contributing to live client projects within 6 months',
-    'Coaching ≠ frameworks — it\'s courage to sit in ambiguity',
+    'MUKTA-CUE: "Don\'t treat people as objects — give them career maps" (HER exact quote)',
+    'MUKTA-CUE: "Consistency beats intensity in coaching too — weekly 1:1s with structure, not heroic interventions"',
+    'Coach for CAPABILITY, not just task completion — widen their career horizon',
+    'ASTELLAS: JD requires coaching Senior Consultants + Consultants — build the bench, not just deliver',
   ],
-  Q10: [
-    'GenAI Community of Practice — the capability that outlived',
-    'Started: 3-4 core members, no shared knowledge, no patterns',
-    'Design choice: domain SMEs paired WITH engineering',
-    'CoP carried business-context credibility from day 1',
-    'Codified: orchestration playbooks, eval frameworks, QA gates',
-    'CSL Vifor patterns → reused across NEXT MedWriting & NEXT SciAuto',
-    '3-4 → 90 extended team members',
-    'Config cycle: 4-5 months → 5-6 weeks',
-    'Still running 18 months after project closed — that\'s capability',
-    'Chapter earns its name when frameworks alive in delivery, not slides',
+  FAILURE: [
+    'Pick something REAL, RECENT, SPECIFIC — Mukta values intellectual honesty',
+    'BSV STORY: Should have insisted on change-request framework WEEK 1, not month 3',
+    '  → 70% of marketing SOW hadn\'t started when I took over',
+    '  → Spent first months executing, not governing',
+    '  → Should have built the governance structure FIRST, then executed within it',
+    '  → Learning: structure the system before running the work',
+    'OR GenAI STORY: Early pilots under-delivered because over-indexed on tool training, under-indexed on workflow redesign',
+    '  → Tools don\'t change behaviour — redesigned workflows do',
+    '  → Subsequent pilots led with workflow',
+    'MUKTA-CUE: "Courage is also about learning from failure publicly — it\'s the Behavior Astellas calls out specifically. The intelligent risk only pays off if you actually metabolise the lesson."',
+    '"I don\'t know" is ALLOWED — better than faking. Mukta values courage over false confidence.',
   ],
-  Q11: [
-    'ICAP Stint 3 — Corporate Planning, 2023',
-    'Charter: 1 department, 1 Assignment Leader',
-    'Reality in 30 days: 5 departments, 6 ALs simultaneously',
-    'Built personal cadence per AL — weekly/bi-weekly/ad-hoc',
-    'Shared status doc visible to all 6 → they self-prioritized',
-    'Let the work surface where to spend time, not defend original charter',
-    'Became connective tissue between Corp Planning + Org Dev',
-    'Bowlers + Change Makers Council fused into one operating system',
-    'Ambiguity is the operating environment — read where energy is',
+  CXOWORK: [
+    'BSV: Monthly presentations to COO + Digital Transformation Head',
+    '  → C-suite time = forcing function for clarity',
+    '  → Lead with decision needed, then data, then recommendation',
+    '  → Most ICs lead with data — that\'s a junior tell',
+    '  → Show the bet: MAU growth (75%), cost optimisation ($25K + $32K)',
+    '  → Bring options, not problems. Decision accelerates when you do the thinking ahead of room.',
+    'AstraZeneca: Working directly with Executive Director (Jul 2025–present)',
+    '  → Solutions, agents, data strategy, adoption playbooks',
+    '  → Single conversation → scaled to multi-track program',
+    '  → At ED level: conversation is about "how to make this stick at scale", not "what"',
+    'Bowler Charts: Used in CXO reviews and board meetings',
+    'KEY LINE: "Working with C-suite is about being a BRIDGE — translating execution reality UP, strategic intent DOWN — and doing it consistently. Consistency beats intensity."',
+    'ASTELLAS: You\'ll work with Managing Principals on CxO-function workstreams',
   ],
-  INTRO: [
-    'Decade in life sciences — 3 yrs field (Novartis, J&J) + 6 yrs transformation at Indegene',
-    'Indegene Bangalore center IS a GCC for pharma clients',
-    '12 pharma companies: Sanofi, Amgen EU5, Pfizer, Janssen, AZ, BI, Merck KGaA, CSL Vifor, Gilead, Regeneron, Haleon, Vertex',
-    'Transformation ≠ frameworks problem — it\'s a meaning-making problem',
-    'People aren\'t resistant — they\'re overwhelmed and unclear on what they own',
-    'Operating models + governance cadences + communication architecture',
-    'Astellas moment: CSP2026, 3 GCCs scaling, SMT in flight',
-    '"Change Communication" = top materiality gap (Feb 2025)',
-    'Build role at a build moment — delivery-side GCC perspective',
-  ],
-  PHARMA: [
-    'XTANDI = ~48% revenue, US LOE Aug 2027, Medicare MFP $7,004/30-day Jan 2027',
-    'SMT: ¥150B recurring savings by FY2027, core OP margin 27.6% → 30%',
-    'April 2025 reorg: Value Creation (Taniguchi) / Value Delivery (Zieler) / Value Enablement',
-    'CSP2026 launches late May — first execution wave',
-    'PADCEV bright spot (¥210B), VYLOY ramping',
-    'IZERVAY: CRL rebuild · VEOZAH: boxed warning reset · Audentes: thesis broken',
-    '3 GCCs: Bengaluru (Mukta, 300+), Warsaw (Andżelika, The Bridge), Mexico (Flavio, Jan 2026)',
-    'New Values: Integrity, Innovation, Impact + 5 Behaviors',
-    '"Change Communication" top materiality gap — this hire fills a diagnosed deficit',
-    'CEO Okamura rejected "rescue BD" — deleveraging at 2.2x',
-  ],
-  VENDOR: [
-    'NOT vendor-to-inhouse — delivery side of the GCC model Astellas is building',
-    'Been on RECEIVING end of pharma TOs: Sanofi, Amgen, Vertex, AstraZeneca ED',
-    'Know what frustrates in-house teams about external partners',
-    'Indegene Bangalore = Global Capability Center for pharma clients',
-    'Transition: multi-pharma portfolio → one pharma\'s full agenda',
-    'Craft transfers: operating models, governance, change adoption, comms architecture',
-    'XTANDI bridge, SMT mechanics, "One Astellas" nuance — build in first 60-90 days',
-    'Honest about runway — courage > false confidence (Wioleta values this)',
+  CURRENTROLE: [
+    'Senior Manager, Strategic Initiatives at Indegene (3 promotions in 5 years: May 2021 → Jan 2026)',
+    'VERTEX (Dec 2025–Present): GenAI Innovation Center',
+    '  → Aligning consulting, client stakeholders, delivery, engineering',
+    '  → Prioritised roadmap, governance model, scale-up plan',
+    '  → Coalition building across 4 parties with different incentives',
+    'ASTRAZENECA (Jul 2025–Present): Working directly with Executive Director',
+    '  → Solutions, agents, data strategy, adoption playbooks for medical/clinical use cases',
+    '  → At ED level: value = adoption mechanism, not the solution itself',
+    'Previously: enterprise GenAI adoption (400+ employees), CoP (3→90), Bowler Charts, Change Makers Council',
+    'Multi-pharma portfolio: 12 companies across India and EU5',
+    'META-LEARNING: "Both current engagements teach me that at senior altitude, value isn\'t the solution — it\'s the adoption mechanism. Exactly why Astellas role is interesting — explicitly about building those mechanisms across 3 GCCs."',
   ],
   WHYLEAVE: [
-    'DON\'T disparage Indegene',
-    'Indegene = formative — 3 promotions in 5 years, deep pharma exposure',
+    'FRAME AS PULL, NOT PUSH — never disparage Indegene',
+    'Indegene = formative. 3 promotions in 5 years, deep pharma exposure',
     'Looking for DEPTH over BREADTH',
-    'Running one pharma\'s full agenda inside CxO function = different craft',
-    'Astellas at THIS moment — CSP2026, 3 GCCs, Change Communication mandate',
-    'Right specific opportunity, not just right next step',
+    'Services: breadth across multiple pharma operating contexts',
+    'Next phase: operating INSIDE a global pharma\'s transformation engine',
+    'Astellas TO = one of few internal-consulting units with consulting-grade rigour',
+    'GCC engagement remit = rare role combining transformation execution + cross-cultural narrative',
+    'Personal: chance to build 3rd GCC alongside someone who has done it twice = once-in-a-career learning curve',
+    'WHAT TO AVOID: Any complaint about Indegene. She\'ll read that as a values flag.',
+    'KEY LINE: "Running one pharma\'s full agenda inside CxO function = different craft"',
   ],
-  ASKME: [
-    'Q1 (HIGHEST): "You\'ve written about overwhelmed not resistant — what contributes most to that overwhelm at Astellas right now?"',
-    'Q2: "How is the TO shifting from delivering initiatives to building durable change capability? Especially Chapters model."',
-    'Q3: "Across India, Poland, Mexico — biggest engagement gap today? What does good look like in 12 months?"',
-    'RESERVE (if rapport strong): "What surprised you positively from a Lead Consultant? What would you want different?"',
-    'RESERVE (operational): "How do Bengaluru Lead Consultants partner with Managing Principals across time zones?"',
-    'End strong — last question should be Q1',
+  PHARMACHECK: [
+    'XTANDI = ~48% revenue, US LOE Aug 2027, Medicare MFP $7,004/30-day Jan 2027',
+    'PADCEV bright spot: ¥210B forecast, first-line metastatic urothelial cancer with pembrolizumab',
+    'IZERVAY: geographic atrophy, FDA CRL Nov 2024, Feb 2025 label update recovery',
+    'VEOZAH: boxed warning Dec 2024, guidance reset, rebuild underway',
+    'VYLOY (Claudin 18.2 gastric) + XOSPATA (AML) ramping',
+    'SMT: ¥150B recurring savings by FY2027, core OP margin 27.6% → 30%',
+    'April 2025 reorg: Value Creation (Taniguchi) / Value Delivery (Zieler) / Value Enablement',
+    'CEO Okamura rejected "rescue BD" — deleveraging at 2.2x',
+    'MUKTA-CUE: Frame as VALUE FOR PATIENTS, not revenue lines',
+    '"XTANDI cliff matters not just for margin — bridge to next wave of value for patients depends on Strategic Brands ramp + Focus Area pipeline. SMT and GCCs both protect that bridge."',
   ],
-  FOLLOWUP: [
-    'TRAP: "Tell me more about that resistance" → Have ONE specific dialogue moment ready',
-    'GenAI: "You\'re asking me to teach the machine to do what I do. Why would I help replace myself?"',
-    'TRAP: "What would you have done differently?" → Always have a REAL answer',
-    'BSV: "Should have insisted on change-request framework week 1, not month 3"',
-    'TRAP: "Sounds like Prosci/ADKAR" → Acknowledge crisply, designed from listening sessions not framework',
-    'TRAP: "How did you measure success?" → Adoption metrics, NOT output metrics',
-    'Change Makers: "Empathy" showing up unprompted in perf reviews — quarterly HR sampling',
-    'TRAP: "What did your reportee struggle with?" → Be specific: Vrinda = confidence in client demos, dry-runs every Tuesday',
-    '"I don\'t know" is allowed — better than faking. Wioleta values courage.',
-  ],
-  CURROLE: [
-    'Senior Manager, Strategic Initiatives at Indegene (3 promotions in 5 years)',
-    'Leading GenAI Innovation Center for Vertex Pharmaceuticals — roadmap, governance, scale-up',
-    'Scaling solutioning engagement with AstraZeneca — directly with Executive Director',
-    'Previously: enterprise GenAI adoption (400+ employees), CoP (3→90), Bowler Charts, Change Makers Council',
-    'Multi-pharma portfolio: Sanofi, Amgen EU5, Pfizer, Janssen, AZ, BI, CSL Vifor, Gilead, Regeneron, Haleon, Vertex',
-    'Indegene Bangalore = Global Capability Center for pharma clients — delivery-side of GCC model',
-    'Operating models + governance cadences + communication architecture at scale',
-    'Current work sits at intersection of strategy, transformation, and pharma domain',
-  ],
-  ROLEALIGN: [
-    'Three differentiators: pharma fluency (12 companies) + transformation craft + GCC delivery perspective',
-    'Been ON the delivery side of a pharma GCC for 4 years — Indegene Bangalore IS a GCC',
-    'Astellas moment: CSP2026 launching, 3 GCCs scaling, "Change Communication" = diagnosed gap',
-    'Operating models, governance cadences, change adoption at scale — that IS the role',
-    'Cross-geography experience: Amgen EU5 (UK, DE, FR, IT, ES), multi-pharma portfolios',
-    'Communication architecture: Change Makers Council, Culture Credo, SharePoint instruments',
-    'CxO engagement: AstraZeneca ED, Bowler Charts in board reviews',
-    'Not a maintenance role — build role at a build moment. My career arc matches that energy.',
-  ],
-  FIVEYEAR: [
-    'Short-term: become the Lead Consultant who builds "One Astellas" engagement architecture across 3 GCCs',
-    'Build durable change capability that outlives my involvement — Chapters model alive in delivery',
-    'Earn Astellas-specific depth — XTANDI bridge, SMT mechanics, CSP2026 execution',
-    'Medium-term: grow into a Principal role within the Transformation Office',
-    'Long-term: lead transformation at the intersection of pharma strategy and organizational change',
-    'This role is the SPECIFIC next step — depth over breadth, one pharma\'s full agenda inside CxO function',
-    'Astellas at this moment = rare alignment between what I want to build and what needs building',
-  ],
-  TECHTONOTCH: [
-    'My tech work was always MEANS to transformation, never the end itself',
-    'GenAI adoption: the hard part was NOT the tech — it was reframing "productivity" to "augmentation"',
-    'Gave SMEs the role of quality bar — that\'s change management, not engineering',
-    'Quantive OKR: sat with leaders\' actual pain, not the tool features — ~90% adoption',
-    'Change Makers Council, Culture Credo — zero tech, pure organizational behaviour change',
-    'Bowler Charts: hard part was getting leaders to treat data as voice of their function',
-    'Tech is one lever. My craft is operating models, governance cadences, communication architecture.',
-    'The 12 pharma companies are all change contexts, not tech contexts',
-  ],
-  GCCCHALLENGE: [
-    'Challenge 1: "Three islands" risk — GCCs scaling fast but uncoordinated',
-    'Challenge 2: Identity crisis — are we a cost center or a capability hub? Framing matters.',
-    'Challenge 3: Maturity mismatch — 12-month hub vs 3-month hub need different messaging',
-    'Challenge 4: Talent integration — new joiners don\'t feel connected to the mothership narrative',
-    'Challenge 5: Change Communication gap — Astellas flagged this as top materiality gap (Feb 2025)',
-    'Challenge 6: Governance fragmentation — each site builds its own cadences, no shared spine',
-    'Solution: coherent core + configurable site identity — NOT uniform brand',
-    'Bengaluru (full-stack), Warsaw (GBS-heavy), Mexico (medical-digital-innovation) — real differences to respect',
-    'Success = leaders in each GCC repeating the narrative in their own words, unprompted',
-  ],
-  SVCGCC: [
-    'Service model: deliver for many clients, breadth over depth, project-based relationships',
-    'GCC model: deliver for ONE company, depth over breadth, embedded in the org',
-    'Key shift: you ARE the organization, not an external partner — skin in the game changes everything',
-    'Indegene Bangalore IS itself a GCC for pharma clients — I\'ve lived the model from inside',
-    'Same maturity arc: onboarding waves, capability building, governance cadences, retention',
-    'What I bring: I know what makes the model work vs stall — from the delivery side',
-    'The craft transfers: operating models, governance, change adoption, communication architecture',
-    'What I build in first 60-90 days: Astellas-specific depth — XTANDI, SMT, "One Astellas" nuance',
-  ],
-  FOCUS: [
-    'Area 1: Designing cross-GCC engagement architecture — "One Astellas" that respects site identity',
-    'Area 2: Building durable change capability — Chapters model alive in delivery, not just slides',
-    'Area 3: Communication architecture that shifts behaviour — not comms plans, adoption mechanisms',
-    'Area 4: Coaching the next layer of consultants — capability transfer, not dependency on me',
-    'What draws me: the intersection of pharma strategy + organizational transformation + GCC scaling',
-    'The moment matters: CSP2026, three GCCs, Change Communication mandate — it\'s a build moment',
-    'I want to be in the room where ambiguous strategy becomes things people do differently on Monday morning',
-  ],
-  STRENGTH: [
-    'Execution credibility — I ship end-to-end, not just describe. GenAI: 30%+ efficiency, 400+ employees.',
-    'Pharma fluency — 12 companies, EU5 markets, institutional sales to CxO engagement',
-    'Coalition building — Change Makers Council (26 cross-BU volunteers), CoP (3→90), multi-stakeholder programs',
-    'Communication architecture — not just "comms plans" but instruments that shift behaviour',
-    'Navigating ambiguity — ICAP Stint 3 went from 1 AL to 6 ALs; I read where the energy is',
-    'Coaching — Vrinda + Raja both contributing to live client projects in 6 months, from non-technical backgrounds',
-    'Colleagues say: "simplifies the complex, shares right examples at right time, keeps focus on outcomes" (Rahul Umare)',
-    'Evidence: 3 promotions in 5 years, National Winner Flipkart Wired (1st of 3,290 teams), Dean\'s Merit List',
-  ],
-  WEAKNESS: [
-    'Honest answer — not a fake-humble "I\'m a perfectionist"',
-    'Depth of Astellas-specific context — XTANDI bridge mechanics, SMT details, internal politics',
-    'I\'d build that deliberately in first 60-90 days — listen before designing',
-    'Earlier in career: took too long to push back on scope creep (BSV lesson — should have insisted on CR framework week 1)',
-    'Learning to let go of work that others can own — as CoP scaled to 90, I had to stop being in the loop',
-    'Wioleta values courage and honesty over false confidence — "I don\'t know yet" is allowed',
+  VALUES: [
+    'Three Values: Integrity, Innovation, Impact',
+    'Five Behaviors: Courage, Sense of Urgency, One Astellas, Outcome Focus, Accountability',
+    'Deliberate swap: "Excellence" → "Impact" — because in some cultures, excellence implies perfectionism that slows progress',
+    'Patient Focus elevated to VISION layer — implicit everywhere, not a competing value',
+    'Why now: CSP2026 requires new ways of working — speed, cross-functional collab, breaking Japan-HQ/regional silos',
+    'Connect to YOUR experience: Change Makers Council embedded values through behaviour, not mandate',
+    'For Astellas: Values + Behaviors rollout across 3 GCCs = exactly the muscle you\'ve built',
+    '"I would embed these not through posters but through repeated leadership signals, peer champions, narrative consistency, and visible rituals"',
+    'MUKTA-CUE: "Engaging hearts and minds — you can\'t mandate culture, you have to make people want to live it"',
   ],
   TOMANDATE: [
-    'TO = real internal consulting unit, NOT a loose program office',
+    'TO = real INTERNAL CONSULTING unit, not a loose program office',
     'Hierarchy: Managing Principal → Principal → Lead Consultant → Senior Consultant → Consultant',
     'Organised by Chapters: Change Management, Process Excellence, Agile',
     'Delivery via Agile Stream/Crew/Pod framework',
     'CxO-EMBEDDED: Managing Principals partner with CxOs + Chiefs of Staff',
-    'Lead Consultant leads significant workstreams within a CxO function',
+    'Lead Consultant: leads significant workstreams within a CxO function',
     'Post Oct 2025: TO + DigitalX under CStO — transformation = strategy execution, not digital bet',
-    'Scope: initiative scoping, stakeholder coalitions, adoption metrics, capability building (methods/tools/playbooks)',
+    'CStO Pearson resigned Mar 2026 → Sandor interim — leadership transition',
+    'Scope: initiative scoping, stakeholder coalitions, adoption metrics, capability building',
     'Coach Senior Consultants + Consultants — build the bench, not just deliver',
     'Change Communication flagged as TOP GAP — this role fills a diagnosed deficit',
   ],
-  ASTELLASTRANSFORM: [
-    'SMT = ¥150B recurring savings by FY2027 — insourcing, vendor rationalisation, IT streamlining',
-    'CSP2026 launches late May — first execution wave of new 5-year plan',
-    'XTANDI cliff: ~48% revenue, US LOE Aug 2027, Medicare MFP $7,004 from Jan 2027',
-    'April 2025 reorg: Value Creation (R&D) / Value Delivery (Commercial + Medical) / Value Enablement',
-    'CDTO eliminated Oct 2025 — transformation now under CStO, strategy-execution framing',
-    'CStO Pearson resigned Mar 2026 → Sandor interim — leadership transition at worst moment',
-    'Farallon ~3% activist stake — ghost in every margin/efficiency conversation',
-    'IZERVAY CRL + ¥115B impairment, VEOZAH boxed warning, Audentes thesis broken',
-    'PADCEV bright spot (¥210B forecast), VYLOY ramping',
-    '3 GCCs scaling simultaneously — federated governance, no single owner',
-    '"Change Communication" = Astellas self-identified weakest capability (Feb 2025)',
-  ],
-  YEARONE: [
-    'Days 1-45: LISTEN — sessions with Mukta, Andżelika, Flavio + 2-3 levels deep per site',
-    'Understand what "One Astellas" means in lived reality of each hub at its maturity stage',
-    'Days 45-90: Build GCC narrative framework — pillars, tone, hashtag, story types — tested with MDs',
-    'Anchor in CSP2026 + new Values & Behaviors as natural editorial spine',
-    'Months 3-6: Launch governed cross-GCC SharePoint with adoption metrics from day 1',
-    'Deliver at least one CxO-function workstream with Managing Principal sponsorship',
-    'Calendar = editorial arc: Warsaw Bridge move, Mexico first year, Bengaluru scale-up, CSP2026 launch',
-    'Months 6-12: Coached development of 1-2 Senior Consultants',
-    'Success signal: leaders in each GCC repeating the narrative in own words, unprompted, by month 9',
-    'Measurable: SharePoint adoption (cross-GCC reads), behaviour adoption (not just awareness)',
-  ],
   ONEASTELLAS: [
-    '"One Astellas" = formal corporate value: leveraging diverse perspectives to achieve org goals',
-    'Won\'t work if it means UNIFORM — must be coherent core + configurable site identity',
+    '"One Astellas" = formal corporate value: leveraging diverse perspectives for org goals',
+    'WON\'T work if it means UNIFORM — must be coherent core + configurable site identity',
     'Bengaluru: full-stack capability hub · Warsaw: GBS/clinical core · Mexico: medical-digital-innovation',
-    'Three different maturity curves: messaging that lands in Warsaw may overwhelm Mexico City',
-    'New Values: Integrity, Innovation, Impact + 5 Behaviors (Courage, Urgency, One Astellas, Outcome Focus, Accountability)',
-    'Patient Focus elevated to VISION layer — implicit everywhere, not a competing value',
-    '"Excellence" swapped for "Impact" because of cross-cultural resonance — Astellas is aware',
+    'Three different maturity curves: messaging landing in Warsaw may overwhelm Mexico City',
+    'Values: Integrity, Innovation, Impact + 5 Behaviors (including One Astellas itself)',
     'Federated model: each GCC MD owns narrative, shared spine of tone + hashtags',
     'Integrating mechanism = communications layer — no single Global Head of GCCs exists',
     'Legacy-market anxiety (US/EU offshoring fears) — GCC branding must pair with internal narrative for sending sites',
+    'KEY LINE: "Centers of excellence, not islands of excellence" (Mukta\'s own framing)',
+    'Success signal: leaders in each GCC repeating narrative in own words, unprompted',
+    'MUKTA-CUE: "Building bridges every day" / "Psychologically safe environment where talent isn\'t dormant"',
+  ],
+  BUDGET: [
+    'BSVwithU: Full budget ownership',
+    '  → ~$25,000 annual savings via AWS optimizations + new vendor',
+    '  → $32,645 negotiated for Year-1 out-of-scope change requests',
+    '  → Co-drafted new SOW: 25+ deliverables quantified, 40% margin maintained',
+    '  → Monthly cadence with COO + DT Head — RAG status on financials',
+    'Amgen ELMAC: multi-million USD commercial delivery operations',
+    '  → FTE-based → asset-based pricing transformation',
+    '  → Finance/ops/client collaboration to improve billing efficiency',
+    'Indegene internal: tracking costs and revenue for Growth Markets BU',
+    'GenAI: managed vendor budgets for Microsoft/Adobe tool rollouts',
+    'FRAME: "Financial discipline is not a separate skill — it\'s embedded in how I operate transformation programs"',
+  ],
+  GAPS: [
+    'GAP 1: Never worked INSIDE a global pharma — only adjacent through Indegene',
+    '  → "Clear-eyed about this. What I bring is breadth across portfolios most internal candidates don\'t have, + consulting discipline that maps to how TO operates."',
+    '  → "What I\'d learn from you: inside-out craft — Japan-HQ rhythms, patient-axis in lived practice, unwritten rules across CxO functions"',
+    '  → This is humility + specificity + explicit ask to learn from HER',
+    'GAP 2: JD says "extensive global transformational change within complex orgs" — mine is multi-client, not multi-geo within ONE org',
+    '  → "Multi-geography, multi-stakeholder, multi-culture across 5+ global pharma portfolios. Translation to one global pharma with 3 GCCs = step-change in depth, but the muscle is built."',
+    'GAP 3: 8+ years preferred — you\'re at ~5 years in transformation specifically',
+    '  → "Ten-year arc: field sales (3 yrs) + transformation (5+ yrs). Field years = underrated input for GCC engagement — customer-empathy problem. Internal audiences, same craft: meeting them where they are."',
+    'POSTURE: Name it, reframe it, show how you\'d close it. Do NOT pretend gaps don\'t exist.',
+    'MUKTA-CUE: "Intellectual humility — if she asks something you genuinely don\'t know, say so and offer how you\'d find out. Don\'t bluff."',
+  ],
+  SANOFI: [
+    'Sanofi Connect: omnichannel transformation — digital channels for HCPs not covered by field force',
+    '10,000 HCPs enrolled, 47% connected call rate (24.4k calls)',
+    'SMS interaction: 7.33% (127k+ messages delivered)',
+    'Average call duration increased 20.68% — tele-script + virtual rep training',
+    'Unified dashboard: channel performance + HCP 360 view',
+    'Real challenge: field reps see digital as COMPETITIVE, not complementary',
+    'Change management: help them see omnichannel as AMPLIFICATION of relationships',
+    'Stakeholder coalition: brand managers + field force leadership + digital ops + analytics',
+    'Project RENEWED based on results — most honest indicator transformation stuck',
+    'ASTELLAS TIE: "Same logic as patient-axis model — organising around the customer, not the function"',
+  ],
+  BSV: [
+    'BSVwithU: Women\'s Health & Fertility knowledge platform for doctors',
+    'Monthly presentations to COO + Digital Transformation Head',
+    'MAU grew 75% in six months (403 → 706)',
+    '$25K annual savings (AWS + vendor), $32,645 negotiated change orders',
+    'Cross-functional: tech, project, medical, design, finance, legal, client procurement',
+    '70% of marketing SOW hadn\'t started — had to execute AND govern simultaneously',
+    'Built evaluation framework WITH procurement → changed the conversation',
+    'SOW redrawn: 25+ deliverables, 40% margin held',
+    'LESSON: Should have insisted on change-request framework week 1, not month 3',
+    'C-suite learning: Lead with decision needed → data → recommendation. Options, not problems.',
+    'Project RENEWED Year 2 — trust earned through consistent delivery',
+  ],
+  ASKME: [
+    'Q1 (BEST FOR MUKTA): "You\'ve built three GCCs now. What\'s the one thing you wish you\'d known going into your first build that you applied differently to your second and third — and what do you think will be different this time at Astellas?"',
+    '  → Invites her to TEACH you = exactly the dynamic she enjoys',
+    'Q2: "As India GCC moves from set-up to scale, what signals would tell you it\'s being seen globally as a capability hub rather than support location?"',
+    'Q3: "For the tri-site engagement agenda, where\'s the biggest risk today: narrative alignment, leadership cadence, employee engagement, or global stakeholder perception?"',
+    'Q4: "How do Bengaluru Lead Consultants partner with Managing Principals across time zones?"',
+    'Q5: "What does One Astellas mean to you in the specific context of GCCs with different maturity curves?"',
+    'RESERVE: "What surprised you positively from a Lead Consultant? What would you want different?"',
+    'RULE: Ask 2-3 max depending on time. End strong with Q1.',
+    'POSTURE: Position yourself as someone who learns from leaders, not competes with them',
+  ],
+  FOLLOWUP: [
+    'TRAP: "Tell me more about that" → Have ONE specific detail ready for every story',
+    'TRAP: "What would you have done differently?" → Always have a REAL answer',
+    '  → BSV: "CR framework week 1, not month 3"',
+    '  → GenAI: "Led with workflow redesign earlier, not tool training"',
+    'TRAP: "How did you measure success?" → Adoption metrics, NOT output metrics',
+    '  → Change Makers: "Empathy" in perf reviews — quarterly HR sampling',
+    '  → OKRs: ~90% login adoption within 6 months',
+    '  → GenAI: efficiency gains quantified, use cases shipped',
+    'TRAP: "Give me a specific example" → Default to the MOST RECENT + SPECIFIC moment',
+    'TRAP: "What did your reportee struggle with?" → Vrinda = confidence in client demos, dry-runs every Tuesday',
+    '"I don\'t know" is allowed — better than faking. Mukta values courage.',
+    'TRAP: "Sounds like textbook change management" → "Designed from listening sessions, not framework"',
   ],
   NONE: []
 };
@@ -508,7 +594,9 @@ const server = http.createServer(async (req, res) => {
           return;
         }
         const raw = await callHaiku(transcript);
-        const m = raw.match(/\b(INTRO|Q1[01]?|Q[1-9]|PHARMA|VENDOR|WHYLEAVE|CURROLE|ROLEALIGN|FIVEYEAR|TECHTONOTCH|GCCCHALLENGE|SVCGCC|FOCUS|STRENGTH|WEAKNESS|TOMANDATE|ASTELLASTRANSFORM|YEARONE|ONEASTELLAS|ASKME|FOLLOWUP|NONE)\b/);
+        const validTokens = Object.keys(PANEL_MAP).join('|');
+        const regex = new RegExp(`\\b(${validTokens}|NONE)\\b`);
+        const m = raw.match(regex);
         const label = m ? m[1] : 'NONE';
         const panel = PANEL_MAP[label] ?? -1;
         const cues = CUES[label] || [];

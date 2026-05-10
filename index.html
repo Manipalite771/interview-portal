@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Astellas — Interview Portal</title>
+<title>Astellas Round 2 — Mukta Arora</title>
 <style>
 :root{
   --bg:#0b0e17;--surface:#141825;--raised:#1c2235;--border:#252d44;
@@ -66,7 +66,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 /* CALLOUTS */
 .cue{background:rgba(45,212,191,0.08);border-left:4px solid var(--teal);padding:10px 16px;border-radius:0 var(--radius) var(--radius) 0;margin:14px 0;font-size:var(--body);color:var(--teal)}
-.cue::before{content:'WIOLETA CUE — ';font-weight:700;font-size:var(--small);letter-spacing:0.5px;opacity:0.8}
+.cue::before{content:'MUKTA CUE — ';font-weight:700;font-size:var(--small);letter-spacing:0.5px;opacity:0.8}
 .warn-box{background:rgba(248,113,113,0.08);border-left:4px solid var(--red);padding:10px 16px;border-radius:0 var(--radius) var(--radius) 0;margin:14px 0;font-size:var(--body);color:var(--red)}
 .warn-box::before{content:'AVOID — ';font-weight:700;font-size:var(--small);letter-spacing:0.5px}
 .critical{background:rgba(245,183,49,0.1);border:2px solid var(--amber);padding:14px 18px;border-radius:var(--radius);margin:14px 0}
@@ -234,7 +234,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   #live-cues .cue-item{font-size:1.05rem}
 }
 
-/* MOBILE TOOLBAR TRAY — slides up from bottom on hamburger long-press or toolbar-more btn */
+/* MOBILE TOOLBAR TRAY */
 #mobile-tray{display:none}
 .hide-mobile{display:inline}
 #sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:89}
@@ -249,7 +249,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 @media(max-width:768px){
   :root{--kp:1.25rem;--body:0.95rem;--title:1.4rem;--topbar-h:44px;--bottombar-h:56px}
 
-  /* TOPBAR: only show essential buttons — mic, search, hamburger */
   #hamburger{display:block}
   .hide-mobile{display:none!important}
   #topbar{padding:0 10px}
@@ -262,7 +261,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   #timer{font-size:0.78rem;min-width:40px}
   #section-counter{font-size:0.75rem;min-width:38px}
 
-  /* MOBILE TRAY: all hidden buttons go here */
   #mobile-tray{display:none;position:fixed;bottom:var(--bottombar-h);left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:99;padding:10px 14px;gap:8px;flex-wrap:wrap;justify-content:center}
   #mobile-tray.open{display:flex}
   #mobile-tray .tray-btn{background:var(--raised);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;min-height:42px;transition:var(--transition)}
@@ -270,16 +268,13 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   #mobile-tray .tray-btn.active{border-color:var(--amber);color:var(--amber)}
   #mobile-tray .tray-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
 
-  /* SIDEBAR */
   #sidebar{transform:translateX(-100%);width:75vw;max-width:280px}
   #sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,0.5)}
   #sidebar .nav-item{padding:10px 16px 10px 20px;font-size:0.9rem;min-height:40px}
   #sidebar-backdrop.open{display:block}
 
-  /* MAIN */
   #main{left:0!important}
 
-  /* PANELS */
   .panel{padding:16px 14px 40px}
   .section-title{font-size:1.35rem;margin-bottom:14px}
   .script-box{padding:14px;font-size:calc(var(--kp) - 0.1rem)}
@@ -291,14 +286,10 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   .filter{flex-wrap:wrap;gap:4px 8px}
   .filter-desc{font-size:var(--small)}
 
-  /* TABLES: horizontal scroll wrapper */
   .ref-table{font-size:var(--small);display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .ref-table thead,
-  .ref-table tbody,
-  .ref-table tr{display:table;width:100%;table-layout:fixed}
+  .ref-table thead,.ref-table tbody,.ref-table tr{display:table;width:100%;table-layout:fixed}
   .ref-table td,.ref-table th{padding:6px 8px;word-break:break-word}
 
-  /* BOTTOM NAV: bigger touch targets */
   #bottombar{padding:0 8px}
   .nav-arrow{width:46px;height:40px;border-radius:10px}
   .nav-arrow svg{width:20px;height:20px}
@@ -306,10 +297,8 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   .dot{width:10px;height:10px}
   .dot.active{width:24px}
 
-  /* FAB */
   #fab-3things{bottom:calc(var(--bottombar-h) + 8px);right:10px;padding:8px 14px;font-size:0.72rem;border-radius:20px}
 
-  /* VOICE STRIP */
   #voice-strip.open{height:30px}
   #voice-strip{padding:0 10px;gap:6px}
   #voice-strip .vs-label{font-size:0.6rem;letter-spacing:0.5px}
@@ -318,7 +307,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   body.voice-on #main{top:calc(var(--topbar-h) + 30px)}
   body.voice-on #sidebar{top:calc(var(--topbar-h) + 30px)}
 
-  /* MODALS */
   #three-modal-content{padding:20px;max-height:85vh}
   #three-modal-content h2{font-size:1.3rem}
   .thing{padding:12px;margin:10px 0}
@@ -328,7 +316,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   #search-input{padding:14px 16px;font-size:1rem}
   .search-result{padding:10px 16px}
 
-  /* CHECKLIST: bigger tap targets */
   .check-item{padding:10px 0}
   .check-item input[type=checkbox]{width:24px;height:24px}
 }
@@ -368,7 +355,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 <header id="topbar">
   <div class="left">
     <button id="hamburger" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
-    <span id="section-counter">1 / 21</span>
+    <span id="section-counter">1 / 31</span>
     <span id="clock"></span>
   </div>
   <div class="right">
@@ -393,738 +380,831 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 
 <!-- SIDEBAR -->
 <nav id="sidebar">
-  <div class="group-label">Strategic</div>
-  <button class="nav-item" data-panel="0">§1 Strategic Framing<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="1">§2 Astellas Context<span class="shortcut"></span></button>
+  <div class="group-label">Overview</div>
+  <button class="nav-item" data-panel="0">Quick Reference<span class="shortcut"></span></button>
 
-  <div class="group-label">Your Script</div>
-  <button class="nav-item" data-panel="2">§3 Opening 90 Sec<span class="shortcut"></span></button>
+  <div class="group-label">Openers</div>
+  <button class="nav-item" data-panel="1">Intro<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="2">Career<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="3">Why Astellas<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="4">Why Role<span class="shortcut"></span></button>
 
-  <div class="group-label">Q&A Prep (§4)</div>
-  <button class="nav-item" data-panel="3">Q1 End-to-End<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="4">Q2 Didn't Go as Planned<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="5">Q3 Cross-Geography<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="6">Q4 GCC Strategy<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="7">Q5 Comms → Behaviour<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="8">Q6 SharePoint<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="9">Q7 Stakeholder Resist<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="10">Q8 CxO-Level Work<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="11">Q9 Coaching Juniors<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="12">Q10 Capability Outlived<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="13">Q11 Plan Broke<span class="shortcut"></span></button>
+  <div class="group-label">Critical Questions</div>
+  <button class="nav-item" data-panel="5">Services to GCC<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="6">Tech Shift<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="7">Culture Change<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="8">Tri-Site<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="9">SharePoint<span class="shortcut"></span></button>
 
-  <div class="group-label">Reference</div>
-  <button class="nav-item" data-panel="14">§5 Pharma Fluency<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="15">§6 Language Guide<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="16">§7 Stories Map<span class="shortcut"></span></button>
+  <div class="group-label">Competency</div>
+  <button class="nav-item" data-panel="10">Senior Adoption<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="11">Resistance<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="12">Leadership Style<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="13">First 90 Days<span class="shortcut"></span></button>
 
-  <div class="group-label">Endgame</div>
-  <button class="nav-item" data-panel="17">§8 Questions to Ask<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="18">§9 Follow-Up Traps<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="19">§10 Checklist<span class="shortcut"></span></button>
-  <button class="nav-item" data-panel="20">§11 Three Things to Land<span class="shortcut"></span></button>
+  <div class="group-label">Stories</div>
+  <button class="nav-item" data-panel="14">GenAI Adoption<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="15">Bowler Charts<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="16">Coaching<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="17">Failure<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="18">CxO Work<span class="shortcut"></span></button>
+
+  <div class="group-label">Context</div>
+  <button class="nav-item" data-panel="19">Current Role<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="20">Why Leave<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="21">Pharma Check<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="22">Values<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="23">TO Mandate<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="24">One Astellas<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="25">Budget<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="26">Gaps<span class="shortcut"></span></button>
+
+  <div class="group-label">Situational</div>
+  <button class="nav-item" data-panel="27">Sanofi<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="28">BSV<span class="shortcut"></span></button>
+
+  <div class="group-label">Closing</div>
+  <button class="nav-item" data-panel="29">Ask Mukta<span class="shortcut"></span></button>
+  <button class="nav-item" data-panel="30">Follow-ups<span class="shortcut"></span></button>
 </nav>
 
 <!-- MAIN -->
 <main id="main">
 
 <!-- ============================================ -->
-<!-- PANEL 0: §1 STRATEGIC FRAMING                -->
+<!-- PANEL 1: QUICK REFERENCE                      -->
 <!-- ============================================ -->
 <section class="panel active" data-index="0">
-  <div class="section-label">§1</div>
-  <h1 class="section-title">Strategic Framing</h1>
+  <div class="section-label">OVERVIEW</div>
+  <h1 class="section-title">Round 2 Battle Station</h1>
 
-  <div class="critical">
-    <p class="kp">Wioleta is allergic to framework recitation and rewards execution credibility. Her own words: "95% of value is — can you execute?"</p>
+  <div class="script-box">
+    <p>"I am not coming in as a pure GenAI/product person or a corporate communications person. My strongest fit is as a <strong>strategy-execution leader</strong> who can convert ambiguous transformation goals into operating rhythms, stakeholder coalitions, adoption mechanisms, measurable outcomes, and leadership-ready narratives."</p>
   </div>
 
-  <div class="card mt">
-    <div class="card-title">Who You're Interviewing With</div>
-    <p class="dt"><strong>Wioleta Kicman</strong> — Director, Transformation Lead Consultant at Astellas, based in Warsaw. She is your peer in the Transformation Office, not a hierarchical interviewer. Behavioural scientist (dual master's in Public Health and Business Psychology), Prosci/PMP/MSP/PRINCE2/SAFe certified, part-time lecturer in Organizational Psychology and Change Management at SWPS. Self-label: "Change &amp; Transformation Lead | Business Psychologist | Business Partner."</p>
+  <h2 class="kp mt-lg">5 Astellas Needs to Repeatedly Connect To</h2>
+  <div class="kp-block"><p class="kp">1. One Astellas across three GCCs — not three isolated sites</p></div>
+  <div class="kp-block"><p class="kp">2. Strategy-to-execution discipline — CSP/SMT to workstreams, cadences, decisions, metrics</p></div>
+  <div class="kp-block"><p class="kp">3. Communication as transformation infrastructure — not newsletters, but adoption + behavior change</p></div>
+  <div class="kp-block"><p class="kp">4. Capability-center mindset — Bengaluru as value hub, not service delivery/offshoring</p></div>
+  <div class="kp-block"><p class="kp">5. Speed with maturity — sense of urgency, but controlled, compliant, stakeholder-sensitive execution</p></div>
+
+  <div class="card mt-lg">
+    <div class="card-title">Mukta's Cultural Cues</div>
+    <p class="dt"><strong>"Capability centre, not service centre"</strong></p>
+    <p class="dt"><strong>"Centers of excellence, not islands of excellence"</strong></p>
+    <p class="dt"><strong>"Building bridges every day"</strong></p>
+    <p class="dt"><strong>"Engaging hearts and minds"</strong></p>
+    <p class="dt"><strong>"Psychologically safe environment where talent isn't dormant"</strong></p>
+    <p class="dt"><strong>"Diversity is first step; inclusion is harder"</strong></p>
+    <p class="dt"><strong>"Consistency beats intensity"</strong></p>
+    <p class="dt"><strong>"Don't treat people as objects — give them career maps"</strong></p>
+    <p class="dt"><strong>"VALUE for patients"</strong> (say with weight)</p>
+    <p class="dt"><strong>"One Astellas — three time zones, one narrative"</strong></p>
   </div>
 
-  <h2 class="kp mt-lg">Her 7 Hiring Filters (in order)</h2>
-  <div class="filter"><span class="filter-num">1</span><span class="filter-name">Execution credibility</span><span class="filter-desc"> — has candidate actually shipped end-to-end transformation, not just described it?</span></div>
-  <div class="filter"><span class="filter-num">2</span><span class="filter-name">Cross-geography/cultural fluency</span><span class="filter-desc"> — can they bridge divergent perspectives across India, Poland, Mexico?</span></div>
-  <div class="filter"><span class="filter-num">3</span><span class="filter-name">Communication strategy depth</span><span class="filter-desc"> — not comms plans, but architecture that shifts behaviour</span></div>
-  <div class="filter"><span class="filter-num">4</span><span class="filter-name">Capability-building mindset</span><span class="filter-desc"> — building durable change capability, not delivering one-off projects</span></div>
-  <div class="filter"><span class="filter-num">5</span><span class="filter-name">Coaching juniors</span><span class="filter-desc"> — visible capability transfer to Senior Consultants/Consultants</span></div>
-  <div class="filter"><span class="filter-num">6</span><span class="filter-name">Navigating ambiguity</span><span class="filter-desc"> — energy from uncertainty, not panic</span></div>
-  <div class="filter"><span class="filter-num">7</span><span class="filter-name">Pharma context</span><span class="filter-desc"> — strongly preferred but bridgeable if you've operated in regulated, complex environments</span></div>
-
-  <hr class="divider">
-
-  <div class="kp-block mt">
-    <p class="kp">YOUR REFRAME: You are NOT a vendor-side candidate bridging to in-house. You are a candidate who has spent four years inside the operating model Astellas is building — Indegene's Bangalore center is itself a Global Capability Center for pharma clients.</p>
+  <div class="warn-box mt-lg">
+    Always close with patients. Bridge-building over hero narratives. Never "I drove..." without naming coalition. Speak "capability center" not "delivery center". Acknowledge what you don't know. Long-horizon framing (3-5 years). Respect Japan-HQ context.
   </div>
-
-  <h2 class="kp mt-lg">Your 3 Differentiators</h2>
-  <div class="kp-block"><p class="kp">1. Pharma fluency across 12 companies — Sanofi, Amgen (EU top-5), Pfizer, Janssen, AstraZeneca, BI, Merck KGaA, CSL Vifor, Gilead, Regeneron, Haleon, Vertex</p></div>
-  <div class="kp-block"><p class="kp">2. Transformation craft — operating models, governance cadences, change adoption at scale</p></div>
-  <div class="kp-block"><p class="kp">3. Communications/engagement judgement — Change Makers Council, Culture Credo, SharePoint operational instruments</p></div>
-  <p class="dt mt">Most candidates show one or two. You can credibly claim all three.</p>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 1: §2 ASTELLAS CONTEXT                 -->
+<!-- PANEL 2: INTRO                                -->
 <!-- ============================================ -->
 <section class="panel" data-index="1">
-  <div class="section-label">§2</div>
-  <h1 class="section-title">The Astellas Context</h1>
+  <div class="section-label">OPENING</div>
+  <p class="q-header">"Tell me about yourself"</p>
 
-  <h2 class="kp">10 Facts to Memorize Cold</h2>
+  <p class="kp mt">Answer Architecture:</p>
+  <div class="kp-block"><p class="kp">Decade in life sciences — 3 years field (Intas, J&amp;J, Novartis) + 5+ years transformation at Indegene</p></div>
+  <div class="kp-block"><p class="kp">Arc: field sales to MBA NMIMS to strategic transformation at scale</p></div>
+  <div class="kp-block"><p class="kp">Indegene Bangalore IS a GCC for pharma clients — delivery-side of GCC model</p></div>
+  <div class="kp-block"><p class="kp">12 pharma companies across India and EU5</p></div>
+  <div class="kp-block"><p class="kp">Common thread: helping complex orgs move from strategic intent to adoption at scale</p></div>
+  <div class="kp-block"><p class="kp">NOT a GenAI person — strategy-execution leader</p></div>
 
-  <div class="kp-block"><p class="kp">1. CSP2026 launches late May 2026 — you'd join in the first execution wave of a new 5-year plan, not maintain an old one</p></div>
-  <div class="kp-block"><p class="kp">2. SMT targets ~¥150B recurring savings by FY2027; ¥40B delivered FY2024; core OP margin already 27.6% YTD Q3 FY2025, target 30% by FY2027</p></div>
-  <div class="kp-block"><p class="kp">3. XTANDI = ~48% of revenue (¥912B FY2024) — US LOE August 2027, EU June 2028, Japan July 2029; Medicare MFP $7,004/30-day from January 2027</p></div>
-
-  <div class="card mt"><div class="card-title">4. April 2025 Patient-Axis Reorg</div>
-    <p class="dt"><strong>Value Creation</strong> (R&amp;D under CRDO Taniguchi) / <strong>Value Delivery</strong> (Commercial + Medical Affairs unified under CCMAO Claus Zieler) / <strong>Value Enablement</strong></p>
+  <div class="script-box mt">
+    <p>"I started in pharma sales — Intas, J&amp;J, Novartis — so my foundation is close to customers, HCP behaviour, and execution reality. Post-MBA, I moved into strategic initiatives at Indegene, where my work has been about driving transformation across pharma portfolios: omnichannel, automation, GenAI adoption, operating models, governance, and culture change. The common thread is not technology alone — it is helping complex organisations move from strategic intent to adoption at scale. That is why this role is attractive: Astellas is at a point where the GCCs, CSP2026, and One Astellas need exactly that bridge between <strong>strategy, communication, and execution</strong>."</p>
   </div>
 
-  <div class="card"><div class="card-title">5. CDTO Role Eliminated</div>
-    <p class="dt">October 1, 2025 — DigitalX and Transformation Office now under CStO; Adam Pearson resigned March 31, 2026; Peter Sandor interim</p>
+  <div class="critical mt">
+    Must land — you are a strategy-execution hybrid: pharma-literate, transformation-disciplined, comms-fluent, Astellas-specific
   </div>
 
-  <div class="card"><div class="card-title">6. Transformation Office Hierarchy</div>
-    <p class="dt">Managing Principal → Principal → <strong>Lead Consultant (your role)</strong> → Senior Consultant → Consultant; organized by Chapters (Change Management, Process Excellence, Agile); delivery via Stream/Crew/Pod Agile framework</p>
-  </div>
-
-  <div class="kp-block mt"><p class="kp">7. Three GCCs: Bengaluru (Mukta Arora, Feb 2025, 300+ staff, full-stack) · Warsaw (Andżelika Zarudzka, ~100+, GBS-heavy, moving to The Bridge March 2026) · Mexico City (Flavio Hecht, Jan 2026, medical/digital/innovation focus) — Kamila Grembowicz (SVP GBS) closest global GCC sponsor</p></div>
-
-  <div class="card"><div class="card-title">8. New Values &amp; Behaviors</div>
-    <p class="dt"><strong>Values:</strong> Integrity, Innovation, Impact + <strong>5 Behaviors:</strong> Courage, Sense of Urgency, One Astellas, Outcome Focus, Accountability — replacing old "Astellas Way". Patient Focus elevated to VISION layer.</p>
-  </div>
-
-  <div class="kp-block"><p class="kp">9. February 2025 Sustainability Meeting flagged "Change Communication" as the top materiality gap — explicit rationale for this hire</p></div>
-
-  <div class="card"><div class="card-title">10. Farallon Capital</div>
-    <p class="dt">~3% activist stake drove June 2025 board additions of Andreas Busch and Mark Enyedy — political context for all margin/capital-discipline conversations</p>
-  </div>
-
-  <hr class="divider">
-  <h2 class="kp mt">Portfolio Picture</h2>
-  <p class="dt"><strong style="color:var(--green)">Bright spots:</strong> PADCEV (FY2025 forecast raised to ¥210B), VYLOY (first-in-class Claudin 18.2 ramping)</p>
-  <p class="dt"><strong style="color:var(--red)">Under pressure:</strong> IZERVAY (FDA CRL Nov 2024, ¥115B ex-US impairment, label updated Feb 2025), VEOZAH (FDA Boxed Warning Dec 2024, guidance cut $375M→$50M), Audentes gene therapy (4 AT132 patient deaths, ¥52B AT466 impairment, sites closing)</p>
-  <p class="dt"><strong>Capital posture:</strong> CEO Okamura at JPM 2026 explicitly rejected "rescue BD"; deleveraging at 2.2x; FY2025 guidance raised three times.</p>
-
-  <hr class="divider">
-  <h2 class="kp mt">Why This Role Exists (Your Hypothesis)</h2>
-  <div class="hypothesis">
-    <p class="kp" style="font-size:var(--body)">Three GCCs scaling fast and uncoordinated → risk of fragmented "three islands"</p>
-    <p class="kp" style="font-size:var(--body)">Astellas self-identified Change Communication as weakest capability</p>
-    <p class="kp" style="font-size:var(--body)">CStO transition + CDTO elimination = TO needs Lead Consultant bench depth</p>
-    <p class="kp" style="font-size:var(--body)">SMT depends on insourcing into GCCs → Bengaluru is delivery mechanism AND narrative</p>
-    <p class="kp" style="font-size:var(--body)">CSP2026 activation requires fast, high-quality cross-site engagement</p>
-  </div>
+  <div class="cue">Close with "...and ultimately, this all ladders up to VALUE for patients"</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 2: §3 OPENING 90 SECONDS               -->
+<!-- PANEL 3: CAREER                               -->
 <!-- ============================================ -->
 <section class="panel" data-index="2">
-  <div class="section-label">§3</div>
-  <h1 class="section-title">The Opening 90 Seconds</h1>
-  <p class="kp mb">Practice this word-for-word. When Wioleta says "Tell me about yourself":</p>
+  <div class="section-label">OPENERS</div>
+  <p class="q-header">"Walk me through your career — why pharma, why transformation, why now Astellas?"</p>
 
-  <div class="script-box">
-    <p>"I've spent the last decade in life sciences. The first three years on the ground as a Medical Representative at Novartis and J&amp;J — institutional sales, key accounts in government and military hospitals — and the last six leading transformation across pharma portfolios at Indegene's Bangalore center, which is itself a <strong>Global Capability Center for pharma clients</strong>. I've worked across a dozen pharma companies — <strong>Sanofi, Amgen across the EU's top-5 markets, Pfizer, Janssen, AstraZeneca, BI, Merck KGaA, CSL Vifor, Gilead, Regeneron, Haleon, and currently Vertex</strong>.</p>
-    <br>
-    <p>What I've learned in that arc is that transformation in pharma isn't a frameworks problem — it's a <strong>meaning-making problem</strong>. The people doing the work — SMEs, mid-managers, engineering teams — <strong>aren't resistant to change. They're overwhelmed by competing priorities and unclear on what they personally own</strong>. The work I find most rewarding is designing the <strong>operating models, governance cadences, and communication architecture</strong> that turn ambiguous strategy into things people actually do differently on Monday morning.</p>
-    <br>
-    <p>The reason this Astellas role caught me is the moment — <strong>CSP2026 launching, three GCCs scaling at different speeds and weights, SMT in flight</strong>, and Astellas's own February 2025 materiality review flagging <strong>'Change Communication' as the top capability gap</strong>. That's not a maintenance role. That's a <strong>build role at a build moment</strong>. And having been on the delivery side of a pharma GCC for four years, I have a clear view of what makes the model work versus what makes it stall."</p>
-  </div>
+  <div class="kp-block mt"><p class="kp">1. Pharma is INTENTIONAL, not accidental. B.Pharm Manipal to 3 years field to MBA NMIMS to Indegene. Chose to stay in life sciences because patient impact compounds.</p></div>
+  <div class="kp-block"><p class="kp">2. Arc: from the field to the boardroom. Field sales = customer ground-truth. MBA + Indegene = transformation execution at scale. Each phase deepened pharma fluency while expanding transformation breadth.</p></div>
+  <div class="kp-block"><p class="kp">3. Why Astellas NOW. CSP2026 launching, 3 GCCs at 3 maturity curves, 'Change Communication' top gap. Once-in-a-plan-cycle window to shape activation. Build role at a build moment — and chance to build alongside someone who has done it twice before.</p></div>
 
-  <div class="card mt">
-    <div class="card-title">Why This Works</div>
-    <p class="dt">• Pharma fluency front-loaded (12 companies, EU markets named)</p>
-    <p class="dt">• Mirrors Wioleta's "overwhelmed not resistant" thesis in your own words</p>
-    <p class="dt">• Astellas-specific insight (CSP2026, SMT, materiality flag)</p>
-    <p class="dt">• Confident posture on GCC delivery-side experience</p>
-    <p class="dt">• No frameworks named, no jargon stacked</p>
-  </div>
+  <div class="cue">Close with "...and ultimately, this all ladders up to VALUE for patients." She capitalises VALUE deliberately — match her vocabulary.</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 3: Q1 END-TO-END TRANSFORMATION         -->
+<!-- PANEL 4: WHY ASTELLAS                         -->
 <!-- ============================================ -->
 <section class="panel" data-index="3">
-  <div class="section-label">§4 · Question 1</div>
-  <p class="q-header">"Walk me through a transformation initiative you led end-to-end. What was the messy middle?"</p>
-  <p class="q-story">Primary story: GenAI Enterprise Adoption at Indegene</p>
+  <div class="section-label">OPENERS</div>
+  <p class="q-header">"Why Astellas?"</p>
 
-  <div class="car">
-    <div class="car-label context">Context · 30 sec</div>
-    <blockquote>"Indegene's 1,000+ employee delivery business unit was facing two pressures in 2023 — clients beginning to ask 'what's your AI play?' and internal margin pressure. Senior leadership wanted enterprise-wide GenAI adoption, but the workforce was a mix of <strong>skeptical SMEs, anxious mid-managers, and engineering teams already experimenting in pockets without coordination</strong>."</blockquote>
+  <div class="warn-box">AVOID generic "Astellas is innovative and patient-focused"</div>
+
+  <div class="script-box mt">
+    <p>"What attracts me is that Astellas seems to be at a real transformation inflection point. <strong>CSP2026</strong> is coming in, <strong>SMT</strong> is a major enterprise priority, the operating model has shifted around Value Creation, Value Delivery, and Value Enablement, and the three GCCs are being positioned as critical enablers rather than support centers. That is exactly the kind of environment where transformation is not theoretical — it has to show up as <strong>operating rhythm, stakeholder alignment, capability building, and measurable outcomes</strong>."</p>
   </div>
 
-  <div class="car">
-    <div class="car-label action">Action · The Messy Middle · 60 sec</div>
-    <blockquote>"The first three pilots stalled. Not because the tech didn't work — because <strong>we'd skipped the diagnosis</strong>. We ran listening sessions across six BUs. What we heard was that domain SMEs felt the tools threatened their craft, mid-managers couldn't articulate ROI to their teams, and <strong>our rollout language was wrong — we were saying 'productivity' when people heard 'replacement.'</strong>
-    <br><br>So we paused and reframed. <strong>Repositioned adoption around augmentation, not productivity.</strong> Built a Community of Practice that paired SMEs with engineering, not the other way around. Made wins visible weekly. Worked directly with Microsoft and Adobe on use-case design. Ran 8 pilots, identified 50+ use cases. Most importantly, <strong>gave SMEs the role of validating what good looked like — they became the quality bar, not the audience.</strong>"</blockquote>
-  </div>
-
-  <div class="car">
-    <div class="car-label result">Result · 30 sec</div>
-    <blockquote>"<strong>30%+ efficiency gains</strong> in the 1,000+ employee BU, <strong>400+ employees impacted</strong> across the enterprise. But the outcome I care about more is <strong>what outlived the project</strong> — the CoP grew from 3-4 core members to a <strong>90-person extended team</strong>, became a hiring filter, and the configuration cycle time for new client engagements dropped from <strong>4-5 months to 5-6 weeks</strong> because we'd built the durable capability."</blockquote>
-  </div>
-
-  <div class="cue">"shared understanding" (used implicitly), "what outlived the project" (your closing), "ownership" (SMEs as quality bar). Avoid framework names.</div>
+  <p class="dt mt">Uses Astellas-specific context — CSP2026, SMT, patient-axis reorg, CDTO to CStO shift, and 3 GCCs. Specific: "The chance to build alongside someone who has done it twice before is a learning multiplier."</p>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 4: Q2 DIDN'T GO AS PLANNED              -->
+<!-- PANEL 5: WHY ROLE                             -->
 <!-- ============================================ -->
 <section class="panel" data-index="4">
-  <div class="section-label">§4 · Question 2</div>
-  <p class="q-header">"Tell me about a transformation that didn't go as planned. What did you do?"</p>
-  <p class="q-story">Primary story: BSVwithU Year 1 Turnaround</p>
+  <div class="section-label">OPENERS</div>
+  <p class="q-header">"Why this role?"</p>
+
+  <div class="kp-block mt"><p class="kp">This role is attractive because it sits at the intersection of three things I have built my career around:</p></div>
 
   <div class="car">
-    <div class="car-label context">Context · 30 sec</div>
-    <blockquote>"When I took over BSVwithU — Bharat Serum's digital platform for Women's Health and Fertility doctors — Year 1 was on the brink. <strong>70% of the marketing SOW deliverables hadn't started.</strong> Multiple client SPOCs were giving conflicting UI/UX feedback. Content production had halted because the client was in analysis-paralysis on existing content metrics. Hidden costs across platform and marketing tracks were eating margin. And the <strong>procurement team was refusing to pay</strong> for the majority of marketing and content deliverables."</blockquote>
+    <div class="car-label context">Pillar 1</div>
+    <blockquote><strong>Transformation execution</strong> — Bowler Charts, OKRs, automation portfolios, Vertex Innovation Center</blockquote>
   </div>
-
   <div class="car">
-    <div class="car-label action">Action · 60 sec</div>
-    <blockquote>"What I learned quickly was that the resistance from the client wasn't really resistance — it was a <strong>procurement team without a framework to evaluate digital deliverables</strong>. Once we built the framework with them, the conversation completely changed.
-    <br><br><strong>Three moves.</strong> First, transparency on cost — established a Change Request process with itemized costing, which let me negotiate <strong>$32,645 for Year 1 out-of-scope changes</strong>. Second, redrew the SOW co-authored with the client — <strong>quantified 25+ deliverables while maintaining 40% margin</strong>. Third, attacked the cost base — vendor switching for AWS, content, and marketing delivered roughly <strong>$25K AWS savings and $42K BU savings</strong>. Then I established a <strong>monthly cadence with the COO and Digital Transformation Head</strong> with structured RAG status — so the conversation moved from 'why should I fund this' to 'where do we double down.'"</blockquote>
+    <div class="car-label action">Pillar 2</div>
+    <blockquote><strong>Engagement/communication strategy</strong> — Change Makers Council, Sanofi Connect, Regulatory Intelligence GTM</blockquote>
   </div>
-
   <div class="car">
-    <div class="car-label result">Result · 30 sec</div>
-    <blockquote>"<strong>MAU grew 75% in six months. ~18 platform enhancements shipped. Project renewed for Year 2.</strong> But the bigger shift was that the client procurement team started treating digital deliverables like they treated tangible assets — <strong>that framework is what made renewal a foregone conclusion.</strong>"</blockquote>
+    <div class="car-label result">Pillar 3</div>
+    <blockquote><strong>GCC/capability building</strong> — GenAI CoP, cross-functional teams, upskilling SMEs, SharePoint tracker</blockquote>
   </div>
 
-  <div class="cue">"What I learned was..." (her favourite framing), "co-authored with the client" (co-creation), shift from resistance to clarity.</div>
+  <div class="script-box mt">
+    <p>"I would see success not as producing more communication artefacts, but as creating a <strong>repeatable engagement system</strong> that helps India, Poland, and Mexico operate as One Astellas while still preserving each site's distinct strengths."</p>
+  </div>
+
+  <div class="hypothesis mt">Three differentiators — pharma fluency (12 companies) + transformation craft + GCC delivery perspective. Not a maintenance role — BUILD role at BUILD moment.</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 5: Q3 CROSS-GEOGRAPHY                   -->
+<!-- PANEL 6: SERVICES TO GCC                      -->
 <!-- ============================================ -->
 <section class="panel" data-index="5">
-  <div class="section-label">§4 · Question 3</div>
-  <p class="q-header">"This role spans India, Poland, Mexico. Tell me about leading engagement across geographies or cultures."</p>
-  <p class="q-story">Primary story: Amgen ELMAC commercial delivery across EU's top-5 markets</p>
+  <div class="section-label">CRITICAL QUESTIONS</div>
+  <p class="q-header">"You come from a services company. How will you transition into a GCC?"</p>
 
-  <div class="car">
-    <div class="car-label context">Context · 30 sec</div>
-    <blockquote>"I ran multi-million USD content delivery operations for Amgen across the EU's top-5 markets — <strong>UK, Germany, France, Italy, Spain</strong>. The transformation challenge was <strong>repricing the entire engagement from FTE-based to asset-based</strong>, which required aligning Amgen's finance team, our Bangalore delivery operations, country-level commercial leads in Europe, and procurement gatekeepers in each market."</blockquote>
+  <div class="critical">CRITICAL — do NOT sound defensive. This transition EXCITES you.</div>
+
+  <div class="script-box mt">
+    <p>"That transition is exactly what excites me. In services, I learned to create value across multiple pharma operating contexts, but the limitation is that you are often one step removed from long-term enterprise ownership. In a GCC, the expectation is different: you own <strong>capability building, continuity, institutional memory, and internal adoption</strong>. My transition would be from delivering transformation for pharma clients to helping build transformation capability inside Astellas itself."</p>
   </div>
 
-  <div class="car">
-    <div class="car-label action">Action · 60 sec</div>
-    <blockquote>"What I learned is that <strong>'one model' doesn't translate across European markets</strong>. Germany wanted granular asset definition with detailed audit trails. Italy wanted relationship continuity above process precision. The UK wanted SLA contractual specificity. France wanted regulatory traceability. Spain prioritized cost transparency.
-    <br><br>The trick wasn't to negotiate a compromise — it was a <strong>shared spine with country-specific configuration</strong>. We defined a common asset taxonomy and pricing logic, then adapted the governance cadence and reporting depth to what each market valued. <strong>Quality and CSAT governance ran on the same instruments globally; the conversation around them was localized.</strong>"</blockquote>
-  </div>
+  <p class="kp mt">Proof Points:</p>
+  <div class="kp-block"><p class="kp">Vertex Innovation Center — aligning 4 parties</p></div>
+  <div class="kp-block"><p class="kp">AZ solutioning — directly with Executive Director</p></div>
+  <div class="kp-block"><p class="kp">Bowler Charts — governance instrument for CXO reviews</p></div>
+  <div class="kp-block"><p class="kp">Change Makers Council — 26-person volunteer org change</p></div>
+  <div class="kp-block"><p class="kp">Indegene Bangalore IS a GCC for pharma clients</p></div>
 
-  <div class="car">
-    <div class="car-label result">Result · 30 sec</div>
-    <blockquote>"Pricing model transformation landed across all five markets. Quality governance influenced quarterly business decisions. CSAT held through the transition. What that taught me — and what I'd bring to the three-GCC challenge — is that <strong>'One Astellas' across India, Poland, and Mexico won't work if it's a uniform brand</strong>. Bengaluru's full-stack scale, Warsaw's GBS core, Mexico's medical-digital-innovation weight — those are real differences. <strong>The winning architecture is coherent core, configurable site identity.</strong> It's the same problem I worked inside for two years."</blockquote>
-  </div>
+  <div class="hypothesis mt">Key line — "Moving from vendor-side execution to enterprise-side capability ownership"</div>
 
-  <div class="cue">"shared spine, configurable layer" (her language for differentiated change), "coherent difference" not sameness.</div>
+  <div class="cue">Reframe Indegene structure as global complexity: "Multi-geography, multi-stakeholder, multi-culture across 5+ global pharma portfolios"</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 6: Q4 GCC ENGAGEMENT STRATEGY           -->
+<!-- PANEL 7: TECH SHIFT                           -->
 <!-- ============================================ -->
 <section class="panel" data-index="6">
-  <div class="section-label">§4 · Question 4</div>
-  <p class="q-header">"How would you approach designing engagement strategy across the three GCCs?"</p>
-  <p class="q-story">Hypothetical — answer in three deliberate moves</p>
+  <div class="section-label">CRITICAL QUESTIONS</div>
+  <p class="q-header">"Your profile looks heavily GenAI/product-led. This role is broader. How do you see that?"</p>
 
-  <div class="car">
-    <div class="car-label context">Move 1 · Listen Before You Build · 30 sec</div>
-    <blockquote>"First 30-45 days, I'd want listening sessions with each MD — <strong>Mukta Arora, Andżelika Zarudzka, Flavio Hecht</strong> — and at least 2-3 levels deep into each site. Not to validate a pre-built strategy, but to understand what <strong>'One Astellas' means in the lived reality of a 12-month-old hub vs an 18-month-old hub vs a 3-month-old hub</strong>. The maturity curves are different; messaging that lands in Warsaw may overwhelm Mexico City."</blockquote>
+  <div class="warn-box">DO NOT SAY "I am okay doing less tech" — sounds like compromise</div>
+
+  <div class="script-box mt">
+    <p>"I see GenAI as one expression of my transformation experience, not the center of my identity. The more transferable part is the <strong>discipline behind it</strong>: prioritizing use cases, aligning sponsors, creating governance, managing resistance, building adoption playbooks, measuring value, and coaching users into new ways of working. Those same muscles apply to GCC engagement, SharePoint adoption, CSP activation, and change communication."</p>
   </div>
 
-  <div class="car">
-    <div class="car-label action">Move 2 · Anchor the Spine in CSP2026 + Values &amp; Behaviors · 30 sec</div>
-    <blockquote>"The new Values and Behaviors framework — <strong>Integrity, Innovation, Impact</strong> with <strong>Courage, Sense of Urgency, One Astellas, Outcome Focus, Accountability</strong> — gives a natural editorial spine. Especially because <strong>Patient Focus has been lifted to the VISION layer</strong>, which means it's implicit in everything, not a competing value. <strong>CSP2026 announcing in late May gives us a once-in-a-plan-cycle moment</strong> to anchor the narrative arc."</blockquote>
-  </div>
+  <p class="kp mt">Evidence:</p>
+  <div class="kp-block"><p class="kp">GenAI adoption: hard part was NOT tech — reframing "productivity" to "augmentation"</p></div>
+  <div class="kp-block"><p class="kp">Change Makers Council, Culture Credo — zero tech, pure org behaviour change</p></div>
+  <div class="kp-block"><p class="kp">Bowler Charts: getting leaders to treat data as voice of function</p></div>
+  <div class="kp-block"><p class="kp">OKR ~90% adoption: sat with leaders' actual pain, not tool features</p></div>
 
-  <div class="car">
-    <div class="car-label result">Move 3 · Use the Calendar as the Editorial Arc · 30 sec</div>
-    <blockquote>"The natural storytelling moments for 2026 are already on the calendar — <strong>Warsaw's move to The Bridge in March, Mexico's first full year, Bengaluru's post-inauguration scale-up, and the late-May CSP2026 announcement</strong>. That's a credible 12-month editorial arc to anchor SharePoint and engagement around. But the goal isn't a comms plan — it's <strong>adoption and behaviour</strong>. Success looks like <strong>leaders in each GCC repeating the narrative in their own words, unprompted, by month nine.</strong>"</blockquote>
-  </div>
-
-  <div class="cue">"adoption and behaviour, not comms plan", "leaders repeating in their own words" — these are her exact filters.</div>
+  <div class="hypothesis mt">"The role gives me a broader enterprise canvas for the same capability: helping people, processes, tools, and leadership narratives move together."</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 7: Q5 COMMS THAT SHIFTED BEHAVIOUR      -->
+<!-- PANEL 8: CULTURE CHANGE                       -->
 <!-- ============================================ -->
 <section class="panel" data-index="7">
-  <div class="section-label">§4 · Question 5</div>
-  <p class="q-header">"Tell me about a communication strategy that actually shifted behaviour."</p>
-  <p class="q-story">Primary story: Change Makers Council &amp; Culture Credo</p>
+  <div class="section-label">CRITICAL QUESTIONS</div>
+  <p class="q-header">"Tell me about a culture-change initiative you led"</p>
+
+  <div class="critical">STRONGEST culture-fit story. Mukta will LOVE this. Do NOT undersell.</div>
 
   <div class="car">
-    <div class="car-label context">Context · 30 sec</div>
-    <blockquote>"In 2022, Indegene was scaling fast — rapid expansion, employees joining from different industries with different working styles, completely virtual, knowledge centres siloed by BU. Leadership wanted to embed a <strong>Culture Credo and four Core Values: Collaboration, Empathy, Trust, Innovation</strong>. The risk was the predictable one — top-down launch, awareness without behaviour change, the values living on the intranet but not in performance reviews."</blockquote>
+    <div class="car-label context">Context</div>
+    <blockquote>Indegene scaling rapidly across BUs; 4 Core Values + Culture Credo articulated at leadership level but not lived day-to-day. Risk: cultural fragmentation as company grew.</blockquote>
   </div>
-
   <div class="car">
-    <div class="car-label action">Action · 60 sec</div>
-    <blockquote>"We co-founded the <strong>Change Makers Council. 26 volunteers across business units</strong> — but deliberately not communicators. SMEs, engineers, finance partners, project managers. <strong>People whose voices already carried weight in their own teams.</strong>
-    <br><br>Two design principles. First, <strong>co-creation</strong> — we co-authored the Credo language with Org Development leadership rather than receiving it from them. The volunteers had skin in the words. Second, <strong>multi-wave campaign architecture</strong> — teaser emails (we ran one called 'Riddle N Fiddle' that got people guessing the value), video mailers, a 'Share Your Collaboration Story' competition with Indecoin rewards, themed activities. Each wave was 7-14 days, with deliberate breathing room between.
-    <br><br><strong>The volunteers carried each value into their own teams in their own voice. We weren't running a campaign at people; we were giving 26 ambassadors a vocabulary.</strong>"</blockquote>
+    <div class="car-label action">Action</div>
+    <blockquote>Co-founded <strong>26-person volunteer-led council</strong>. Cross-BU (SMEs, engineers, finance — NOT communicators). Co-authored credo language WITH OD leadership. Multi-wave campaigns: teaser "Riddle N Fiddle", video mailers, story competitions. Each wave 7-14 days. <strong>Volunteers carried values in THEIR voice.</strong> Influencing without authority.</blockquote>
   </div>
-
   <div class="car">
-    <div class="car-label result">Result · 30 sec</div>
-    <blockquote>"The signal we cared about wasn't pageviews. It was when <strong>'Empathy' and 'Collaboration' started showing up unprompted in performance review conversations and team meetings</strong>. That happened by month four. <strong>The Council outlasted the specific Credo launch — it became a durable culture mechanism that ran subsequent waves on its own.</strong> That's the capability shift I care about most."</blockquote>
+    <div class="car-label result">Result</div>
+    <blockquote>Sustained adoption of Collaboration, Empathy, Trust, Innovation. Council became self-renewing capability. Signal: <strong>"Empathy" showing up unprompted in performance reviews by month 4</strong>. Council outlasted the launch.</blockquote>
   </div>
 
-  <div class="cue">"co-created" (her word verbatim), "vocabulary not awareness", "outlasted the launch" (her capability-building thesis).</div>
+  <div class="script-box mt">
+    <p>"This is exactly the muscle I'd bring to embedding Astellas's three Values and five Behaviors across the three GCCs — <strong>One Astellas in three time zones, one narrative, locally resonant.</strong>"</p>
+  </div>
+
+  <div class="cue">"Engaging hearts and minds", "Consistency beats intensity", "Not internal marketing — relationship architecture"</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 8: Q6 SHAREPOINT                        -->
+<!-- PANEL 9: TRI-SITE                             -->
 <!-- ============================================ -->
 <section class="panel" data-index="8">
-  <div class="section-label">§4 · Question 6</div>
-  <p class="q-header">"How would you think about the GCC SharePoint site? What makes it work vs. become a graveyard?"</p>
-  <p class="q-story">Lead with personal credibility, then three principles</p>
+  <div class="section-label">CRITICAL QUESTIONS</div>
+  <p class="q-header">"How would you build engagement across India, Poland, and Mexico?"</p>
 
-  <div class="kp-block">
-    <p class="kp">Open: "I built a SharePoint-based employee utilization tracker for 120+ digital and web project team members in under a month. So I've used SharePoint not as a content repository but as a live operational instrument."</p>
+  <div class="critical">ONE OF THE MOST IMPORTANT POSSIBLE QUESTIONS</div>
+
+  <div class="numbered mt">
+    <div class="item"><strong>Diagnose before designing</strong> — maturity, functional mix, leadership priorities, sentiment, channels per site</div>
+    <div class="item"><strong>Create shared GCC narrative</strong> — One Astellas, but NOT sameness</div>
+    <div class="item"><strong>Define site-specific story pillars:</strong> India = full-stack scale (Mukta, 300+), Poland/Warsaw = GBS/clinical (Andzelika, The Bridge move), Mexico = medical-digital-innovation (Flavio, Jan 2026)</div>
+    <div class="item"><strong>Build SharePoint engagement hub</strong> — leadership messages, milestone tracker, stories, FAQs, recognition, analytics</div>
+    <div class="item"><strong>Set governance</strong> — editorial calendar, content owners, approval, leadership cadence</div>
+    <div class="item"><strong>Measure adoption</strong> — visits, repeat users, story submissions, event participation, leadership engagement, qualitative pulse</div>
   </div>
 
-  <div class="car">
-    <div class="car-label action">Three Principles · 90 sec</div>
-    <blockquote><strong>First, it must serve a workflow, not be a destination.</strong> Repositories die. Platforms that sit inside how MDs prepare for town halls, how new joiners onboard, how regional wins get amplified — those live. The architecture lesson is that adoption follows workflow integration, not content quality.
-    <br><br><strong>Second, adoption metrics from day one.</strong> Page views are vanity. Time-on-page, return visits, content contributions per site, cross-GCC engagement — those are the signals. Specifically, I'd want to track whether Bengaluru users are reading Warsaw content and vice versa. That's the 'One Astellas' health check.
-    <br><br><strong>Third, editorial governance, not editorial control.</strong> A federated model where each GCC has narrative ownership but a shared spine of tone, hashtag — #ChangingTomorrow, #AstellasCulture — and story types. The MDs need to feel the platform serves their voice, not constrains it.</blockquote>
+  <div class="script-box mt">
+    <p>"The comms job is not to flatten the three GCCs into one voice. It is to create <strong>coherent difference under One Astellas</strong>."</p>
   </div>
 
-  <div class="kp-block mt">
-    <p class="kp">Close: "Given Astellas's own flagging of Change Communication as the top materiality gap, I'd treat SharePoint adoption metrics as the operational proof point that the gap is closing — not as a vanity dashboard."</p>
-  </div>
+  <div class="warn-box mt">Three GCCs have DIFFERENT maturity curves. 12-month hub does not equal 3-month hub. Messaging for Warsaw does not equal messaging for Mexico City.</div>
+
+  <div class="cue">Success = leaders in each GCC repeating narrative in own words, unprompted, by month 9</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 9: Q7 SENIOR STAKEHOLDER RESISTANCE     -->
+<!-- PANEL 10: SHAREPOINT                          -->
 <!-- ============================================ -->
 <section class="panel" data-index="9">
-  <div class="section-label">§4 · Question 7</div>
-  <p class="q-header">"Tell me about a senior stakeholder who initially resisted you. How did you turn them around?"</p>
-  <p class="q-story">Primary story: Quantive OKR adoption at Indegene leadership level (~90% adoption)</p>
+  <div class="section-label">CRITICAL QUESTIONS</div>
+  <p class="q-header">"How would you approach SharePoint?"</p>
 
-  <div class="car">
-    <div class="car-label context">Context · 30 sec</div>
-    <blockquote>"In 2023, Indegene rolled out Quantive as the OKR tool for senior leadership. Initial pilot saw poor engagement. Leaders weren't logging in. The instinct on the L&amp;D side was 'we need more training.' <strong>My read was different — leaders weren't resistant to goal-setting; they were resistant to a tool that exposed cross-functional misalignment publicly.</strong> Logging into Quantive meant putting your team's dependencies on someone else's roadmap on a screen everyone could see."</blockquote>
+  <div class="warn-box">Do NOT say "I know SharePoint." Treat it as OPERATING BACKBONE for engagement.</div>
+
+  <div class="script-box mt">
+    <p>"I would treat SharePoint as the <strong>operating backbone for engagement</strong>, not a repository. It should answer five questions for every employee and leader: What is the GCC strategy? What is changing? How does my work connect to Astellas' priorities? What stories prove impact? Where do I find the latest source of truth?"</p>
   </div>
 
-  <div class="car">
-    <div class="car-label action">Action · 60 sec</div>
-    <blockquote>"I shifted the framing entirely. Stopped positioning Quantive as a tool rollout. <strong>Started positioning it as a leadership clarity instrument.</strong>
-    <br><br>Then worked 1:1 with the most skeptical leaders — not to sell them on the tool but to <strong>sit with their actual pain</strong>. Most of them were carrying cross-functional dependencies they couldn't articulate to their own teams. I'd open Quantive in front of them, map one of their stuck initiatives, show them where the dependency lived, <strong>and walk away. Didn't ask them to adopt. Just left them with a small, useful artifact.</strong>
-    <br><br>By the third or fourth leader, the pattern was that they'd log back in on their own — because they wanted the artifact for their next leadership review. Then we layered governance cadences. UX optimization made the tool less painful. Structured monthly check-ins gave the data a place to land."</blockquote>
+  <p class="kp mt">Architecture:</p>
+  <div class="numbered">
+    <div class="item">Homepage (narrative + updates)</div>
+    <div class="item">Strategy page (CSP2026 in GCC context)</div>
+    <div class="item">Site pages (India/Poland/Mexico)</div>
+    <div class="item">Engagement calendar</div>
+    <div class="item">Leadership communication archive</div>
+    <div class="item">Transformation stories</div>
+    <div class="item">Recognition space</div>
+    <div class="item">Analytics dashboard</div>
   </div>
 
-  <div class="car">
-    <div class="car-label result">Result · 30 sec</div>
-    <blockquote>"<strong>~90% adoption at leadership level within six months.</strong> What I learned was that they didn't need a change philosopher who described Quantive's benefits. <strong>They needed someone willing to sit in their problem with them, then leave.</strong>"</blockquote>
-  </div>
+  <p class="kp mt">Principles:</p>
+  <div class="kp-block"><p class="kp">Must serve a WORKFLOW — repositories die</p></div>
+  <div class="kp-block"><p class="kp">Adoption metrics from day 1 — not pageviews but cross-GCC reads</p></div>
+  <div class="kp-block"><p class="kp">Federated model: each GCC MD owns narrative, shared spine</p></div>
+  <div class="kp-block"><p class="kp">Editorial governance, not editorial control</p></div>
 
-  <div class="cue">"sat with their pain" — close to her "engaging with friction not avoiding it" thesis. "Didn't ask them to adopt; just left them with a useful artifact" mirrors her execution-first ethos.</div>
+  <div class="hypothesis mt">Proof — "Built SharePoint utilization tracker for 120+ team members in less than 1 month"</div>
+
+  <div class="cue">Think of it as the "digital town square", connective tissue for governance</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 10: Q8 CXO-LEVEL WORK                   -->
+<!-- PANEL 11: SENIOR ADOPTION                     -->
 <!-- ============================================ -->
 <section class="panel" data-index="10">
-  <div class="section-label">§4 · Question 8</div>
-  <p class="q-header">"Tell me about CxO-level stakeholder work."</p>
-  <p class="q-story">Pick TWO stories — one client-side, one internal — to show range</p>
+  <div class="section-label">COMPETENCY</div>
+  <p class="q-header">"Tell me about driving adoption among senior leaders"</p>
+
+  <p class="dt mb">TWO STORIES — pick based on context:</p>
 
   <div class="card">
-    <div class="card-title" style="color:var(--blue)">Client-side: AstraZeneca Executive Director engagement (current)</div>
-    <p class="kp" style="font-size:var(--body)">"Since July 2025, I've been working directly with an Executive Director at AstraZeneca on building solutions, agents, data strategy, and adoption playbooks for multiple medical and clinical use cases. The engagement started as a single solution conversation and has scaled into a multi-track program. What's worked is <strong>treating the ED as a thought partner, not a sponsor</strong> — bringing options with trade-offs visible, not pre-baked recommendations. That's the consultative posture I'd bring to working inside a CxO function at Astellas."</p>
+    <div class="card-title">STORY 1 — OKR/Quantive</div>
+    <p class="dt">Leaders resistant to PUBLIC misalignment, not goals themselves</p>
+    <p class="dt">Reframed: tool rollout to leadership clarity instrument</p>
+    <p class="dt">Three levers: change enablement workshops, UX optimisation, governance cadences</p>
+    <p class="dt">Worked 1:1 with most skeptical leaders, sat with THEIR pain</p>
+    <p class="dt">Left useful artifact — didn't ask them to adopt</p>
+    <p class="dt">They logged back in for next leadership review</p>
+    <p class="dt"><strong>~90% adoption in 6 months</strong></p>
   </div>
 
   <div class="card">
-    <div class="card-title" style="color:var(--green)">Internal: Bowler Charts Power BI system used in CXO and board reviews</div>
-    <p class="kp" style="font-size:var(--body)">"Internally at Indegene, I built the Bowler Chart KPI monitoring system on Power BI from scratch — transformed an Excel dashboard into an executive governance instrument used in CXO reviews and board meetings. The technical build wasn't the hard part. The hard part was <strong>assigning POCs per function, establishing data validation cadences, and getting function leaders to treat their data as the voice of their function in board meetings</strong> — rather than as exposure. Once that shift happened, <strong>the dashboard stopped being a reporting tool and started being a decision instrument.</strong>"</p>
+    <div class="card-title">STORY 2 — Bowler Charts</div>
+    <p class="dt">Excel to Power BI to artefact that organised CXO reviews</p>
+    <p class="dt">POCs per function, reliable data-gathering, decision-forcing cadence</p>
+    <p class="dt"><strong>Spine of CXO and board-level strategic decision-making</strong></p>
   </div>
 
-  <div class="cue">"thought partner not sponsor", "decision instrument not reporting tool".</div>
+  <div class="script-box mt">
+    <p>"Executive governance tools succeed on three things: <strong>data discipline, named accountability, and decision-forcing cadence</strong>. Tools without governance just create more noise."</p>
+  </div>
+
+  <div class="cue">"Sustained behavioral change at senior levels requires courage — both ours and theirs. That's the Courage behaviour Astellas talks about."</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 11: Q9 COACHING JUNIORS                  -->
+<!-- PANEL 12: RESISTANCE                          -->
 <!-- ============================================ -->
 <section class="panel" data-index="11">
-  <div class="section-label">§4 · Question 9</div>
-  <p class="q-header">"The role involves coaching more junior consultants. Tell me about someone you developed."</p>
-  <p class="q-story">Primary story: Vrinda Bagrait and Raja Rajeswari</p>
+  <div class="section-label">COMPETENCY</div>
+  <p class="q-header">"Tell me about resistance you faced"</p>
 
-  <div class="car">
-    <div class="car-label context">Context · 30 sec</div>
-    <blockquote>"In 2025, I onboarded two direct reportees onto the GenAI Strategy team — <strong>Vrinda Bagrait and Raja Rajeswari</strong>. Both joined from non-technical backgrounds. Both were anxious about the GenAI wave because the public narrative around it implied non-technical roles would be sidelined. The natural risk was that they'd default to administrative work and fall behind."</blockquote>
+  <div class="script-box">
+    <p>"I don't treat resistance as negativity. I treat it as <strong>data about what the transformation has not yet explained well</strong>."</p>
   </div>
 
-  <div class="car">
-    <div class="car-label action">Action · 60 sec</div>
-    <blockquote>"I made <strong>three deliberate choices</strong>. First, I <strong>paired them with engineering leads on real client use cases from week one</strong> — not training modules. The frame was: you're going to learn by sitting in the work, not adjacent to it.
-    <br><br>Second, I gave them <strong>ownership of CoP sessions and live demos</strong>. That meant they had to develop opinions and defend them in front of senior stakeholders. Initially uncomfortable; quickly became the fastest skill accelerator.
-    <br><br>Third, <strong>weekly coaching cadence</strong>. Not status updates — real conversations about ambiguity. Specifically <strong>protecting their permission to say 'I don't know yet'</strong> without faking certainty. That's where the courage comes from."</blockquote>
+  <p class="kp mt">Pattern:</p>
+  <div class="numbered">
+    <div class="item">Diagnose WHY</div>
+    <div class="item">Segment stakeholders</div>
+    <div class="item">Create safe pilots</div>
+    <div class="item">Visible champions</div>
+    <div class="item">Measure</div>
+    <div class="item">Iterate</div>
   </div>
 
+  <div class="car mt">
+    <div class="car-label context">Context</div>
+    <blockquote>People heard "productivity" as "replacement". Rational fear.</blockquote>
+  </div>
   <div class="car">
-    <div class="car-label result">Result · 30 sec</div>
-    <blockquote>"Both are now contributing meaningfully to live client projects within 6 months of joining. Both run their own use-case streams. One independently leads SME pairing on a portfolio. <strong>What I've learned is that coaching juniors in transformation work isn't teaching them frameworks — it's giving them the courage to sit in ambiguity without faking certainty. The technical skill comes if you protect their permission to say 'I don't know yet.'</strong>"</blockquote>
+    <div class="car-label action">Action</div>
+    <blockquote>Reframed to "augmentation". SMEs became quality bar. Segmented stakeholders. Pilots, champions, workshops. <strong>Protected psychological safety.</strong></blockquote>
+  </div>
+  <div class="car">
+    <div class="car-label result">Result</div>
+    <blockquote><strong>400+ employees impacted, 8 pilots, 50+ use cases, 30%+ efficiency</strong></blockquote>
   </div>
 
-  <div class="cue">"courage" (her exact word from her early-career post), "permission to say I don't know" — this is her Master of Coaching territory. She'll recognize it.</div>
+  <div class="script-box mt">
+    <p>"You're asking me to teach the machine to do what I do. Why would I help replace myself?" — "You're not teaching it to replace you. You're teaching it to handle the repetitive parts so <strong>you can do the parts only you can do</strong>."</p>
+  </div>
+
+  <div class="cue">"Psychological safety mattered — people had to feel safe to admit they didn't know how to use these tools"</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 12: Q10 CAPABILITY THAT OUTLIVED         -->
+<!-- PANEL 13: LEADERSHIP STYLE                    -->
 <!-- ============================================ -->
 <section class="panel" data-index="12">
-  <div class="section-label">§4 · Question 10</div>
-  <p class="q-header">"What's a capability you built that outlived the specific initiative?"</p>
-  <p class="q-story">Lead with GenAI Community of Practice</p>
+  <div class="section-label">COMPETENCY</div>
+  <p class="q-header">"What is your leadership style?"</p>
 
-  <div class="car">
-    <div class="car-label context">Context · 30 sec</div>
-    <blockquote>"In late 2023, the Medical Tech team at Indegene was a small skunkworks — <strong>3 to 4 core members</strong> building GenAI experiments without much organizational visibility. There was no shared knowledge, no reusable patterns, no hiring filter. Every new client engagement started from scratch."</blockquote>
+  <div class="script-box">
+    <p>"I am structured but not rigid. I like to create clarity quickly — <strong>outcomes, owners, cadence, risks, and decisions</strong> — but I also invest in trust because transformation depends on informal influence as much as formal governance. I try to coach people by giving them frameworks and ownership, not by becoming the bottleneck."</p>
   </div>
 
-  <div class="car">
-    <div class="car-label action">Action · 45 sec</div>
-    <blockquote>"I built and scaled a <strong>GenAI Community of Practice</strong>. The design choice that mattered was <strong>who we let in — domain SMEs paired with engineering</strong>, not engineering plus interested others. That meant the CoP carried business-context credibility from day one.
-    <br><br>We codified everything that worked into <strong>reusable orchestration playbooks, evaluation frameworks, QA gates, demo assets</strong>. The CSL Vifor evaluation/hallucination/citation strategies became the architecture pattern reused across NEXT Medical Writing and NEXT Scientific Automation platforms. We didn't 'document for future use' — <strong>we documented as we went, in service of the next engagement.</strong>"</blockquote>
-  </div>
+  <p class="kp mt">Tie to Astellas Behaviors:</p>
+  <div class="kp-block"><p class="kp">Courage — escalating early, speaking up</p></div>
+  <div class="kp-block"><p class="kp">Sense of Urgency — fast structuring of ambiguity</p></div>
+  <div class="kp-block"><p class="kp">One Astellas — cross-functional alignment</p></div>
+  <div class="kp-block"><p class="kp">Outcome Focus — adoption/value metrics</p></div>
+  <div class="kp-block"><p class="kp">Accountability — clear owners and governance</p></div>
 
-  <div class="car">
-    <div class="car-label result">Result · 45 sec</div>
-    <blockquote>"The CoP grew from <strong>3-4 core members to roughly 90 extended team members</strong>. Configuration cycle time for new client engagements dropped from <strong>4-5 months to 5-6 weeks</strong> across 3 active engagements — because we'd industrialized the work. The CoP became a hiring filter, a knowledge asset, and a <strong>delivery accelerator without me being in the loop anymore</strong>.
-    <br><br>I think the most underrated transformation outcome is <strong>what's still happening 18 months after the project closed</strong>. That's the capability shift I care about most — and it's the lens I'd bring to the Transformation Office Chapter model. <strong>A Chapter only earns its name when its frameworks are alive in delivery, not just in slides.</strong>"</blockquote>
-  </div>
+  <div class="warn-box mt">Never say "I drove..." without naming the coalition. Hero stories = values mismatch.</div>
 
-  <div class="cue">"still happening 18 months after the project closed" — directly mirrors her "from managing change to building change capability" thesis. End on the Chapter framing — it shows you've thought about her organizational structure.</div>
+  <div class="cue">"Don't treat people as objects — give them career maps" (Mukta's own quote). "Speed with discipline — clear ownership, fast alignment, documented decisions, early risk escalation."</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 13: Q11 PLAN STOPPED WORKING             -->
+<!-- PANEL 14: FIRST 90 DAYS                       -->
 <!-- ============================================ -->
 <section class="panel" data-index="13">
-  <div class="section-label">§4 · Question 11</div>
-  <p class="q-header">"Describe a moment when your plan stopped working. What did you do?"</p>
-  <p class="q-story">Primary story: ICAP Stint 3 charter divergence</p>
+  <div class="section-label">COMPETENCY</div>
+  <p class="q-header">"What would you do in your first 90 days?"</p>
 
-  <div class="car">
-    <div class="car-label context">Context · 30 sec</div>
-    <blockquote>"When I started ICAP Rotation 3 at Indegene's Corporate Planning function in 2023, my charter was clean — single department, single Assignment Leader, focused on OKR Management, Workforce Planning, and Dashboards. Within 30 days, the reality had completely diverged. I was <strong>operating across five departments — Corporate Planning, L&amp;D, Other People Functions, ECDS, Finance &amp; CTO Office — and reporting into six different ALs simultaneously.</strong>"</blockquote>
-  </div>
-
-  <div class="car">
-    <div class="car-label action">Action · 60 sec</div>
-    <blockquote>"The pivot wasn't a single decision — it was <strong>learning to operate in matrix mode without dropping commitments</strong>. Three things.
-    <br><br>First, I built a <strong>personal cadence with each AL</strong>. Not the same cadence — Soundarya wanted weekly, Rajesh wanted bi-weekly, Arindom wanted ad-hoc. Matched the rhythm to each leader's preference rather than imposing one.
-    <br><br>Second, I ran a <strong>shared status doc visible to all six</strong>. That solved a problem I didn't realize I had — the ALs didn't know each other was claiming my time. Once visible, they self-prioritized.
-    <br><br>Third — and this was the hardest — I <strong>let the work itself surface where I should spend more time</strong>, rather than defending the original charter. By month three, I was the connective tissue between Corporate Planning and Org Development. That's where Bowlers and the Change Makers Council started to fuse into one operating system."</blockquote>
-  </div>
-
-  <div class="car">
-    <div class="car-label result">Result · 30 sec</div>
-    <blockquote>"Bowler Charts landed in board reviews. Change Makers Council embedded the Culture Credo. Workforce analytics informed FY24 campus hiring decisions and Tier-2 city expansion. <strong>What I learned is that ambiguity isn't an obstacle in transformation work — it's the operating environment. The skill is reading where the energy actually is, not defending the org chart you started with.</strong>"</blockquote>
-  </div>
-
-  <div class="cue">"ambiguity is the operating environment" — close to her "lead through uncertainty every single day" framing. "Reading where the energy is" signals listening as a tactical skill.</div>
-</section>
-
-<!-- ============================================ -->
-<!-- PANEL 14: §5 PHARMA DOMAIN FLUENCY             -->
-<!-- ============================================ -->
-<section class="panel" data-index="14">
-  <div class="section-label">§5</div>
-  <h1 class="section-title">Pharma Domain Fluency</h1>
-
-  <p class="q-header">Q12. "What do you know about Astellas?"</p>
-  <p class="dt mb">Deliver this in ~90 seconds. Don't recite facts — show you understand the gravity.</p>
-
-  <div class="script-box">
-    <p>"Astellas is at a once-in-a-decade inflection. <strong>XTANDI is roughly 48% of revenue</strong> and faces US LOE in August 2027, with a Medicare MFP of $7,004 per 30-day from January 2027. That's the financial gravity behind everything — including SMT, the <strong>¥150B recurring savings program by FY2027</strong>, where you're already at 27.6% core OP margin tracking toward 30%.</p>
-    <br>
-    <p>Strategically, the April 2025 patient-axis reorg — <strong>Value Creation under Taniguchi, Value Delivery under Zieler</strong> unifying Commercial and Medical Affairs, Value Enablement — gives the Transformation Office cleaner CxO interfaces than most pharma TOs have. <strong>CSP2026 announces in late May</strong>, which means whoever joins now is in the first execution wave, not maintaining an old plan.</p>
-    <br>
-    <p>On the portfolio side, <strong>PADCEV is the bright spot, IZERVAY is rebuilding after the CRL, VEOZAH is in safety-driven reset mode</strong> after the boxed warning, VYLOY is ramping. The Audentes thesis has largely broken — that's the honest read.</p>
-    <br>
-    <p>For this role specifically, what struck me is Astellas's own February 2025 Sustainability Meeting flagged <strong>'Change Communication' as the top materiality gap</strong> — so this isn't a nice-to-have hire, it's a <strong>diagnosed deficit being filled at a critical moment.</strong>"</p>
-  </div>
-
-  <hr class="divider">
-
-  <p class="q-header mt">Q13. "You've worked at a delivery vendor for pharma. What makes you think you can operate inside a pharma transformation office?"</p>
-  <p class="dt mb">This is the question to pre-empt — Wioleta will likely test this.</p>
-
-  <div class="script-box">
-    <p>"Two things. First, <strong>I've been on the receiving end of pharma transformation offices</strong> — Sanofi India's omnichannel team, Amgen's commercial ops governance, Vertex's innovation council, AstraZeneca's medical Executive Director. I know what good looks like from that side, and I know what frustrates the in-house teams about external partners. Second, <strong>Indegene's Bangalore center is itself a Global Capability Center for pharma clients</strong> — I've helped scale its capability footprint, mentored teams through the same maturity arc Bengaluru is going through now, and built the operating rhythms across BUs.</p>
-    <br>
-    <p>The transition isn't from vendor to in-house. It's from <strong>running a multi-pharma portfolio to running one pharma's full agenda</strong>. The craft transfers — operating models, governance cadences, change adoption, communication architecture, coaching juniors. The depth of context — XTANDI bridge, SMT mechanics, 'One Astellas' nuance — is what I'd build deliberately in the <strong>first 60 to 90 days</strong>. I'd rather be honest about that runway than overclaim Astellas-specific fluency I haven't earned yet."</p>
-  </div>
+  <div class="warn-box">Do NOT sound like you already know everything. Use "My hypothesis would be..." not "I would fix..."</div>
 
   <div class="card mt">
-    <div class="card-title">Why This Works</div>
-    <p class="dt">Specific numbers, honest portfolio read (you're not sycophantic about IZERVAY/VEOZAH), role-specific punchline. Confident posture + intellectual honesty. Wioleta values courage and specificity over false confidence.</p>
+    <div class="card-title">Days 1-30 — LISTEN TOUR</div>
+    <p class="dt">Mukta + Andzelika + Flavio + Managing Principal + Kamila Grembowicz (GBS) + Communications &amp; IR + CF Division Heads. 2-3 levels deep per site.</p>
   </div>
+
+  <div class="card">
+    <div class="card-title">Days 30-60 — MAP AND AUDIT</div>
+    <p class="dt">Stakeholder influence/interest map. Brand/narrative audit (what does each GCC say vs One Astellas?). SharePoint diagnostic: IA, governance, content cadence, adoption. Draft framework: pillars, editorial calendar, governance, adoption metrics.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Days 60-90 — LAND ARCHITECTURE</div>
+    <p class="dt">Engagement architecture proposal. SharePoint reset plan. CSP2026 activation calendar (Warsaw Bridge move, Mexico first year, India scale-up). One visible quick win. Coach whoever's on team — capability transfer from day 1.</p>
+  </div>
+
+  <div class="script-box mt">
+    <p>"My bias would be to create visible momentum early, but not by flooding the system with activity. I would first create the right <strong>listening map and governance</strong> so the engagement engine scales."</p>
+  </div>
+
+  <div class="cue">Use "hypothesis" language throughout. "My hypothesis would be..." not "Astellas should..."</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 15: §6 LANGUAGE GUIDE                    -->
+<!-- PANEL 15: GENAI ADOPTION                      -->
+<!-- ============================================ -->
+<section class="panel" data-index="14">
+  <div class="section-label">STORIES</div>
+  <p class="q-header">"Walk me through the GenAI enterprise adoption — 400+ employees, 8 pilots, 50+ use cases"</p>
+
+  <p class="dt mb">Frame as TRANSFORMATION story, not tech story</p>
+
+  <div class="car">
+    <div class="car-label context">Context</div>
+    <blockquote>Diagnosis first. Mapped where resistance would come from — not who, but WHY. Fear of displacement, learning curve, productivity dip.</blockquote>
+  </div>
+  <div class="car">
+    <div class="car-label action">Action</div>
+    <blockquote><strong>Coalition over mandate</strong> (Microsoft + Adobe directly). CoP 3-4 to 90. Made early adopters visible. Start small, scale carefully: 8 pilots, diverse cohorts (functional + technical mix). "Different functional teams sitting together with technology experts — that's where differentiated capability gets built."</blockquote>
+  </div>
+  <div class="car">
+    <div class="car-label result">Result</div>
+    <blockquote><strong>50+ use cases, 30%+ efficiency, config cycle 4-5mo to 5-6wks</strong>, CoP scaled, knowledge-sharing institutionalised, two non-technical reportees upskilled</blockquote>
+  </div>
+
+  <div class="cue">"AI and analytics are competitive differentiators — but the cultural shift to data-driven decision-making is a 5-6 year horizon, not a quarter" (her exact framing from ai:sight interview)</div>
+  <div class="cue">"Start small, scale carefully — proof of concept in diverse cohorts, then careful scale-up"</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 16: BOWLER CHARTS                       -->
 <!-- ============================================ -->
 <section class="panel" data-index="15">
-  <div class="section-label">§6</div>
-  <h1 class="section-title">Wioleta-Specific Language Guide</h1>
+  <div class="section-label">STORIES</div>
+  <p class="q-header">"Tell me about the Bowler Charts — how did this become a governance mechanism?"</p>
 
-  <h2 class="kp">Words &amp; Phrases to Use Naturally</h2>
-  <table class="ref-table">
-    <thead><tr><th>Use</th><th>Why</th></tr></thead>
-    <tbody>
-      <tr><td class="use-word">"Adoption and value realization"</td><td>Her core framing — she literally posted hiring criteria using this</td></tr>
-      <tr><td class="use-word">"Hands-on, end-to-end"</td><td>She used "(!)" emphasis on hands-on in her own JD post</td></tr>
-      <tr><td class="use-word">"Building shared understanding"</td><td>Her five pillars include this</td></tr>
-      <tr><td class="use-word">"Building capability, not just delivering"</td><td>Her published thesis</td></tr>
-      <tr><td class="use-word">"Co-created with..."</td><td>Her five pillars include co-creation</td></tr>
-      <tr><td class="use-word">"Operating rhythm"</td><td>You use this naturally; she'll recognize it</td></tr>
-      <tr><td class="use-word">"Coherent difference"</td><td>For GCC strategy — show nuance</td></tr>
-      <tr><td class="use-word">"Capability hub" / "centers of excellence"</td><td>Mukta Arora's framing for Bengaluru</td></tr>
-      <tr><td class="use-word">"What outlived the project was..."</td><td>Her capability-over-projects thesis</td></tr>
-      <tr><td class="use-word">"I sat with the problem before designing the response"</td><td>Mirrors her behavioural-science instinct</td></tr>
-      <tr><td class="use-word">"People weren't resistant — they were overwhelmed/unclear"</td><td>Her exact thesis from public posts</td></tr>
-      <tr><td class="use-word">"Courage to sit in ambiguity"</td><td>Her early-career advocacy framing</td></tr>
-    </tbody>
-  </table>
+  <p class="dt mb">Full story:</p>
+  <div class="kp-block"><p class="kp">Built 0-to-1: Excel to Power BI to executive KPI instrument</p></div>
+  <div class="kp-block"><p class="kp">The SHIFT: from dashboard to governance tool. Technology = easy part; governance design = value</p></div>
+  <div class="kp-block"><p class="kp">Structural choices: POCs per function (named accountability), data-gathering processes (reliable, not heroic), decision-forcing cadence (monthly review to decisions, not status)</p></div>
+  <div class="kp-block"><p class="kp">Outcome: spine of CXO/board strategic decision-making</p></div>
 
-  <hr class="divider">
-  <h2 class="kp" style="color:var(--red)">Words &amp; Phrases to AVOID</h2>
-  <table class="ref-table">
-    <thead><tr><th>Avoid</th><th>Why</th></tr></thead>
-    <tbody>
-      <tr><td class="avoid-word">"Stakeholder alignment"</td><td>Generic consulting jargon</td></tr>
-      <tr><td class="avoid-word">"Best-in-class"</td><td>Empty signaling</td></tr>
-      <tr><td class="avoid-word">"Drove synergies"</td><td>Cliché</td></tr>
-      <tr><td class="avoid-word">"Leveraged frameworks"</td><td>She mocks framework recitation</td></tr>
-      <tr><td class="avoid-word">"Cascaded the message"</td><td>Top-down signaling she rejects</td></tr>
-      <tr><td class="avoid-word">"Overcame resistance"</td><td>She reframes resistance entirely</td></tr>
-      <tr><td class="avoid-word">Naming Prosci/ADKAR/Kotter unprompted</td><td>She's certified in all; will see through it</td></tr>
-      <tr><td class="avoid-word">"AI-powered" / "neuroscience-backed"</td><td>She publicly mocked these</td></tr>
-      <tr><td class="avoid-word">Three frameworks in one answer</td><td>Tells her you don't have substance</td></tr>
-    </tbody>
-  </table>
-
-  <hr class="divider">
-  <h2 class="kp" style="color:var(--red)">Top 10 Don'ts</h2>
-  <div class="numbered">
-    <div class="item" style="color:var(--red)"><strong>Don't stack frameworks.</strong> If you mention Prosci/ADKAR, mention exactly one, in service of a specific story.</div>
-    <div class="item" style="color:var(--red)"><strong>Don't lead with AI/neuroscience as differentiators.</strong> She literally mocked this.</div>
-    <div class="item" style="color:var(--red)"><strong>Don't recite the old "Astellas Way."</strong> Use new Values &amp; Behaviors.</div>
-    <div class="item" style="color:var(--red)"><strong>Don't call GCCs "offshore" or "cost centers."</strong> Use "capability hubs" or "centers of excellence."</div>
-    <div class="item" style="color:var(--red)"><strong>Don't pitch a uniform GCC brand.</strong> Use "coherent difference."</div>
-    <div class="item" style="color:var(--red)"><strong>Don't oversell pharma fluency.</strong> Acknowledge the depth-context gap, then bridge.</div>
-    <div class="item" style="color:var(--red)"><strong>Don't be flowery.</strong> Polish-English directness — be crisp, not hedged.</div>
-    <div class="item" style="color:var(--red)"><strong>Don't parrot her language back at her.</strong> Reference the idea, not the source.</div>
-    <div class="item" style="color:var(--red)"><strong>Don't be defensive about vendor heritage.</strong> Reframe it as structural advantage.</div>
-    <div class="item" style="color:var(--red)"><strong>Don't ramble.</strong> 2 minutes per story max. Wioleta is a coach who probes — be ready for follow-ups, leave room for them.</div>
+  <div class="script-box mt">
+    <p>"What I learned is that executive governance tools succeed or fail on three things — <strong>data discipline, named accountability, and decision-forcing cadence</strong>. Tools without governance just create more noise."</p>
   </div>
+
+  <div class="hypothesis mt">Directly relevant to GCC SharePoint — not as document repository but as connective tissue and decision-forcing surface for cross-GCC engagement governance.</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 16: §7 STORIES MAP                       -->
+<!-- PANEL 17: COACHING                            -->
 <!-- ============================================ -->
 <section class="panel" data-index="16">
-  <div class="section-label">§7</div>
-  <h1 class="section-title">Stories Map — Quick Reference</h1>
+  <div class="section-label">STORIES</div>
+  <p class="q-header">"How do you coach junior team members?"</p>
 
-  <table class="ref-table">
-    <thead><tr><th>Filter</th><th>Primary Story</th><th>Backup</th></tr></thead>
-    <tbody>
-      <tr><td><strong>End-to-end transformation</strong></td><td>GenAI enterprise adoption (400+ employees)</td><td>CSL Vifor LLM platform</td></tr>
-      <tr><td><strong>Cross-geography/culture</strong></td><td>Amgen ELMAC across EU top-5</td><td>Multi-pharma GenAI delivery (Merck KGaA, CSL Vifor, Gilead, Vertex)</td></tr>
-      <tr><td><strong>Comms that shifted behavior</strong></td><td>Change Makers Council + Culture Credo</td><td>Quantive OKR ~90% adoption</td></tr>
-      <tr><td><strong>Senior stakeholder turnaround</strong></td><td>Quantive OKR with leadership</td><td>BSV COO monthly cadence</td></tr>
-      <tr><td><strong>CxO-level engagement</strong></td><td>AstraZeneca Executive Director (current)</td><td>Bowler Charts in CXO/board reviews</td></tr>
-      <tr><td><strong>Coaching juniors</strong></td><td>Vrinda + Raja, 6-month ramp</td><td>CoP scaled 3-4 → 90</td></tr>
-      <tr><td><strong>Ambiguity/pivot</strong></td><td>ICAP Stint 3 (1 AL → 6 ALs)</td><td>BSV Year 1 turnaround</td></tr>
-      <tr><td><strong>Capability that outlived</strong></td><td>GenAI CoP scaled 3 → 90</td><td>CSL Vifor evaluation framework reused across NEXT platforms</td></tr>
-      <tr><td><strong>Multi-stakeholder coalition</strong></td><td>Vertex Innovation Center</td><td>Sanofi Connect renewal</td></tr>
-      <tr><td><strong>Operational cost transformation</strong></td><td>Amgen FTE → asset-based pricing</td><td>BSV $25K AWS + $42K vendor savings</td></tr>
-      <tr><td><strong>Pharma fluency at scale</strong></td><td>12 pharma companies named</td><td>Novartis/J&amp;J ground-level field experience</td></tr>
-    </tbody>
-  </table>
+  <div class="car">
+    <div class="car-label context">Context</div>
+    <blockquote>Vrinda Bagrait + Raja Rajeswari — GenAI Strategy, 2025. Both non-technical backgrounds, anxious about GenAI wave.</blockquote>
+  </div>
+  <div class="car">
+    <div class="car-label action">Action</div>
+    <blockquote>Diagnose where they ARE (Situational Leadership). Paired with engineering leads on REAL client use cases from week 1. Ownership: CoP sessions, live demos. Weekly coaching: real conversations about ambiguity. <strong>Protected permission to say "I don't know yet"</strong>.</blockquote>
+  </div>
+  <div class="car">
+    <div class="car-label result">Result</div>
+    <blockquote>Both contributing to live client projects within 6 months. <strong>Capability, not just task completion.</strong></blockquote>
+  </div>
+
+  <div class="cue">"Don't treat people as objects — give them career maps so they see they're part of a long-term strategy" (Mukta's EXACT quote — use it)</div>
+  <div class="cue">"Consistency beats intensity — weekly 1:1s with structure, not heroic interventions"</div>
+
+  <div class="hypothesis mt">JD requires coaching Senior Consultants + Consultants — build the bench, not just deliver</div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 17: §8 QUESTIONS TO ASK                  -->
+<!-- PANEL 18: FAILURE                             -->
 <!-- ============================================ -->
 <section class="panel" data-index="17">
-  <div class="section-label">§8</div>
-  <h1 class="section-title">Questions to Ask Wioleta</h1>
-  <p class="dt mb">Pick three. Ask them in this priority order.</p>
+  <div class="section-label">STORIES</div>
+  <p class="q-header">"Tell me about a time something didn't go to plan"</p>
 
-  <div class="card" style="border-color:var(--amber)">
-    <div class="card-title">Question 1 — HIGHEST LEVERAGE</div>
-    <p class="kp" style="font-size:calc(var(--kp) - 0.05rem)">"You've written about people being overwhelmed rather than resistant. Inside Astellas's current transformation moment — XTANDI cliff, SMT, CSP2026 launch, three new GCCs — what's contributing most to that overwhelm right now, and how is the Transformation Office addressing it?"</p>
-    <p class="dt mt-sm">This question demonstrates you've engaged with her thinking specifically. She'll know you've read her, but you're referencing the idea, not the source — which is the right level of acknowledgment.</p>
+  <div class="critical">Almost certain. She'll respect honesty far more than rehearsed humble-brag.</div>
+
+  <p class="dt mt mb">Pick REAL, RECENT, SPECIFIC. Diagnose without blaming.</p>
+
+  <div class="car">
+    <div class="car-label context">Context — BSV Story</div>
+    <blockquote>Took over BSVwithU platform — <strong>70% of marketing SOW hadn't started</strong></blockquote>
+  </div>
+  <div class="car">
+    <div class="car-label action">Action</div>
+    <blockquote>Spent first months executing, not governing. Should have insisted on change-request framework week 1.</blockquote>
+  </div>
+  <div class="car">
+    <div class="car-label result">Result</div>
+    <blockquote>Got it done eventually (<strong>$32K negotiated, 75% MAU growth, Year 2 renewal</strong>), but the lesson was clear</blockquote>
+  </div>
+
+  <div class="kp-block mt"><p class="kp">LEARNING: "Structure the system before running the work. Governance first, execution within it."</p></div>
+
+  <p class="dt mt">Alternative: GenAI early pilots — over-indexed on tool training, under-indexed on workflow redesign. Tools don't change behaviour; redesigned workflows do.</p>
+
+  <div class="cue">"Courage is about learning from failure publicly — the intelligent risk only pays off if you metabolise the lesson"</div>
+  <div class="warn-box">"I don't know" is ALLOWED. Better than faking. Mukta values courage over false confidence.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 19: CXO WORK                            -->
+<!-- ============================================ -->
+<section class="panel" data-index="18">
+  <div class="section-label">STORIES</div>
+  <p class="q-header">"How do you work with senior stakeholders / C-suite?"</p>
+
+  <p class="dt mb">Two examples:</p>
+
+  <div class="card">
+    <div class="card-title">BSV: Monthly with COO + DT Head</div>
+    <p class="dt">"C-suite time = forcing function for clarity. Lead with decision needed, then data, then recommendation. Options, not problems."</p>
   </div>
 
   <div class="card">
-    <div class="card-title">Question 2</div>
-    <p class="kp" style="font-size:calc(var(--kp) - 0.05rem)">"How is the Transformation Office thinking about the shift from delivering individual initiatives to building durable change capability across Astellas? Especially given the Chapters model — Change Management, Process Excellence, Agile."</p>
-    <p class="dt mt-sm">Mirrors her capability-over-projects thesis directly. Shows you've thought about the TO structure.</p>
+    <div class="card-title">AstraZeneca: Directly with Executive Director</div>
+    <p class="dt">"At ED level, conversation is 'how to make this stick at scale', not 'what'."</p>
+  </div>
+
+  <div class="kp-block mt"><p class="kp">Bowler Charts: Used in CXO reviews and board meetings</p></div>
+
+  <div class="script-box mt">
+    <p>"What I really learned is that working with C-suite is about being a <strong>bridge — translating execution reality up, and strategic intent down</strong> — and doing it consistently. Consistency beats intensity in stakeholder relationships too."</p>
+  </div>
+
+  <div class="hypothesis mt">You'll work with Managing Principals on initiatives within CxO functions. Treat them as thought partners, not sponsors.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 20: CURRENT ROLE                        -->
+<!-- ============================================ -->
+<section class="panel" data-index="19">
+  <div class="section-label">CONTEXT</div>
+  <p class="q-header">"What is your current role? Tell me about Vertex / AstraZeneca."</p>
+
+  <div class="kp-block mt"><p class="kp">Senior Manager, Strategic Initiatives (3 promotions in 5 years: May 2021 to Jan 2026)</p></div>
+
+  <div class="card mt">
+    <div class="card-title">Vertex (Dec 2025 - Present)</div>
+    <p class="dt">GenAI Innovation Center. Aligning 4 parties (consulting, client, delivery, engineering). Roadmap, governance, scale-up plan.</p>
   </div>
 
   <div class="card">
-    <div class="card-title">Question 3</div>
-    <p class="kp" style="font-size:calc(var(--kp) - 0.05rem)">"Across India, Poland, Mexico — where do you see the biggest engagement gap today, and what would 'good' look like in 12 months?"</p>
-    <p class="dt mt-sm">Lets her tell you the actual problem you'd be solving. Listen carefully — her answer tells you how to position your follow-ups.</p>
+    <div class="card-title">AstraZeneca (Jul 2025 - Present)</div>
+    <p class="dt">Directly with ED. Solutions, agents, data strategy, adoption playbooks.</p>
   </div>
 
-  <div class="card" style="border-color:var(--text3)">
-    <div class="card-title" style="color:var(--text3)">Hold in Reserve — Only if rapport is strong</div>
-    <p class="kp" style="font-size:var(--body);color:var(--text2)">"What's something a Lead Consultant did in the last year that surprised you positively — and what's something you'd want done differently?"</p>
-    <p class="dt mt-sm">This is a vulnerable question for her. Use only if rapport is strong. It reveals what she actually values in the role.</p>
-  </div>
-
-  <div class="card" style="border-color:var(--text3)">
-    <div class="card-title" style="color:var(--text3)">Hold in Reserve — Operational</div>
-    <p class="kp" style="font-size:var(--body);color:var(--text2)">"How do Bengaluru-based Lead Consultants typically partner with Managing Principals and CxO-function Chiefs of Staff across time zones — is there a working pattern you've seen succeed, especially with Tokyo and Northbrook?"</p>
-    <p class="dt mt-sm">Practical, signals you're already thinking about delivery rhythm.</p>
+  <div class="script-box mt">
+    <p>"Both engagements teach me that at senior altitude, the value isn't the solution — it's the <strong>adoption mechanism</strong>. Which is exactly why this Astellas role is interesting — it's explicitly about building those mechanisms across three GCCs."</p>
   </div>
 </section>
 
 <!-- ============================================ -->
-<!-- PANEL 18: §9 FOLLOW-UP TRAPS                   -->
+<!-- PANEL 21: WHY LEAVE                           -->
 <!-- ============================================ -->
-<section class="panel" data-index="18">
-  <div class="section-label">§9</div>
-  <h1 class="section-title">Potential Follow-Up Traps</h1>
-  <p class="dt mb">Wioleta is a coach. She probes. Here are the follow-ups she's most likely to throw.</p>
+<section class="panel" data-index="20">
+  <div class="section-label">CONTEXT</div>
+  <p class="q-header">"Why are you leaving? You were just promoted to Senior Manager in January 2026."</p>
+
+  <div class="warn-box">NEVER disparage Indegene. Any complaint = values flag for Mukta.</div>
+
+  <p class="dt mt mb">Frame as PULL not PUSH:</p>
+  <div class="kp-block"><p class="kp">Indegene = formative. 3 promotions in 5 years.</p></div>
+  <div class="kp-block"><p class="kp">Looking for DEPTH over BREADTH</p></div>
+  <div class="kp-block"><p class="kp">Running one pharma's full agenda inside CxO function = different craft</p></div>
+  <div class="kp-block"><p class="kp">Astellas TO = one of few internal-consulting units with consulting-grade rigour</p></div>
+  <div class="kp-block"><p class="kp">Personal: building 3rd GCC alongside someone who has done it twice = once-in-a-career learning curve</p></div>
+
+  <div class="script-box mt">
+    <p>"Indegene gave me the consulting-execution chops across 5+ pharma portfolios. The next phase is <strong>operating inside a global pharma's transformation engine — not advising from outside</strong>."</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 22: PHARMA CHECK                        -->
+<!-- ============================================ -->
+<section class="panel" data-index="21">
+  <div class="section-label">CONTEXT</div>
+  <p class="q-header">"What's your read on Astellas's portfolio?"</p>
+
+  <p class="kp mt">Key Facts:</p>
+  <div class="kp-block"><p class="kp">XTANDI: ~48% FY2024 revenue, US LOE Aug 2027, Medicare MFP $7,004 from Jan 2027</p></div>
+  <div class="kp-block"><p class="kp">PADCEV: bright spot, Y210B, first-line metastatic urothelial cancer with pembrolizumab</p></div>
+  <div class="kp-block"><p class="kp">IZERVAY: geographic atrophy, CRL Nov 2024, Feb 2025 label update recovery</p></div>
+  <div class="kp-block"><p class="kp">VEOZAH: boxed warning Dec 2024, guidance reset</p></div>
+  <div class="kp-block"><p class="kp">VYLOY + XOSPATA ramping</p></div>
+  <div class="kp-block"><p class="kp">SMT: Y150B savings by FY2027, margin 27.6% to 30%</p></div>
+  <div class="kp-block"><p class="kp">April 2025 reorg: Value Creation (Taniguchi) / Value Delivery (Zieler) / Value Enablement</p></div>
+
+  <div class="cue">Frame as VALUE for patients, not revenue lines. "XTANDI cliff matters not just for margin — bridge to next wave of value for patients depends on Strategic Brands ramp + Focus Area pipeline. SMT and GCCs both protect that bridge."</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 23: VALUES                              -->
+<!-- ============================================ -->
+<section class="panel" data-index="22">
+  <div class="section-label">CONTEXT</div>
+  <p class="q-header">"What do you make of the new Values and Behaviors?"</p>
+
+  <div class="critical">Almost certain. Memorise this COLD.</div>
+
+  <div class="kp-block mt"><p class="kp">Three Values: Integrity, Innovation, Impact</p></div>
+  <div class="kp-block"><p class="kp">Five Behaviors: Courage, Sense of Urgency, One Astellas, Outcome Focus, Accountability</p></div>
+  <div class="kp-block"><p class="kp">"Excellence" to "Impact" swap: "because in some cultures, excellence implies perfectionism that slows progress" (Hendley framing)</p></div>
+  <div class="kp-block"><p class="kp">Patient Focus elevated to VISION layer — implicit everywhere</p></div>
+  <div class="kp-block"><p class="kp">Why now: CSP2026 requires new ways of working</p></div>
+
+  <p class="dt mt">Connect to your experience: Change Makers Council embedded values through behaviour, not mandate</p>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 24: TO MANDATE                          -->
+<!-- ============================================ -->
+<section class="panel" data-index="23">
+  <div class="section-label">CONTEXT</div>
+  <p class="q-header">"Tell me about the TO — how does it work?"</p>
+
+  <div class="kp-block mt"><p class="kp">Structure: Managing Principal to Principal to Lead Consultant to Senior Consultant to Consultant</p></div>
+  <div class="kp-block"><p class="kp">Chapters: Change Management, Process Excellence, Agile</p></div>
+  <div class="kp-block"><p class="kp">Delivery: Stream/Crew/Pod framework</p></div>
+  <div class="kp-block"><p class="kp">CxO-embedded: Managing Principals partner with CxOs + Chiefs of Staff</p></div>
+  <div class="kp-block"><p class="kp">Post Oct 2025: TO + DigitalX under CStO</p></div>
+  <div class="kp-block"><p class="kp">Lead Consultant: leads significant workstreams within CxO function</p></div>
+  <div class="kp-block"><p class="kp">Change Communication = top gap — this hire fills a diagnosed deficit</p></div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 25: ONE ASTELLAS                        -->
+<!-- ============================================ -->
+<section class="panel" data-index="24">
+  <div class="section-label">CONTEXT</div>
+  <p class="q-header">"'One Astellas' — how do you unify without flattening?"</p>
+
+  <div class="kp-block mt"><p class="kp">NOT uniform — coherent core + configurable site identity</p></div>
+  <div class="kp-block"><p class="kp">Three sites: Bengaluru (full-stack), Warsaw (GBS/clinical), Mexico (medical-digital-innovation)</p></div>
+  <div class="kp-block"><p class="kp">Three maturity curves = different messaging</p></div>
+  <div class="kp-block"><p class="kp">Federated model: each GCC MD owns narrative, shared spine</p></div>
+  <div class="kp-block"><p class="kp">No single Global Head of GCCs — communications layer IS the integrating mechanism</p></div>
+  <div class="kp-block"><p class="kp">Legacy-market anxiety (US/EU offshoring fears) — GCC branding must pair with internal narrative</p></div>
+
+  <div class="script-box mt">
+    <p>"<strong>Centers of excellence, not islands of excellence</strong>" (Mukta's own framing)</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 26: BUDGET                              -->
+<!-- ============================================ -->
+<section class="panel" data-index="25">
+  <div class="section-label">CONTEXT</div>
+  <p class="q-header">"Have you managed budgets?"</p>
+
+  <div class="kp-block mt"><p class="kp">BSV: $25K savings, $32,645 negotiated, 40% margin maintained</p></div>
+  <div class="kp-block"><p class="kp">Amgen: multi-million USD operations, FTE to asset-based pricing</p></div>
+  <div class="kp-block"><p class="kp">Internal: tracking costs/revenue for Growth Markets BU</p></div>
+  <div class="kp-block"><p class="kp">Monthly COO cadence with RAG on financials</p></div>
+
+  <div class="hypothesis mt">"Financial discipline isn't separate — it's embedded in how I operate transformation programs"</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 27: GAPS                                -->
+<!-- ============================================ -->
+<section class="panel" data-index="26">
+  <div class="section-label">CONTEXT</div>
+  <p class="q-header">"Addressing the gaps Mukta will sense"</p>
+
+  <div class="critical">Address PROACTIVELY before she has to ask.</div>
+
+  <div class="card mt">
+    <div class="card-title">GAP 1: Never inside a global pharma</div>
+    <p class="dt">"Clear-eyed about this. Breadth across portfolios + consulting discipline. What I'd learn from you: inside-out craft — Japan-HQ rhythms, unwritten rules."</p>
+  </div>
 
   <div class="card">
-    <div class="card-title">"Tell me more about that resistance — what specifically did the SME say?"</div>
-    <p class="warn-box" style="margin-top:8px">Don't generalize. Have one specific dialogue moment ready per major story.</p>
-    <p class="kp" style="font-size:var(--body)">Sample (GenAI story): "One senior medical writer told me, <strong>'You're asking me to teach the machine to do what I do. Why would I help replace myself?'</strong> That was the moment I realized the language was wrong."</p>
+    <div class="card-title">GAP 2: Multi-client not multi-geo within one org</div>
+    <p class="dt">"Multi-geography, multi-stakeholder, multi-culture. Translation to one pharma with 3 GCCs = step-change in depth, but muscle is built."</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">GAP 3: 5 years transformation (8+ preferred)</div>
+    <p class="dt">"Ten-year arc. Field years = underrated input for GCC engagement — customer-empathy problem."</p>
+  </div>
+
+  <div class="cue">Humility + specificity + explicit ask to learn from her = exactly the dynamic she values</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 28: SANOFI                              -->
+<!-- ============================================ -->
+<section class="panel" data-index="27">
+  <div class="section-label">SITUATIONAL</div>
+  <p class="q-header">"Tell me about Sanofi Connect"</p>
+
+  <div class="kp-block mt"><p class="kp">10K HCPs, 47% connected call rate, 7.33% SMS interaction, 20.68% call duration increase</p></div>
+  <div class="kp-block"><p class="kp">Real challenge: field reps see digital as COMPETITIVE not complementary</p></div>
+  <div class="kp-block"><p class="kp">Change management: omnichannel = amplification of relationships, not replacement</p></div>
+  <div class="kp-block"><p class="kp">Coalition: brand managers + field force leadership + digital ops + analytics</p></div>
+  <div class="kp-block"><p class="kp">Project RENEWED = most honest indicator transformation stuck</p></div>
+
+  <div class="hypothesis mt">Same logic as patient-axis model — organising around customer, not function</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 29: BSV                                 -->
+<!-- ============================================ -->
+<section class="panel" data-index="28">
+  <div class="section-label">SITUATIONAL</div>
+  <p class="q-header">"BSVwithU — presenting to COO, end-to-end ownership"</p>
+
+  <div class="kp-block mt"><p class="kp">MAU: 75% growth, $25K savings, $32K negotiated</p></div>
+  <div class="kp-block"><p class="kp">Cross-functional: tech, medical, design, finance, legal, procurement</p></div>
+  <div class="kp-block"><p class="kp">Monthly with COO + DT Head</p></div>
+
+  <div class="warn-box mt">Lesson — "Should have insisted on CR framework week 1, not month 3"</div>
+
+  <p class="dt mt">C-suite learning: decision needed then data then recommendation</p>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 30: ASK MUKTA                           -->
+<!-- ============================================ -->
+<section class="panel" data-index="29">
+  <div class="section-label">CLOSING</div>
+  <p class="q-header">"Do you have any questions for me?"</p>
+
+  <div class="script-box mt">
+    <p>"You've built three GCCs now. What's the one thing you wish you'd known going into your first build that you applied differently to your second and third — and <strong>what do you think will be different this time at Astellas</strong>?"</p>
+  </div>
+
+  <p class="kp mt">Additional questions:</p>
+  <div class="kp-block"><p class="kp">"What signals tell you the India GCC is being seen as a capability hub vs support?"</p></div>
+  <div class="kp-block"><p class="kp">"What's the biggest risk in the tri-site agenda right now?"</p></div>
+  <div class="kp-block"><p class="kp">"How do Lead Consultants partner with Managing Principals across time zones?"</p></div>
+  <div class="kp-block"><p class="kp">"What does One Astellas mean to you specifically for the GCCs?"</p></div>
+
+  <div class="cue">Ask 2-3 max. End with the BEST question. Position as someone who LEARNS from leaders.</div>
+</section>
+
+<!-- ============================================ -->
+<!-- PANEL 31: FOLLOW-UPS                          -->
+<!-- ============================================ -->
+<section class="panel" data-index="30">
+  <div class="section-label">CLOSING</div>
+  <p class="q-header">"Follow-up / 'Tell me more'"</p>
+
+  <p class="dt mb">Common traps with prepared responses:</p>
+
+  <div class="card">
+    <div class="card-title">"Tell me more"</div>
+    <p class="dt">Have one specific detail ready per story</p>
   </div>
 
   <div class="card">
     <div class="card-title">"What would you have done differently?"</div>
-    <p class="warn-box" style="margin-top:8px">Always have a real answer.</p>
-    <p class="kp" style="font-size:var(--body)">Sample (BSVwithU): "I should have insisted on the change-request framework in <strong>week one, not month three</strong>. I lost three months of trust I had to rebuild."</p>
+    <p class="dt">BSV: CR framework week 1. GenAI: workflow redesign earlier.</p>
   </div>
 
   <div class="card">
-    <div class="card-title">"That sounds like Prosci. Did you use ADKAR?"</div>
-    <p class="warn-box" style="margin-top:8px">If she names a framework, acknowledge crisply.</p>
-    <p class="kp" style="font-size:var(--body)">Sample: "Some of the moves I made map to ADKAR, yes — particularly the 'Awareness' and 'Desire' stages. But <strong>I designed them from the listening sessions, not from the framework</strong>. I find when I lead with the framework, the design gets generic."</p>
+    <div class="card-title">"How did you measure?"</div>
+    <p class="dt">Adoption metrics, not output metrics</p>
   </div>
 
   <div class="card">
-    <div class="card-title">"How would you have measured success?"</div>
-    <p class="warn-box" style="margin-top:8px">Have adoption metrics ready, not output metrics.</p>
-    <p class="kp" style="font-size:var(--body)">Sample (Change Makers Council): "Pageviews on the Credo page were vanity. The metric I cared about was whether <strong>'Empathy' showed up unprompted in performance review conversations</strong>. We measured that through quarterly HR sampling."</p>
+    <div class="card-title">"Give me a specific example"</div>
+    <p class="dt">Default to most recent + specific</p>
   </div>
 
   <div class="card">
-    <div class="card-title">"What did your reportee struggle with most?"</div>
-    <p class="warn-box" style="margin-top:8px">Be specific.</p>
-    <p class="kp" style="font-size:var(--body)">Sample (Vrinda): "Confidence in client-facing demos. Her technical understanding outpaced her presentation comfort. <strong>We did dry-runs every Tuesday for two months.</strong> I'd push back hard on weak points so the real demos felt easier."</p>
+    <div class="card-title">"What did your reportee struggle with?"</div>
+    <p class="dt">Vrinda = confidence in client demos, dry-runs every Tuesday</p>
   </div>
 
   <div class="card">
-    <div class="card-title">"Why are you leaving Indegene?"</div>
-    <p class="warn-box" style="margin-top:8px">Don't disparage.</p>
-    <p class="kp" style="font-size:var(--body)">Sample: "Indegene has been formative — <strong>three promotions in five years</strong>, deep pharma exposure, the chance to build durable capability. What I'm looking for now is <strong>depth over breadth</strong>. Running one pharma's full transformation agenda inside a CxO function is a different craft than running multiple pharma portfolios from outside. Astellas at this moment — CSP2026, three GCCs, the Change Communication mandate — is the <strong>right specific opportunity, not just the right next step.</strong>"</p>
-  </div>
-</section>
-
-<!-- ============================================ -->
-<!-- PANEL 19: §10 PRE-INTERVIEW CHECKLIST          -->
-<!-- ============================================ -->
-<section class="panel" data-index="19">
-  <div class="section-label">§10</div>
-  <h1 class="section-title">Pre-Interview Checklist</h1>
-
-  <div class="check-group">
-    <div class="check-group-title">48 Hours Before</div>
-    <div class="check-item"><input type="checkbox" id="c1"><label for="c1">Memorize the 10 Astellas facts cold (§2)</label></div>
-    <div class="check-item"><input type="checkbox" id="c2"><label for="c2">Practice opening 90 seconds out loud, three times, until the cadence is natural</label></div>
-    <div class="check-item"><input type="checkbox" id="c3"><label for="c3">Practice each of your 11 primary stories in CAR format, 2 minutes each</label></div>
-    <div class="check-item"><input type="checkbox" id="c4"><label for="c4">Drill the three differentiators: pharma fluency (12 companies), transformation craft, comms judgement</label></div>
-    <div class="check-item"><input type="checkbox" id="c5"><label for="c5">Re-read Wioleta's seven hiring filters (§1)</label></div>
-    <div class="check-item"><input type="checkbox" id="c6"><label for="c6">Re-read the language guide (§6) — particularly what NOT to say</label></div>
+    <div class="card-title">"Sounds like textbook"</div>
+    <p class="dt">"Designed from listening sessions, not framework"</p>
   </div>
 
-  <div class="check-group">
-    <div class="check-group-title">24 Hours Before</div>
-    <div class="check-item"><input type="checkbox" id="c7"><label for="c7">Light review only. No new prep.</label></div>
-    <div class="check-item"><input type="checkbox" id="c8"><label for="c8">Re-read this document once, end-to-end.</label></div>
-    <div class="check-item"><input type="checkbox" id="c9"><label for="c9">Sleep 7+ hours.</label></div>
-  </div>
-
-  <div class="check-group">
-    <div class="check-group-title">60 Minutes Before</div>
-    <div class="check-item"><input type="checkbox" id="c10"><label for="c10">Re-read §3 (Opening 90 seconds) and §8 (Questions to ask)</label></div>
-    <div class="check-item"><input type="checkbox" id="c11"><label for="c11">Glass of water; loosen voice with light conversation</label></div>
-    <div class="check-item"><input type="checkbox" id="c12"><label for="c12">Confidence anchor: three promotions in five years, 12 pharma companies, 90-person CoP scaled, GenAI 30%+ efficiency in 1,000+ BU. The evidence is real. You have earned this room.</label></div>
-  </div>
-
-  <div class="check-group">
-    <div class="check-group-title">During the Interview</div>
-    <div class="check-item"><input type="checkbox" id="c13"><label for="c13">Crisp, not flowery. Polish-English directness.</label></div>
-    <div class="check-item"><input type="checkbox" id="c14"><label for="c14">2 minutes per story max. Leave room for her follow-ups.</label></div>
-    <div class="check-item"><input type="checkbox" id="c15"><label for="c15">One framework named per answer maximum, in service of a story.</label></div>
-    <div class="check-item"><input type="checkbox" id="c16"><label for="c16">Specific over generic always. Names, numbers, dialogue moments.</label></div>
-    <div class="check-item"><input type="checkbox" id="c17"><label for="c17">"I don't know" is allowed. Better than faking. Wioleta values courage over certainty.</label></div>
-    <div class="check-item"><input type="checkbox" id="c18"><label for="c18">Listen before you answer. If she pushes back, hear what she's actually testing.</label></div>
-    <div class="check-item"><input type="checkbox" id="c19"><label for="c19">End strong. Last question to her should be Question 1 from §8.</label></div>
-  </div>
-</section>
-
-<!-- ============================================ -->
-<!-- PANEL 20: §11 THREE THINGS TO LAND             -->
-<!-- ============================================ -->
-<section class="panel" data-index="20">
-  <div class="section-label">§11</div>
-  <h1 class="section-title">The Three Things to Land</h1>
-  <p class="kp mb">If you only land three things in this interview, land these:</p>
-
-  <div class="thing" style="border-left-width:6px">
-    <div class="thing-num">ONE</div>
-    <div class="thing-title">You are an executor, not a framework reciter.</div>
-    <div class="thing-detail">Demonstrate this with the messy middle of the <strong>GenAI adoption story</strong>, the <strong>BSVwithU turnaround</strong>, and the <strong>ICAP Stint 3 ambiguity story</strong>. Specific dialogue, specific dependencies, specific pivots.</div>
-  </div>
-
-  <div class="thing" style="border-left-width:6px">
-    <div class="thing-num">TWO</div>
-    <div class="thing-title">You build capability that outlives the project.</div>
-    <div class="thing-detail">Demonstrate this with the <strong>GenAI CoP (3-4 → 90)</strong>, <strong>Change Makers Council (outlasted Credo launch)</strong>, and <strong>CSL Vifor evaluation framework (reused across NEXT platforms)</strong>. This is Wioleta's personal thesis — she will hire someone who thinks this way.</div>
-  </div>
-
-  <div class="thing" style="border-left-width:6px">
-    <div class="thing-num">THREE</div>
-    <div class="thing-title">You bring rare combination of pharma fluency + transformation craft + delivery-side GCC perspective.</div>
-    <div class="thing-detail">Most candidates will have one or two of these. You can credibly claim all three. The <strong>Amgen ELMAC story across EU's top-5 markets</strong>, paired with <strong>Indegene's GCC delivery model</strong>, is the strongest single proof point.</div>
-  </div>
-
-  <div class="kp-block mt-lg">
-    <p class="kp">Land these three with confidence — not with bridge language, not with apologies for the vendor heritage — and Wioleta will advocate for you.</p>
-  </div>
-
-  <hr class="divider">
-
-  <div class="card mt">
-    <div class="card-title">Closing Note</div>
-    <p class="dt">You have a strong, specific, evidence-rich profile. Three promotions in five years inside a high-bar firm. Twelve pharma companies in your delivery footprint. A 90-person Community of Practice you built from 3-4 members. A Change Makers Council that embedded a Culture Credo at organizational scale. CXO-level engagement on both client and internal sides. Reportees ramping to live client work in 6 months.</p>
-    <p class="kp mt-sm">The interview is yours to win on execution credibility + capability mindset + Astellas-specific judgement.</p>
-    <p class="kp">Walk in with the confidence of someone who has done the work. Wioleta will recognize it.</p>
-    <p class="kp mt" style="color:var(--green);text-align:center;font-size:var(--title)">Good luck on May 4.</p>
+  <div class="script-box mt">
+    <p>"'I don't know' is allowed — better than faking. Mukta values courage."</p>
   </div>
 </section>
 
@@ -1167,18 +1247,18 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     <h2>The Three Things to Land</h2>
     <div class="thing">
       <div class="thing-num">ONE</div>
-      <div class="thing-title">You are an executor, not a framework reciter.</div>
-      <div class="thing-detail">GenAI messy middle · BSVwithU turnaround · ICAP Stint 3 ambiguity</div>
+      <div class="thing-title">Strategy-Execution Leader</div>
+      <div class="thing-detail">"I convert ambiguous transformation goals into operating rhythms, stakeholder coalitions, and measurable outcomes."</div>
     </div>
     <div class="thing">
       <div class="thing-num">TWO</div>
-      <div class="thing-title">You build capability that outlives the project.</div>
-      <div class="thing-detail">CoP 3-4 → 90 · Change Makers Council · CSL Vifor evaluation framework</div>
+      <div class="thing-title">One Astellas = Coherent Difference</div>
+      <div class="thing-detail">"Not flatten three GCCs into one voice. Create coherent difference under One Astellas."</div>
     </div>
     <div class="thing">
       <div class="thing-num">THREE</div>
-      <div class="thing-title">Rare combo: pharma fluency + transformation craft + GCC delivery perspective.</div>
-      <div class="thing-detail">Amgen ELMAC EU5 + Indegene GCC model = strongest proof point</div>
+      <div class="thing-title">Capability Center Mindset</div>
+      <div class="thing-detail">"Bengaluru, Warsaw, Mexico are an integrated capability network contributing to One Astellas — not three support locations."</div>
     </div>
     <p style="text-align:center;margin-top:20px;color:var(--text3);font-size:var(--small)">Press Esc or click outside to close</p>
   </div>
@@ -1230,7 +1310,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 <script>
 (function(){
   /* STATE */
-  const TOTAL = 21;
+  const TOTAL = 31;
   let current = 0;
   let timerRunning = false;
   let timerStart = 0;
@@ -1510,7 +1590,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   window.addEventListener('resize', handleResize);
 
   /* ============================================ */
-  /* VOICE AUTO-NAVIGATE (Semantic via Haiku)      */
+  /* VOICE AUTO-NAVIGATE (Semantic via server)     */
   /* ============================================ */
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let voiceOn = false;
@@ -1522,8 +1602,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   const vsMatch = document.getElementById('vs-match');
   const voiceStrip = document.getElementById('voice-strip');
 
-  /* Speech buffer — collects both final and interim results.
-     Mobile Chrome often never finalizes, so we send on interim too. */
   let speechBuf = '';
   let lastInterim = '';
   let sendTimer = null;
@@ -1705,7 +1783,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     document.getElementById('live-body').classList.add('has-cues');
     document.getElementById('live-body').scrollTop = 0;
     currentLiveLabel = data.label;
-    /* Pause sending — candidate is about to answer */
     livePaused = true;
     clearTimeout(liveSilenceTimer);
   }
@@ -1745,15 +1822,12 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     }, 2500);
   }
 
-  /* After cues show, we detect a silence gap to know the candidate stopped
-     answering and Wioleta is likely speaking next. Then we unpause and
-     clear the buffer so only her new question gets classified. */
+  /* After cues show, detect silence gap to know candidate stopped answering */
   function liveSpeechDetected(){
     liveLastSpeechTime = Date.now();
     if(livePaused){
       clearTimeout(liveSilenceTimer);
       liveSilenceTimer = setTimeout(() => {
-        /* 4 seconds of no speech results → candidate likely done answering */
         livePaused = false;
         liveBuf = '';
         liveLastInterim = '';
@@ -1777,7 +1851,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
         else interim += e.results[i][0].transcript;
       }
 
-      /* Always track speech timing for silence detection */
       liveSpeechDetected();
 
       if(final_){
