@@ -9,6 +9,8 @@ const AWS_KEY = process.env.AWS_ACCESS_KEY_ID;
 const AWS_SECRET = process.env.AWS_SECRET_ACCESS_KEY;
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+const htmlR1 = fs.readFileSync(path.join(__dirname, 'index-wioleta.html'), 'utf8');
+const serverR1 = JSON.stringify({note: 'Round 1 voice matching uses same /match endpoint with Wioleta-tuned categories'});
 
 const SYSTEM_PROMPT = `You are a real-time interview assistant for Round 2 (culture fit / hiring manager round) of a Transformation Lead Consultant role at Astellas Pharma. The interviewer is Mukta Arora, Managing Director of the Bangalore GCC. She is a senior GCC builder (Lilly, Elanco, now Astellas). Route every interviewer utterance to the best matching prepared section.
 
@@ -614,6 +616,9 @@ const server = http.createServer(async (req, res) => {
       'Access-Control-Allow-Headers': 'Content-Type'
     });
     res.end();
+  } else if (req.url === '/r1' || req.url === '/round1' || req.url === '/wioleta') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(htmlR1);
   } else {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(html);
