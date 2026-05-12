@@ -577,7 +577,7 @@ function callHaiku(transcript) {
       });
     });
     req.on('error', (e) => { console.error('Bedrock request error:', e.message); resolve('NONE'); });
-    req.setTimeout(4000, () => { req.destroy(); resolve('NONE'); });
+    req.setTimeout(3000, () => { req.destroy(); resolve('NONE'); });
     req.write(body);
     req.end();
   });

@@ -1690,14 +1690,14 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   let resultCount = 0;
 
   function sendToMatch(text){
-    if(pendingMatch || voiceCooldown || text.trim().length < 8) return;
+    if(pendingMatch || voiceCooldown || text.trim().length < 15) return;
     pendingMatch = true;
     vsMatch.textContent = 'matching...';
     vsMatch.classList.add('show');
     fetch('/match', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({transcript: text.trim()})
+      body: JSON.stringify({transcript: text.trim().slice(-400)})
     })
     .then(r => r.json())
     .then(data => {
@@ -1709,7 +1709,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
         vsMatch.textContent = '-> ' + navItems[data.panel].textContent.replace(/\d+$/, '').trim();
         vsMatch.classList.add('show');
         goTo(data.panel);
-        setTimeout(() => { voiceCooldown = false; vsMatch.classList.remove('show'); }, 10000);
+        setTimeout(() => { voiceCooldown = false; vsMatch.classList.remove('show'); }, 12000);
       } else {
         vsMatch.textContent = '(' + (data.label||'NONE') + ')';
         setTimeout(() => vsMatch.classList.remove('show'), 2000);
@@ -1721,17 +1721,17 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   function scheduleSendFinal(){
     clearTimeout(sendTimer);
     sendTimer = setTimeout(() => {
-      if(speechBuf.trim().length >= 8) sendToMatch(speechBuf);
-    }, 1200);
+      if(speechBuf.trim().length >= 15) sendToMatch(speechBuf);
+    }, 800);
   }
 
   function scheduleSendInterim(){
     clearTimeout(interimTimer);
     interimTimer = setTimeout(() => {
-      if(lastInterim.trim().length >= 8 && !pendingMatch){
+      if(lastInterim.trim().length >= 15 && !pendingMatch){
         sendToMatch(speechBuf + ' ' + lastInterim);
       }
-    }, 2500);
+    }, 1500);
   }
 
   function startVoice(){
@@ -1868,11 +1868,11 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   }
 
   function liveSend(text){
-    if(livePending || livePaused || text.trim().length < 8) return;
+    if(livePending || livePaused || text.trim().length < 20) return;
     livePending = true;
     fetch('/match', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({transcript: text.trim()})
+      body: JSON.stringify({transcript: text.trim().slice(-400)})
     })
     .then(r=>r.json())
     .then(data => {
@@ -1891,27 +1891,31 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     clearTimeout(liveSendTimer);
     liveSendTimer = setTimeout(() => {
       const text = liveBuf.trim();
-      if(text.length >= 8) liveSend(text.slice(-300));
-    }, 1500);
+      if(text.length >= 20) liveSend(text.slice(-400));
+    }, 600);
   }
   function liveScheduleInterim(){
     clearTimeout(liveInterimTimer);
     liveInterimTimer = setTimeout(() => {
       const text = (liveBuf + ' ' + liveLastInterim).trim();
-      if(text.length >= 8 && !livePending) liveSend(text.slice(-300));
-    }, 2500);
+      if(text.length >= 20 && !livePending) liveSend(text.slice(-400));
+    }, 1200);
   }
 
-  /* After cues show, detect silence gap to know candidate stopped answering */
+  /* After cues show, detect silence gap to know candidate stopped answering.
+     Uses 8-second gap — typical answer is 60-120s, pauses within are normal. */
   function liveSpeechDetected(){
     liveLastSpeechTime = Date.now();
     if(livePaused){
       clearTimeout(liveSilenceTimer);
       liveSilenceTimer = setTimeout(() => {
-        livePaused = false;
-        liveBuf = '';
-        liveLastInterim = '';
-      }, 4000);
+        const elapsed = Date.now() - liveLastSpeechTime;
+        if(elapsed >= 7500){
+          livePaused = false;
+          liveBuf = '';
+          liveLastInterim = '';
+        }
+      }, 8000);
     }
   }
 
