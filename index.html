@@ -1859,7 +1859,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   let liveProcessor = null;
   let liveBuf = '';
   let liveSendTimer = null;
-  let livePending = false;
   let livePaused = false;
   let liveSilenceTimer = null;
   let liveLastSpeechTime = 0;
@@ -1882,30 +1881,44 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     clearTimeout(liveSilenceTimer);
   }
 
+  let liveInflight = 0;
+
   function liveSend(text){
-    if(livePending || text.trim().length < 20) return;
-    livePending = true;
+    if(liveInflight >= 2 || text.trim().length < 20) return;
+    liveInflight++;
     fetch('/match', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({transcript: text.trim().slice(-500)})
     })
     .then(r=>r.json())
     .then(data => {
-      livePending = false;
+      liveInflight--;
       if(data.label === 'NONE' || data.label === 'FOLLOWUP') return;
       if(data.cues && data.cues.length > 0 && data.label !== currentLiveLabel){
         liveBuf = '';
         showCues(data);
       }
     })
-    .catch(() => { livePending = false; });
+    .catch(() => { liveInflight--; });
   }
+
+  let liveSpecTimer = null;
+  let lastSpecSent = 0;
 
   function liveScheduleSend(){
     clearTimeout(liveSendTimer);
     liveSendTimer = setTimeout(() => {
       if(liveBuf.trim().length >= 20) liveSend(liveBuf.slice(-500));
-    }, 400);
+    }, 100);
+  }
+
+  // Speculative: send every 2s while someone is talking so result is pre-cached
+  function liveSpeculativeSend(){
+    if(Date.now() - lastSpecSent < 2000) return;
+    if(liveBuf.trim().length >= 25){
+      lastSpecSent = Date.now();
+      liveSend(liveBuf.slice(-500));
+    }
   }
 
   function liveSpeechDetected(){
@@ -1933,6 +1946,8 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
             if(msg.isFinal && msg.text.trim().length > 0 && shouldListen){
               liveBuf += ' ' + msg.text;
               if(liveBuf.length > 800) liveBuf = liveBuf.slice(-800);
+              // Speculative: send mid-speech so result arrives before question ends
+              liveSpeculativeSend();
             }
             if(msg.speechFinal && shouldListen && liveBuf.trim().length >= 20){
               livePaused = false;
