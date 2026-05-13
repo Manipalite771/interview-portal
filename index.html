@@ -1865,6 +1865,8 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   let liveLastSpeechTime = 0;
   let currentLiveLabel = '';
 
+  let livePausedAt = 0;
+
   function showCues(data){
     liveQ.textContent = data.label;
     liveListening.style.display = 'none';
@@ -1876,12 +1878,12 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     document.getElementById('live-body').scrollTop = 0;
     currentLiveLabel = data.label;
     livePaused = true;
-    liveLastSpeechTime = Date.now();
+    livePausedAt = Date.now();
     clearTimeout(liveSilenceTimer);
   }
 
   function liveSend(text){
-    if(livePending || livePaused || text.trim().length < 20) return;
+    if(livePending || text.trim().length < 20) return;
     livePending = true;
     fetch('/match', {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -1908,15 +1910,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 
   function liveSpeechDetected(){
     liveLastSpeechTime = Date.now();
-    if(livePaused){
-      clearTimeout(liveSilenceTimer);
-      liveSilenceTimer = setTimeout(() => {
-        if(Date.now() - liveLastSpeechTime >= 7500){
-          livePaused = false;
-          liveBuf = '';
-        }
-      }, 8000);
-    }
   }
 
   function connectLiveDg(){
@@ -1934,16 +1927,24 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
           if(msg.text){
             liveTranscript.textContent = msg.text;
             liveSpeechDetected();
-            if(msg.isFinal && msg.text.trim().length > 0 && !livePaused){
+            // After cues show, ignore first 5s (you're reading), then listen for new questions
+            const timeSincePause = Date.now() - livePausedAt;
+            const shouldListen = !livePaused || timeSincePause > 5000;
+            if(msg.isFinal && msg.text.trim().length > 0 && shouldListen){
               liveBuf += ' ' + msg.text;
               if(liveBuf.length > 800) liveBuf = liveBuf.slice(-800);
             }
-            if(msg.speechFinal && !livePaused && liveBuf.trim().length >= 20){
+            if(msg.speechFinal && shouldListen && liveBuf.trim().length >= 20){
+              livePaused = false;
               liveScheduleSend();
             }
           }
         } else if(msg.type === 'utteranceEnd'){
-          if(!livePaused && liveBuf.trim().length >= 20) liveScheduleSend();
+          const timeSincePause = Date.now() - livePausedAt;
+          if(timeSincePause > 5000 && liveBuf.trim().length >= 20){
+            livePaused = false;
+            liveScheduleSend();
+          }
         }
       } catch(e){}
     };
