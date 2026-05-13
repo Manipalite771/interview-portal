@@ -1869,27 +1869,16 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   let livePausedAt = 0;
 
   function formatCue(text){
-    // Split at first "..." or " — " to get anchor vs rest
-    let anchor = text, rest = '';
-    const splitPoints = ['...', ' — ', '. "'];
-    for(const sp of splitPoints){
-      const idx = text.indexOf(sp);
-      if(idx > 10 && idx < 80){
-        anchor = text.slice(0, idx + (sp === '...' ? 3 : 0));
-        rest = text.slice(idx + (sp === '...' ? 3 : sp.length));
-        break;
-      }
+    // Split at "|" — left is bold anchor (the point), right is how to say it
+    const pipeIdx = text.indexOf('|');
+    if(pipeIdx > 0){
+      const anchor = text.slice(0, pipeIdx).trim();
+      const rest = text.slice(pipeIdx + 1).trim();
+      return '<span class="cue-anchor">' + anchor + '</span>' +
+             '<span class="cue-rest">' + rest + '</span>';
     }
-    // If no split found but text is long, split at ~50 chars on a word boundary
-    if(!rest && text.length > 60){
-      const mid = text.lastIndexOf(' ', 55);
-      if(mid > 20){
-        anchor = text.slice(0, mid);
-        rest = text.slice(mid + 1);
-      }
-    }
-    return '<span class="cue-anchor">' + anchor + '</span>' +
-           (rest ? '<span class="cue-rest">' + rest + '</span>' : '');
+    // Fallback: entire text as anchor
+    return '<span class="cue-anchor">' + text + '</span>';
   }
 
   function showCues(data){
