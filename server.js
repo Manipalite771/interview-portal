@@ -73,6 +73,8 @@ BUDGET — "Budget management", "financial ownership", "cost management", "have 
 
 GAPS — "You've never worked inside a pharma", "global experience within one org", "years of experience", "multi-geography within one org", "what don't you know", "where are your gaps".
 
+WEAKNESS — "What is your weakness", "areas for improvement", "what are you working on", "development areas", "what do you struggle with", "where do you need to grow", "what would your manager say you need to improve".
+
 SANOFI — "Sanofi Connect", "omnichannel", "HCP engagement", "digital channels", "field force transformation", "pharma marketing", "multichannel".
 
 BSV — "BSVwithU", "Bharat Serum", "platform management", "women's health", "monthly reporting to COO", "end-to-end project ownership".
@@ -93,7 +95,7 @@ FOLLOWUP — The interviewer is probing deeper into a previous answer: "tell me 
 - When in doubt between a category and NONE, pick the category.
 - INTRO is for the very start — "tell me about yourself" style openers.
 - The transcript may be imperfect (speech-to-text errors, fragments, Indian accent). Do your best to interpret intent.
-- Valid tokens: INTRO CAREER WHYASTELLAS WHYROLE SERVICESGCC TECHSHIFT CHANGECULTURE TRISITE SHAREPOINT SENIORADOPT RESISTANCE LEADSTYLE FIRST90 GENAI BOWLERS COACHING FAILURE CXOWORK CURRENTROLE WHYLEAVE PHARMACHECK VALUES TOMANDATE ONEASTELLAS BUDGET GAPS SANOFI BSV ASKME FOLLOWUP NONE
+- Valid tokens: INTRO CAREER WHYASTELLAS WHYROLE SERVICESGCC TECHSHIFT CHANGECULTURE TRISITE SHAREPOINT SENIORADOPT RESISTANCE LEADSTYLE FIRST90 GENAI BOWLERS COACHING FAILURE CXOWORK CURRENTROLE WHYLEAVE PHARMACHECK VALUES TOMANDATE ONEASTELLAS BUDGET GAPS WEAKNESS SANOFI BSV ASKME FOLLOWUP NONE
 - Respond with EXACTLY one of the above tokens`;
 
 const PANEL_MAP = {
@@ -102,8 +104,8 @@ const PANEL_MAP = {
   SENIORADOPT: 10, RESISTANCE: 11, LEADSTYLE: 12, FIRST90: 13,
   GENAI: 14, BOWLERS: 15, COACHING: 16, FAILURE: 17, CXOWORK: 18,
   CURRENTROLE: 19, WHYLEAVE: 20, PHARMACHECK: 21, VALUES: 22,
-  TOMANDATE: 23, ONEASTELLAS: 24, BUDGET: 25, GAPS: 26,
-  SANOFI: 27, BSV: 28, ASKME: 29, FOLLOWUP: 30
+  TOMANDATE: 23, ONEASTELLAS: 24, BUDGET: 25, GAPS: 26, WEAKNESS: 27,
+  SANOFI: 28, BSV: 29, ASKME: 30, FOLLOWUP: 31
 };
 
 const CUES = {
@@ -261,6 +263,12 @@ const CUES = {
     'MULTI-CLIENT NOT ONE ORG|"Multi-geo, multi-stakeholder across 5+ portfolios. Step-change in depth, but muscle is built."',
     '5 YRS NOT 8|"Ten-year arc. Field years = underrated input for GCC engagement — customer-empathy problem."',
     'POSTURE|Name it, reframe it, show how you\'d close it. Don\'t pretend.',
+  ],
+  WEAKNESS: [
+    'ASTELLAS-SPECIFIC DEPTH|"I don\'t yet have the inside-out context — XTANDI bridge mechanics, Japan-HQ rhythms, internal politics. I\'d build that in 60-90 days deliberately."',
+    'LETTING GO AT SCALE|"As CoP scaled to 90, I had to stop being in every loop. My instinct is to stay close — learning to let others own it fully."',
+    'GOVERNANCE BEFORE EXECUTION|"Earlier in career: took too long to push back on scope creep. BSV taught me — CR framework week one, not month three."',
+    'HONESTY > FAKE HUMBLE|Don\'t say "I\'m a perfectionist." She values courage and intellectual honesty.',
   ],
   SANOFI: [
     'COMPETITIVE → AMPLIFICATION|"Field reps saw digital as competitive. Reframed: omnichannel amplifies relationships, not replaces."',
