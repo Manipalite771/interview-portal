@@ -1912,12 +1912,17 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     }, 100);
   }
 
-  // Speculative: send every 2s while someone is talking so result is pre-cached
+  let lastSpecText = '';
+
+  // Speculative: send every 2.5s while someone is talking so result is pre-cached
+  // Only sends if buffer content actually changed (not just growing with same speech)
   function liveSpeculativeSend(){
-    if(Date.now() - lastSpecSent < 2000) return;
-    if(liveBuf.trim().length >= 25){
+    if(Date.now() - lastSpecSent < 2500) return;
+    const text = liveBuf.trim().slice(-200);
+    if(text.length >= 25 && text !== lastSpecText){
       lastSpecSent = Date.now();
-      liveSend(liveBuf.slice(-500));
+      lastSpecText = text;
+      liveSend(text);
     }
   }
 
@@ -1956,9 +1961,15 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
           }
         } else if(msg.type === 'utteranceEnd'){
           const timeSincePause = Date.now() - livePausedAt;
-          if(timeSincePause > 5000 && liveBuf.trim().length >= 20){
-            livePaused = false;
-            liveScheduleSend();
+          if(timeSincePause > 5000){
+            // Utterance ended — send what we have, then CLEAR buffer
+            // so next utterance (likely new question) starts fresh
+            if(liveBuf.trim().length >= 20){
+              livePaused = false;
+              liveScheduleSend();
+            }
+            // Clear after short delay to let the send grab current buffer
+            setTimeout(() => { liveBuf = ''; }, 150);
           }
         }
       } catch(e){}
