@@ -215,9 +215,11 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 /* Cues state */
 #live-cues{display:none;width:100%;max-width:700px;padding:10px 4px 20px}
 #live-cues.show{display:block}
-#live-cues .cue-item{font-size:1.35rem;color:var(--amber);font-weight:700;line-height:1.5;padding:7px 0;border-bottom:1px solid rgba(245,183,49,0.1)}
+#live-cues .cue-item{font-size:1.2rem;line-height:1.5;padding:10px 0;border-bottom:1px solid rgba(245,183,49,0.08)}
 #live-cues .cue-item:last-child{border-bottom:none}
-#live-cues .cue-num{color:var(--text3);font-weight:400;font-size:1rem;margin-right:6px}
+#live-cues .cue-item .cue-anchor{display:block;font-size:1.5rem;font-weight:800;color:var(--amber);letter-spacing:-0.5px}
+#live-cues .cue-item .cue-rest{display:block;font-size:1rem;font-weight:400;color:var(--text2);margin-top:2px}
+#live-cues .cue-num{color:var(--text3);font-weight:400;font-size:0.85rem;margin-right:6px;vertical-align:top}
 
 #live-bottom{padding:10px 16px;background:var(--surface);border-top:1px solid var(--border);text-align:center;flex-shrink:0}
 #live-reset{background:none;border:1px solid var(--border);color:var(--text2);padding:8px 20px;border-radius:8px;cursor:pointer;font-size:0.85rem}
@@ -1866,11 +1868,35 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
 
   let livePausedAt = 0;
 
+  function formatCue(text){
+    // Split at first "..." or " — " to get anchor vs rest
+    let anchor = text, rest = '';
+    const splitPoints = ['...', ' — ', '. "'];
+    for(const sp of splitPoints){
+      const idx = text.indexOf(sp);
+      if(idx > 10 && idx < 80){
+        anchor = text.slice(0, idx + (sp === '...' ? 3 : 0));
+        rest = text.slice(idx + (sp === '...' ? 3 : sp.length));
+        break;
+      }
+    }
+    // If no split found but text is long, split at ~50 chars on a word boundary
+    if(!rest && text.length > 60){
+      const mid = text.lastIndexOf(' ', 55);
+      if(mid > 20){
+        anchor = text.slice(0, mid);
+        rest = text.slice(mid + 1);
+      }
+    }
+    return '<span class="cue-anchor">' + anchor + '</span>' +
+           (rest ? '<span class="cue-rest">' + rest + '</span>' : '');
+  }
+
   function showCues(data){
     liveQ.textContent = data.label;
     liveListening.style.display = 'none';
     liveCues.innerHTML = data.cues.map((c,i) =>
-      '<div class="cue-item"><span class="cue-num">' + (i+1) + '</span>' + c + '</div>'
+      '<div class="cue-item"><span class="cue-num">' + (i+1) + '</span>' + formatCue(c) + '</div>'
     ).join('');
     liveCues.classList.add('show');
     document.getElementById('live-body').classList.add('has-cues');
