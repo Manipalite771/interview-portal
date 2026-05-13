@@ -1670,11 +1670,9 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   window.addEventListener('resize', handleResize);
 
   /* ============================================ */
-  /* VOICE AUTO-NAVIGATE (Semantic via server)     */
+  /* VOICE — Deepgram streaming via server WS      */
   /* ============================================ */
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let voiceOn = false;
-  let recognition = null;
   let voiceCooldown = false;
   let pendingMatch = false;
   const micBtn = document.getElementById('btn-mic');
@@ -1683,11 +1681,11 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   const voiceStrip = document.getElementById('voice-strip');
 
   let speechBuf = '';
-  let lastInterim = '';
   let sendTimer = null;
-  let interimTimer = null;
-  let aliveTimer = null;
-  let resultCount = 0;
+  let dgSocket = null;
+  let audioContext = null;
+  let mediaStream = null;
+  let processor = null;
 
   function sendToMatch(text){
     if(pendingMatch || voiceCooldown || text.trim().length < 15) return;
@@ -1697,7 +1695,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     fetch('/match', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({transcript: text.trim().slice(-400)})
+      body: JSON.stringify({transcript: text.trim().slice(-500)})
     })
     .then(r => r.json())
     .then(data => {
@@ -1705,7 +1703,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
       if(data.panel >= 0 && data.panel !== current){
         voiceCooldown = true;
         speechBuf = '';
-        lastInterim = '';
         vsMatch.textContent = '-> ' + navItems[data.panel].textContent.replace(/\d+$/, '').trim();
         vsMatch.classList.add('show');
         goTo(data.panel);
@@ -1718,96 +1715,94 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     .catch(() => { pendingMatch = false; vsMatch.classList.remove('show'); });
   }
 
-  function scheduleSendFinal(){
+  function scheduleSend(){
     clearTimeout(sendTimer);
     sendTimer = setTimeout(() => {
       if(speechBuf.trim().length >= 15) sendToMatch(speechBuf);
-    }, 800);
+    }, 500);
   }
 
-  function scheduleSendInterim(){
-    clearTimeout(interimTimer);
-    interimTimer = setTimeout(() => {
-      if(lastInterim.trim().length >= 15 && !pendingMatch){
-        sendToMatch(speechBuf + ' ' + lastInterim);
-      }
-    }, 1500);
+  function getWsUrl(){
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    return proto + '//' + location.host;
   }
 
-  function startVoice(){
-    if(!SpeechRecognition){
-      alert('Speech Recognition not supported. Use Chrome.');
-      return;
-    }
-    recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
-    recognition.maxAlternatives = 1;
+  function connectDeepgram(){
+    dgSocket = new WebSocket(getWsUrl());
 
-    recognition.onstart = function(){
-      vsTranscript.textContent = 'Mic active — speak...';
-      resultCount = 0;
-      resetAliveCheck();
+    dgSocket.onopen = () => {
+      vsTranscript.textContent = 'Connecting to Deepgram...';
     };
 
-    recognition.onresult = function(e){
-      resultCount++;
-      let interim = '';
-      let final_ = '';
-      for(let i = e.resultIndex; i < e.results.length; i++){
-        const text = e.results[i][0].transcript;
-        if(e.results[i].isFinal) final_ += text;
-        else interim += text;
-      }
-
-      if(final_){
-        vsTranscript.textContent = final_;
-        speechBuf += ' ' + final_;
-        if(speechBuf.length > 600) speechBuf = speechBuf.slice(-600);
-        lastInterim = '';
-        scheduleSendFinal();
-      } else if(interim){
-        vsTranscript.textContent = interim;
-        lastInterim = interim;
-        scheduleSendInterim();
-      }
-      resetAliveCheck();
+    dgSocket.onmessage = (evt) => {
+      try {
+        const msg = JSON.parse(evt.data);
+        if(msg.type === 'dgReady'){
+          vsTranscript.textContent = 'Mic active — listening...';
+          startAudioCapture();
+        } else if(msg.type === 'transcript'){
+          if(msg.text){
+            vsTranscript.textContent = msg.text;
+            if(msg.isFinal && msg.text.trim().length > 0){
+              speechBuf += ' ' + msg.text;
+              if(speechBuf.length > 800) speechBuf = speechBuf.slice(-800);
+            }
+            if(msg.speechFinal && speechBuf.trim().length >= 15){
+              scheduleSend();
+            }
+          }
+        } else if(msg.type === 'utteranceEnd'){
+          if(speechBuf.trim().length >= 15) scheduleSend();
+        } else if(msg.type === 'error'){
+          vsTranscript.textContent = 'DG Error: ' + msg.msg;
+        }
+      } catch(e){}
     };
 
-    recognition.onerror = function(e){
-      if(e.error === 'aborted') return;
-      if(e.error === 'no-speech'){
-        vsTranscript.textContent = 'No speech heard — still listening...';
-        return;
-      }
-      if(e.error === 'not-allowed'){
-        vsTranscript.textContent = 'Mic blocked — tap address bar lock icon to allow';
-        return;
-      }
-      vsTranscript.textContent = 'Error: ' + e.error + ' — restarting...';
-      if(voiceOn) setTimeout(startVoice, 1000);
+    dgSocket.onerror = () => {
+      vsTranscript.textContent = 'WebSocket error — retrying...';
     };
 
-    recognition.onend = function(){
+    dgSocket.onclose = () => {
       if(voiceOn){
-        vsTranscript.textContent = 'Reconnecting mic...';
-        setTimeout(() => { if(voiceOn) try{ startVoice(); }catch(e){} }, 300);
+        vsTranscript.textContent = 'Reconnecting...';
+        setTimeout(connectDeepgram, 1000);
       }
     };
+  }
 
-    try{ recognition.start(); }catch(e){
-      vsTranscript.textContent = 'Failed to start mic: ' + e.message;
+  async function startAudioCapture(){
+    try {
+      mediaStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 16000 }
+      });
+      audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+      const source = audioContext.createMediaStreamSource(mediaStream);
+      processor = audioContext.createScriptProcessor(4096, 1, 1);
+
+      processor.onaudioprocess = (e) => {
+        if(dgSocket && dgSocket.readyState === WebSocket.OPEN){
+          const input = e.inputBuffer.getChannelData(0);
+          const pcm16 = new Int16Array(input.length);
+          for(let i = 0; i < input.length; i++){
+            pcm16[i] = Math.max(-32768, Math.min(32767, input[i] * 32768));
+          }
+          dgSocket.send(pcm16.buffer);
+        }
+      };
+
+      source.connect(processor);
+      processor.connect(audioContext.destination);
+    } catch(e){
+      vsTranscript.textContent = 'Mic access failed: ' + e.message;
     }
   }
 
-  function resetAliveCheck(){
-    clearTimeout(aliveTimer);
-    aliveTimer = setTimeout(() => {
-      if(voiceOn && recognition){
-        vsTranscript.textContent = 'Silence detected — still listening...';
-      }
-    }, 8000);
+  function stopAudioCapture(){
+    if(processor){ processor.disconnect(); processor = null; }
+    if(audioContext){ audioContext.close(); audioContext = null; }
+    if(mediaStream){ mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+    if(dgSocket){ dgSocket.close(); dgSocket = null; }
   }
 
   function toggleVoice(){
@@ -1817,23 +1812,20 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     voiceStrip.classList.toggle('open', voiceOn);
     if(voiceOn){
       speechBuf = '';
-      lastInterim = '';
-      vsTranscript.textContent = 'Starting mic...';
-      startVoice();
+      vsTranscript.textContent = 'Starting...';
+      connectDeepgram();
     } else {
-      if(recognition){ try{ recognition.abort(); }catch(e){} recognition = null; }
+      stopAudioCapture();
       vsTranscript.textContent = 'Mic off';
       vsMatch.classList.remove('show');
       clearTimeout(sendTimer);
-      clearTimeout(interimTimer);
-      clearTimeout(aliveTimer);
     }
   }
 
   micBtn.addEventListener('click', toggleVoice);
 
   /* ============================================ */
-  /* LIVE MODE — full-screen cue teleprompter      */
+  /* LIVE MODE — Deepgram-powered teleprompter     */
   /* ============================================ */
   const liveOverlay = document.getElementById('live-overlay');
   const liveCues = document.getElementById('live-cues');
@@ -1841,16 +1833,16 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
   const liveTranscript = document.getElementById('live-transcript');
   const liveQ = document.getElementById('live-q');
   let liveOn = false;
-  let liveRecog = null;
+  let liveDgSocket = null;
+  let liveAudioCtx = null;
+  let liveMediaStream = null;
+  let liveProcessor = null;
   let liveBuf = '';
-  let liveLastInterim = '';
   let liveSendTimer = null;
-  let liveInterimTimer = null;
   let livePending = false;
   let livePaused = false;
   let liveSilenceTimer = null;
   let liveLastSpeechTime = 0;
-
   let currentLiveLabel = '';
 
   function showCues(data){
@@ -1864,6 +1856,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     document.getElementById('live-body').scrollTop = 0;
     currentLiveLabel = data.label;
     livePaused = true;
+    liveLastSpeechTime = Date.now();
     clearTimeout(liveSilenceTimer);
   }
 
@@ -1872,7 +1865,7 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     livePending = true;
     fetch('/match', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({transcript: text.trim().slice(-400)})
+      body: JSON.stringify({transcript: text.trim().slice(-500)})
     })
     .then(r=>r.json())
     .then(data => {
@@ -1880,95 +1873,99 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
       if(data.label === 'NONE' || data.label === 'FOLLOWUP') return;
       if(data.cues && data.cues.length > 0 && data.label !== currentLiveLabel){
         liveBuf = '';
-        liveLastInterim = '';
         showCues(data);
       }
     })
     .catch(() => { livePending = false; });
   }
 
-  function liveScheduleFinal(){
+  function liveScheduleSend(){
     clearTimeout(liveSendTimer);
     liveSendTimer = setTimeout(() => {
-      const text = liveBuf.trim();
-      if(text.length >= 20) liveSend(text.slice(-400));
-    }, 600);
-  }
-  function liveScheduleInterim(){
-    clearTimeout(liveInterimTimer);
-    liveInterimTimer = setTimeout(() => {
-      const text = (liveBuf + ' ' + liveLastInterim).trim();
-      if(text.length >= 20 && !livePending) liveSend(text.slice(-400));
-    }, 1200);
+      if(liveBuf.trim().length >= 20) liveSend(liveBuf.slice(-500));
+    }, 400);
   }
 
-  /* After cues show, detect silence gap to know candidate stopped answering.
-     Uses 8-second gap — typical answer is 60-120s, pauses within are normal. */
   function liveSpeechDetected(){
     liveLastSpeechTime = Date.now();
     if(livePaused){
       clearTimeout(liveSilenceTimer);
       liveSilenceTimer = setTimeout(() => {
-        const elapsed = Date.now() - liveLastSpeechTime;
-        if(elapsed >= 7500){
+        if(Date.now() - liveLastSpeechTime >= 7500){
           livePaused = false;
           liveBuf = '';
-          liveLastInterim = '';
         }
       }, 8000);
     }
   }
 
-  function startLiveRecog(){
-    if(!SpeechRecognition) return;
-    liveRecog = new SpeechRecognition();
-    liveRecog.continuous = true;
-    liveRecog.interimResults = true;
-    liveRecog.lang = 'en-US';
+  function connectLiveDg(){
+    liveDgSocket = new WebSocket(getWsUrl());
 
-    liveRecog.onstart = function(){ liveTranscript.textContent = ''; };
+    liveDgSocket.onopen = () => { liveTranscript.textContent = 'Connecting...'; };
 
-    liveRecog.onresult = function(e){
-      let interim = '', final_ = '';
-      for(let i = e.resultIndex; i < e.results.length; i++){
-        if(e.results[i].isFinal) final_ += e.results[i][0].transcript;
-        else interim += e.results[i][0].transcript;
-      }
-
-      liveSpeechDetected();
-
-      if(final_){
-        liveTranscript.textContent = final_;
-        if(!livePaused){
-          liveBuf += ' ' + final_;
-          if(liveBuf.length > 600) liveBuf = liveBuf.slice(-600);
-          liveLastInterim = '';
-          liveScheduleFinal();
+    liveDgSocket.onmessage = (evt) => {
+      try {
+        const msg = JSON.parse(evt.data);
+        if(msg.type === 'dgReady'){
+          liveTranscript.textContent = '';
+          startLiveAudio();
+        } else if(msg.type === 'transcript'){
+          if(msg.text){
+            liveTranscript.textContent = msg.text;
+            liveSpeechDetected();
+            if(msg.isFinal && msg.text.trim().length > 0 && !livePaused){
+              liveBuf += ' ' + msg.text;
+              if(liveBuf.length > 800) liveBuf = liveBuf.slice(-800);
+            }
+            if(msg.speechFinal && !livePaused && liveBuf.trim().length >= 20){
+              liveScheduleSend();
+            }
+          }
+        } else if(msg.type === 'utteranceEnd'){
+          if(!livePaused && liveBuf.trim().length >= 20) liveScheduleSend();
         }
-      } else if(interim){
-        liveTranscript.textContent = interim;
-        if(!livePaused){
-          liveLastInterim = interim;
-          liveScheduleInterim();
+      } catch(e){}
+    };
+
+    liveDgSocket.onerror = () => {};
+    liveDgSocket.onclose = () => {
+      if(liveOn) setTimeout(connectLiveDg, 1000);
+    };
+  }
+
+  async function startLiveAudio(){
+    try {
+      liveMediaStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 16000 }
+      });
+      liveAudioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+      const source = liveAudioCtx.createMediaStreamSource(liveMediaStream);
+      liveProcessor = liveAudioCtx.createScriptProcessor(4096, 1, 1);
+
+      liveProcessor.onaudioprocess = (e) => {
+        if(liveDgSocket && liveDgSocket.readyState === WebSocket.OPEN){
+          const input = e.inputBuffer.getChannelData(0);
+          const pcm16 = new Int16Array(input.length);
+          for(let i = 0; i < input.length; i++){
+            pcm16[i] = Math.max(-32768, Math.min(32767, input[i] * 32768));
+          }
+          liveDgSocket.send(pcm16.buffer);
         }
-      }
-    };
+      };
 
-    liveRecog.onerror = function(e){
-      if(e.error === 'aborted') return;
-      if(e.error === 'no-speech') return;
-      if(e.error === 'not-allowed'){
-        liveTranscript.textContent = 'Mic blocked — allow in browser settings';
-        return;
-      }
-      if(liveOn) setTimeout(startLiveRecog, 500);
-    };
+      source.connect(liveProcessor);
+      liveProcessor.connect(liveAudioCtx.destination);
+    } catch(e){
+      liveTranscript.textContent = 'Mic failed: ' + e.message;
+    }
+  }
 
-    liveRecog.onend = function(){
-      if(liveOn) setTimeout(() => { if(liveOn) try{ startLiveRecog(); }catch(e){} }, 300);
-    };
-
-    try{ liveRecog.start(); }catch(e){}
+  function stopLiveAudio(){
+    if(liveProcessor){ liveProcessor.disconnect(); liveProcessor = null; }
+    if(liveAudioCtx){ liveAudioCtx.close(); liveAudioCtx = null; }
+    if(liveMediaStream){ liveMediaStream.getTracks().forEach(t => t.stop()); liveMediaStream = null; }
+    if(liveDgSocket){ liveDgSocket.close(); liveDgSocket = null; }
   }
 
   function liveReset(){
@@ -1979,7 +1976,6 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     liveQ.textContent = '';
     liveTranscript.textContent = '';
     liveBuf = '';
-    liveLastInterim = '';
     currentLiveLabel = '';
     livePaused = false;
     clearTimeout(liveSilenceTimer);
@@ -1990,11 +1986,10 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     liveOverlay.classList.toggle('open', liveOn);
     if(liveOn){
       liveReset();
-      startLiveRecog();
+      connectLiveDg();
     } else {
-      if(liveRecog){ try{ liveRecog.abort(); }catch(e){} liveRecog = null; }
+      stopLiveAudio();
       clearTimeout(liveSendTimer);
-      clearTimeout(liveInterimTimer);
     }
   }
 

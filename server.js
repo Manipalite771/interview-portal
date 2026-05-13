@@ -3,11 +3,14 @@ const https = require('https');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const { WebSocketServer } = require('ws');
+const WebSocket = require('ws');
 
 const PORT = process.env.PORT || 8080;
 const AWS_KEY = process.env.AWS_ACCESS_KEY_ID;
 const AWS_SECRET = process.env.AWS_SECRET_ACCESS_KEY;
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
+const DEEPGRAM_KEY = process.env.DEEPGRAM_KEY || 'cdf41b28cb9349ac6ddfe7c5e8836babdc0c1151';
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 const htmlR1 = fs.readFileSync(path.join(__dirname, 'index-wioleta.html'), 'utf8');
 const serverR1 = JSON.stringify({note: 'Round 1 voice matching uses same /match endpoint with Wioleta-tuned categories'});
@@ -626,3 +629,69 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => console.log(`Listening on :${PORT}`));
+
+/* ---- Deepgram WebSocket Proxy ---- */
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (clientWs) => {
+  console.log('[DG] Client connected');
+
+  const dgUrl = 'wss://api.deepgram.com/v1/listen?' +
+    'model=nova-2&language=en&smart_format=true&' +
+    'interim_results=true&utterance_end_ms=1500&vad_events=true&' +
+    'endpointing=400&encoding=linear16&sample_rate=16000&channels=1';
+
+  const dgWs = new WebSocket(dgUrl, {
+    headers: { 'Authorization': 'Token ' + DEEPGRAM_KEY }
+  });
+
+  let dgReady = false;
+
+  dgWs.on('open', () => {
+    dgReady = true;
+    clientWs.send(JSON.stringify({ type: 'dgReady' }));
+    console.log('[DG] Deepgram connection open');
+  });
+
+  dgWs.on('message', (msg) => {
+    try {
+      const data = JSON.parse(msg.toString());
+      if (data.type === 'Results') {
+        const alt = data.channel && data.channel.alternatives && data.channel.alternatives[0];
+        if (alt) {
+          clientWs.send(JSON.stringify({
+            type: 'transcript',
+            text: alt.transcript || '',
+            isFinal: data.is_final || false,
+            speechFinal: data.speech_final || false
+          }));
+        }
+      } else if (data.type === 'UtteranceEnd') {
+        clientWs.send(JSON.stringify({ type: 'utteranceEnd' }));
+      }
+    } catch(e) {}
+  });
+
+  dgWs.on('error', (err) => {
+    console.error('[DG] Deepgram error:', err.message);
+    clientWs.send(JSON.stringify({ type: 'error', msg: err.message }));
+  });
+
+  dgWs.on('close', () => {
+    console.log('[DG] Deepgram closed');
+    dgReady = false;
+  });
+
+  clientWs.on('message', (msg) => {
+    if (dgReady && dgWs.readyState === WebSocket.OPEN) {
+      dgWs.send(msg);
+    }
+  });
+
+  clientWs.on('close', () => {
+    console.log('[DG] Client disconnected');
+    if (dgWs.readyState === WebSocket.OPEN) {
+      dgWs.close();
+    }
+  });
+});
