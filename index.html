@@ -39,9 +39,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 /* SIDEBAR */
 #sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;z-index:90;padding:10px 0;transition:transform 0.3s ease}
 #sidebar .group-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);padding:14px 16px 4px;font-weight:700}
-#sidebar .nav-item{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text2);padding:7px 16px 7px 20px;cursor:pointer;font-size:0.85rem;transition:var(--transition);border-left:3px solid transparent;line-height:1.35}
+#sidebar .nav-item{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text2);padding:9px 16px 9px 20px;cursor:pointer;font-size:0.88rem;transition:var(--transition);border-left:3px solid transparent;line-height:1.35;min-height:36px}
 #sidebar .nav-item:hover{background:var(--raised);color:var(--text)}
-#sidebar .nav-item.active{color:var(--amber);border-left-color:var(--amber);background:rgba(245,183,49,0.06)}
+#sidebar .nav-item.active{color:var(--amber);border-left-color:var(--amber);background:rgba(245,183,49,0.12);font-weight:700}
+#sidebar .group-label.active-group{color:var(--amber);opacity:1}
 #sidebar .nav-item .shortcut{float:right;opacity:0.3;font-size:0.7rem;font-variant-numeric:tabular-nums}
 
 /* MAIN */
@@ -1481,9 +1482,15 @@ body.kp-only .cue,body.kp-only .warn-box{display:none}
     /* scroll dot into view */
     const activeDot = dotsC.children[idx];
     activeDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    /* highlight active group label */
+    document.querySelectorAll('#sidebar .group-label').forEach(g => g.classList.remove('active-group'));
+    let el = navItems[idx].previousElementSibling;
+    while(el && !el.classList.contains('group-label')) el = el.previousElementSibling;
+    if(el) el.classList.add('active-group');
     /* scroll nav item into view */
     navItems[idx].scrollIntoView({behavior:'smooth',block:'nearest'});
-    closeSidebar();
+    /* only close sidebar on mobile */
+    if(window.innerWidth <= 768) closeSidebar();
   }
 
   document.getElementById('btn-prev').addEventListener('click', () => goTo(current - 1));
